@@ -1,0 +1,55 @@
+/*
+ *  MIT License
+ *
+ *  Copyright (c) 2020 Ridanisaurus
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
+package com.ticticboooom.mods.mm.datagen;
+
+import net.minecraft.resources.IPackFinder;
+import net.minecraft.resources.IPackNameDecorator;
+import net.minecraft.resources.ResourcePackInfo;
+
+import java.nio.file.Path;
+import java.util.function.Consumer;
+
+public class MMPackFinder implements IPackFinder {
+
+
+	private final PackType type;
+
+	public MMPackFinder(PackType type) {
+
+		this.type = type;
+	}
+
+
+	@Override
+	public void loadPacks(Consumer<ResourcePackInfo> infoConsumer, ResourcePackInfo.IFactory infoFactory) {
+		Path rootPath = MemoryDataGeneratorFactory.ROOT_PATH;
+
+		ResourcePackInfo pack = ResourcePackInfo.create("mm_" + type.getSuffix(), true,
+				() -> new InMemoryPack(rootPath), infoFactory, ResourcePackInfo.Priority.BOTTOM, IPackNameDecorator.DEFAULT);
+		if (pack != null) {
+			infoConsumer.accept(pack);
+		}
+	}
+}

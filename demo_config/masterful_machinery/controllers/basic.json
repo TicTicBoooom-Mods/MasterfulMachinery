@@ -1,0 +1,11 @@
+{
+  "controllerId": "basic",
+  "ports": [
+    {
+      "type": "masterfulmachinery:items",
+      "data": {
+        "slots": 18
+      }
+    }
+  ]
+}

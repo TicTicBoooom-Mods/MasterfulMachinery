@@ -1,0 +1,24 @@
+{
+  "type": "masterfulmachinery:machine_process",
+  "ticks": 20,
+  "controllerId": "basic",
+  "structureId": "test",
+  "inputs": [
+    {
+      "type": "masterfulmachinery:items",
+      "data": {
+        "tag": "minecraft:logs",
+        "count": 1
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "type": "masterfulmachinery:items",
+      "data": {
+        "item": "minecraft:oak_planks",
+        "count": 6
+      }
+    }
+  ]
+}
