@@ -4,14 +4,18 @@ import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
+import com.ticticboooom.mods.mm.network.PacketHandler;
+import com.ticticboooom.mods.mm.network.packets.TileClientUpdatePacket;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -19,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -76,9 +81,11 @@ public class ControllerBlockEntity extends TileEntity implements ITickableTileEn
         List<MachineProcessRecipe> processRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_PROCESS);
         for (MachineProcessRecipe recipe : processRecipes) {
             if (recipe.matches(inputPorts, structure.getStructureId())) {
-                ProcessUpdate update = recipe.process(inputPorts, outputPorts, this.update);
-                this.update = update;
+                this.update = recipe.process(inputPorts, outputPorts, this.update);
+                PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(worldPosition, save(new CompoundNBT())));
                 return;
+            } else {
+                this.update.setTicksTaken(0);
             }
         }
     }
@@ -93,5 +100,19 @@ public class ControllerBlockEntity extends TileEntity implements ITickableTileEn
     @Override
     public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
         return new ControllerBlockContainer(container.get(), p_createMenu_1_, this);
+    }
+
+    @Override
+    public CompoundNBT save(CompoundNBT nbt) {
+        nbt.putInt("ticks", update.getTicksTaken());
+        nbt.putString("msg", update.getMsg());
+        return super.save(nbt);
+    }
+
+    @Override
+    public void load(BlockState p_230337_1_, CompoundNBT nbt) {
+        super.load(p_230337_1_, nbt);
+        update.setTicksTaken(nbt.getInt("ticks"));
+        update.setMsg(nbt.getString("msg"));
     }
 }

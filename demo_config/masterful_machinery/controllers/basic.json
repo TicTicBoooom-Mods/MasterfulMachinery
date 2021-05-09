@@ -4,7 +4,20 @@
     {
       "type": "masterfulmachinery:items",
       "data": {
-        "slots": 18
+        "rows": 3,
+        "columns": 3
+      }
+    },
+    {
+      "type": "masterfulmachinery:energy",
+      "data": {
+        "capacity": 30000
+      }
+    },
+    {
+      "type": "masterfulmachinery:fluids",
+      "data": {
+        "capacity": 10000
       }
     }
   ]

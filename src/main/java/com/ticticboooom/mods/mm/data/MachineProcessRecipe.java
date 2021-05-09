@@ -61,8 +61,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 return false;
             }
         }
-        return true
-                ;
+        return true;
     }
 
     public ProcessUpdate process(List<IPortStorage> inputPorts, List<IPortStorage> outputPorts, ProcessUpdate update) {
@@ -86,7 +85,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             return update;
         }
         update.setTicksTaken(update.getTicksTaken() + 1);
-        update.setMsg(update.getTicksTaken() / ticks + "%");
+        update.setMsg((int)(((float)update.getTicksTaken() /(float)ticks) * 100) + "%");
         return update;
     }
 

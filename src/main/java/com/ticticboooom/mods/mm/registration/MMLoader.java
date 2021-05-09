@@ -49,7 +49,7 @@ public class MMLoader {
     public static final ArrayList<RegistryObject<MachinePortBlock>> IPORT_BLOCKS = new ArrayList<>();
     public static final ArrayList<RegistryObject<MachinePortBlock>> OPORT_BLOCKS = new ArrayList<>();
     public static final ArrayList<RegistryObject<ContainerType<ControllerBlockContainer>>> CONTAINERS = new ArrayList<>();
-    public static final ArrayList<RegistryObject<ContainerType<PortBlockContainer>>> PORT_CONTAINERS = new ArrayList<>();
+    public static final ArrayList<RegistryObject<ContainerType<?>>> PORT_CONTAINERS = new ArrayList<RegistryObject<ContainerType<?>>>();
 
     public static final DeferredRegister<Block> BLOCKS_REG = DeferredRegister.create(ForgeRegistries.BLOCKS, MM.ID);
     public static final DeferredRegister<Item> ITEMS_REG = DeferredRegister.create(ForgeRegistries.ITEMS, MM.ID);
@@ -90,20 +90,24 @@ public class MMLoader {
                 {
                     Registerable<RegistryObject<TileEntityType<?>>> tile = new Registerable<>();
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
+                    Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
+                    cont.set(CONTAINER_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
                     block.set(BLOCKS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> new MachinePortBlock(tile.get())));
-                    tile.set(TILES_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(), data.get(), true), block.get().get()).build(null)));
+                    tile.set(TILES_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(),cont.get().get(), data.get(), true), block.get().get()).build(null)));
                     ITEMS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> new BlockItem(block.get().get(), new Item.Properties().tab(MASTERFUL_ITEM_GROUP)));
-
+                    PORT_CONTAINERS.add(cont.get());
                     IPORT_BLOCKS.add(block.get());
                 }
 
                 {
                     Registerable<RegistryObject<TileEntityType<?>>> tile = new Registerable<>();
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
+                    Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
+                    cont.set(CONTAINER_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
                     block.set(BLOCKS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> new MachinePortBlock(tile.get())));
-                    tile.set(TILES_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(), data.get(), false), block.get().get()).build(null)));
+                    tile.set(TILES_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(), cont.get().get(), data.get(), false), block.get().get()).build(null)));
                     ITEMS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> new BlockItem(block.get().get(), new Item.Properties().tab(MASTERFUL_ITEM_GROUP)));
-
+                    PORT_CONTAINERS.add(cont.get());
                     OPORT_BLOCKS.add(block.get());
                 }
 

@@ -28,6 +28,7 @@ public class FluidPortParser implements IPortParser {
     public void write(PacketBuffer buf, IPortState state) {
         buf.writeWithCodec(FluidPortState.CODEC, ((FluidPortState) state));
     }
+
     @Override
     public IPortState createState(JsonObject obj) {
         DataResult<Pair<FluidPortState, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(FluidPortState.CODEC).apply(obj);

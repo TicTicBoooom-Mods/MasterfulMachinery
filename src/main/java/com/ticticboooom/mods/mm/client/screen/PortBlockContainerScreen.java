@@ -10,17 +10,24 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class PortBlockContainerScreen extends ContainerScreen<PortBlockContainer> {
-    public PortBlockContainerScreen(PortBlockContainer p_i51105_1_, PlayerInventory p_i51105_2_, ITextComponent p_i51105_3_) {
-        super(p_i51105_1_, p_i51105_2_, p_i51105_3_);
+    private final PortBlockContainer container;
+
+    public PortBlockContainerScreen(PortBlockContainer container, PlayerInventory p_i51105_2_, ITextComponent p_i51105_3_) {
+        super(container, p_i51105_2_, p_i51105_3_);
+        this.container = container;
     }
 
-    private static final ResourceLocation GUI = new ResourceLocation(MM.ID, "textures/gui/gui_large.png");
+    private static final ResourceLocation GUI = new ResourceLocation(MM.ID, "textures/gui/port_gui.png");
 
     @Override
-    protected void renderBg(MatrixStack stack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void renderBg(MatrixStack stack, float p_230450_2_, int mouseX, int mouseY) {
         this.renderBackground(stack);
-        this.minecraft.textureManager.bind(GUI);
-        this.blit(stack, this.leftPos, this.topPos, 0, 0, this.width, this.height);
+        container.getTile().getStorage().render(stack, mouseX, mouseY, this.leftPos, this.topPos, this);
     }
 
+    @Override
+    protected void renderLabels(MatrixStack stack, int p_230451_2_, int p_230451_3_) {
+        drawString(stack, this.minecraft.font, container.getTile().getDisplayName(), 7, 5, 0xfefefe);
+        drawString(stack, this.minecraft.font, "Inventory", 7, 130, 0xfefefe);
+    }
 }

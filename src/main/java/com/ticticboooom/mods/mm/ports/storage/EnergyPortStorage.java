@@ -1,9 +1,19 @@
 package com.ticticboooom.mods.mm.ports.storage;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
+import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.PortEnergyInventory;
 import lombok.Getter;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -30,5 +40,37 @@ public class EnergyPortStorage implements IPortStorage {
     @Override
     public <T> boolean validate(Capability<T> cap) {
         return cap == CapabilityEnergy.ENERGY;
+    }
+
+    @Override
+    public CompoundNBT save(CompoundNBT nbt) {
+        nbt.putInt("stored", inv.getEnergyStored());
+        return nbt;
+    }
+
+    @Override
+    public void load(CompoundNBT nbt) {
+        inv.setStored(nbt.getInt("stored"));
+    }
+
+    @Override
+    public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
+        Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        screen.blit(stack, left, top, 0, 0,  175, 256);
+        int barOffsetX = 175 - 30;
+        int barOffsetY = 20;
+        screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
+        float amount = 0;
+        if (inv.getMaxEnergyStored() > 0) {
+            amount = (float)inv.getEnergyStored() / inv.getMaxEnergyStored();
+        }
+        screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
+        AbstractGui.drawString(stack, Minecraft.getInstance().font,Math.round((float)10000 * amount) / 100.f + "%", left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawString(stack, Minecraft.getInstance().font,inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
+    }
+
+    @Override
+    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile) {
+
     }
 }

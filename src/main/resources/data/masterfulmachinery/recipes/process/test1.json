@@ -1,6 +1,6 @@
 {
   "type": "masterfulmachinery:machine_process",
-  "ticks": 20,
+  "ticks": 600,
   "controllerId": "basic",
   "structureId": "test",
   "inputs": [

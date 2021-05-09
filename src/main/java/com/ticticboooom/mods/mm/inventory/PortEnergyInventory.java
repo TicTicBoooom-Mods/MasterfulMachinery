@@ -16,18 +16,18 @@ public class PortEnergyInventory implements IEnergyStorage {
     public int receiveEnergy(int maxReceive, boolean simulate) {
         if (simulate) {
             if (maxReceive + stored > capacity) {
-                return (maxReceive + stored) - capacity;
+                return maxReceive > capacity ? capacity - stored : maxReceive;
             } else {
-                return 0;
+                return maxReceive;
             }
         }
         if (maxReceive + stored > capacity) {
-            int result = (maxReceive + stored) - capacity;
+            int result = maxReceive > capacity ? capacity - stored : maxReceive;
             stored = capacity;
             return result;
         } else {
             stored += maxReceive;
-            return 0;
+            return maxReceive;
         }
 
     }
@@ -69,5 +69,9 @@ public class PortEnergyInventory implements IEnergyStorage {
     @Override
     public boolean canReceive() {
         return stored < capacity;
+    }
+
+    public void setStored(int amount) {
+        this.stored = amount;
     }
 }

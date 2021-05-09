@@ -1,5 +1,6 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
@@ -7,6 +8,7 @@ import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
 import lombok.Getter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
@@ -49,13 +51,13 @@ public class ItemPortState implements IPortState {
                     if (!item.equals("")) {
                         if (stackInSlot.getItem().getRegistryName().toString().equals(item)) {
                             int amount = stackInSlot.getCount();
-                            stackInSlot.setCount(amount > current ? current : 0);
+                            stackInSlot.setCount(amount - (amount - current < 0 ? amount : current));
                             current -= amount;
                         }
                     } else if (!tag.equals("")) {
                         if (ItemTags.getAllTags().getTag(RLUtils.toRL(tag)).contains(stackInSlot.getItem())) {
                             int amount = stackInSlot.getCount();
-                            stackInSlot.setCount(amount > current ? current : 0);
+                            stackInSlot.setCount(amount - (amount - current < 0 ? amount : current));
                             current -= amount;
 
                         }
@@ -106,9 +108,6 @@ public class ItemPortState implements IPortState {
                 ItemPortStorage iinv = (ItemPortStorage) inv;
                 for (int i = 0; i < iinv.getInv().getSlots(); i++) {
                     ItemStack stackInSlot = iinv.getInv().getStackInSlot(i);
-                    if (stackInSlot.isEmpty()) {
-                        continue;
-                    }
 
                     if (!item.equals("")) {
                         if (stackInSlot.getItem().getRegistryName().toString().equals(item)) {
@@ -116,13 +115,10 @@ public class ItemPortState implements IPortState {
                             int increment = Math.min((stackInSlot.getItem().getMaxStackSize() - amount), (count - current));
                             stackInSlot.setCount(stackInSlot.getCount() + increment);
                             current += increment;
-                        }
-                    } else if (!tag.equals("")) {
-                        if (ItemTags.getAllTags().getTag(RLUtils.toRL(tag)).contains(stackInSlot.getItem())) {
-                            int amount = stackInSlot.getCount();
-                            int increment = Math.min((stackInSlot.getItem().getMaxStackSize() - amount), (count - current));
-                            stackInSlot.setCount(stackInSlot.getCount() + increment);
-                            current += increment;
+                        } else if (stackInSlot.isEmpty()) {
+                            Item forgeItem = ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item));
+                            iinv.getInv().setStackInSlot(i, new ItemStack(forgeItem, Math.min(forgeItem.getMaxStackSize(), count - current)));
+                            current += Math.min(forgeItem.getMaxStackSize(), count - current);
                         }
                     }
                     if (current >= count) {

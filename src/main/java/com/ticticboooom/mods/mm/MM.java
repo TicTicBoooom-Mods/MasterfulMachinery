@@ -12,6 +12,8 @@ import com.ticticboooom.mods.mm.datagen.MMPackFinder;
 import com.ticticboooom.mods.mm.datagen.MemoryDataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
 import com.ticticboooom.mods.mm.datagen.gen.MMBlockStateProvider;
+import com.ticticboooom.mods.mm.datagen.gen.MMItemModelProvider;
+import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
@@ -51,6 +53,7 @@ public class MM {
         MMPorts.init();
         MMLoader.load();
         MemoryDataGeneratorFactory.init();
+        PacketHandler.init();
         registerDataGen();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MMLoader.BLOCKS_REG.register(bus);
@@ -70,6 +73,7 @@ public class MM {
         ExistingFileHelper existingFileHelper = new ExistingFileHelper(ImmutableList.of(), ImmutableSet.of(), false);
 
         generator.addProvider(new MMBlockStateProvider(generator, existingFileHelper));
+        generator.addProvider(new MMItemModelProvider(generator, existingFileHelper));
     }
 
     public static void generate() {
@@ -92,8 +96,8 @@ public class MM {
         for (RegistryObject<ContainerType<ControllerBlockContainer>> container : MMLoader.CONTAINERS) {
             ScreenManager.register(container.get(), ControllerBlockContainerScreen::new);
         }
-        for (RegistryObject<ContainerType<PortBlockContainer>> container : MMLoader.PORT_CONTAINERS) {
-            ScreenManager.register(container.get(), PortBlockContainerScreen::new);
+        for (RegistryObject<ContainerType<?>> container : MMLoader.PORT_CONTAINERS) {
+            ScreenManager.register((ContainerType<PortBlockContainer>) container.get(), PortBlockContainerScreen::new);
         }
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
             RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());

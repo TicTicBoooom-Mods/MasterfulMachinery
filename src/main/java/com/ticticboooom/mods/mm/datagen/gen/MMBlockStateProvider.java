@@ -4,13 +4,12 @@ import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.registration.MMLoader;
+import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.RegistryObject;
@@ -31,7 +30,13 @@ public class MMBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         for (RegistryObject<ControllerBlock> controller : MMLoader.BLOCKS) {
             dynamicBlockNorthOverlay(controller.getId(), BASE_TEXTURE, CONTROLLER_TEXTURE);
-            simpleBlock(controller.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath())));
+            VariantBlockStateBuilder variantBuilder = getVariantBuilder(controller.get());
+            variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.NORTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
+            variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.SOUTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(180).addModel();
+            variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.EAST).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(90).addModel();
+            variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.WEST).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(270).addModel();
+            variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.UP).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
+            variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.DOWN).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
         }
 
         for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {
@@ -45,7 +50,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
     }
 
     public void dynamicBlockNorthOverlay(ResourceLocation loc, ResourceLocation baseTexture, ResourceLocation overlayTexture) {
-        models().getBuilder(loc.getPath()).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
+        models().getBuilder(loc.toString()).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
                 .texture("particle", overlayTexture)
                 .transforms()
                 .transform(ModelBuilder.Perspective.THIRDPERSON_LEFT)
@@ -83,7 +88,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
                 .end();
     }
     public void dynamicBlock(ResourceLocation loc, ResourceLocation baseTexture, ResourceLocation overlayTexture) {
-        models().getBuilder(loc.getPath()).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
+        models().getBuilder(loc.toString()).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
                 .texture("particle", overlayTexture)
                 .transforms()
                 .transform(ModelBuilder.Perspective.THIRDPERSON_LEFT)
