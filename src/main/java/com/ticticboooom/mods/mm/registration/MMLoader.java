@@ -83,6 +83,8 @@ public class MMLoader {
             for (JsonElement port : ports) {
                 JsonObject portObj = port.getAsJsonObject();
                 String type = portObj.get("type").getAsString();
+                String id = portObj.get("id").getAsString();
+
                 ResourceLocation resourceLocation = RLUtils.toRL(type);
                 MasterfulPortType value = MMPorts.PORTS.get(resourceLocation);
                 Supplier<IPortStorage> data = value.getParser().createStorage(portObj.get("data").getAsJsonObject());
@@ -91,10 +93,10 @@ public class MMLoader {
                     Registerable<RegistryObject<TileEntityType<?>>> tile = new Registerable<>();
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
                     Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
-                    cont.set(CONTAINER_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
-                    block.set(BLOCKS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> new MachinePortBlock(tile.get())));
-                    tile.set(TILES_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(),cont.get().get(), data.get(), true), block.get().get()).build(null)));
-                    ITEMS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_input", () -> new BlockItem(block.get().get(), new Item.Properties().tab(MASTERFUL_ITEM_GROUP)));
+                    cont.set(CONTAINER_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
+                    block.set(BLOCKS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> new MachinePortBlock(tile.get())));
+                    tile.set(TILES_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(),cont.get().get(), data.get(), true), block.get().get()).build(null)));
+                    ITEMS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> new BlockItem(block.get().get(), new Item.Properties().tab(MASTERFUL_ITEM_GROUP)));
                     PORT_CONTAINERS.add(cont.get());
                     IPORT_BLOCKS.add(block.get());
                 }
@@ -103,10 +105,10 @@ public class MMLoader {
                     Registerable<RegistryObject<TileEntityType<?>>> tile = new Registerable<>();
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
                     Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
-                    cont.set(CONTAINER_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
-                    block.set(BLOCKS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> new MachinePortBlock(tile.get())));
-                    tile.set(TILES_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(), cont.get().get(), data.get(), false), block.get().get()).build(null)));
-                    ITEMS_REG.register(controllerId + "_port_" + resourceLocation.getPath() + "_output", () -> new BlockItem(block.get().get(), new Item.Properties().tab(MASTERFUL_ITEM_GROUP)));
+                    cont.set(CONTAINER_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
+                    block.set(BLOCKS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> new MachinePortBlock(tile.get())));
+                    tile.set(TILES_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> TileEntityType.Builder.of(() -> new MachinePortBlockEntity(tile.get().get(), cont.get().get(), data.get(), false), block.get().get()).build(null)));
+                    ITEMS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> new BlockItem(block.get().get(), new Item.Properties().tab(MASTERFUL_ITEM_GROUP)));
                     PORT_CONTAINERS.add(cont.get());
                     OPORT_BLOCKS.add(block.get());
                 }

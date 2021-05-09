@@ -9,6 +9,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
+import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
@@ -27,6 +28,7 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -36,12 +38,31 @@ import java.util.List;
 
 public class MachineStructureRecipe implements IRecipe<IInventory> {
     private final ResourceLocation rl = new ResourceLocation(MM.ID, "machine_structure");
-    private List<MachineStructureRecipeKeyModel> models;
+    private List<List<MachineStructureRecipeKeyModel>> models;
     private final String controllerId;
     private String id;
 
     public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, String controllerId, String id)  {
-        this.models = models;
+        List<MachineStructureRecipeKeyModel> rotated = new ArrayList<>();
+        List<MachineStructureRecipeKeyModel> rotated1 = new ArrayList<>();
+        List<MachineStructureRecipeKeyModel> rotated2 = new ArrayList<>();
+
+        for (MachineStructureRecipeKeyModel model : models) {
+            BlockPos rotatedPos = new BlockPos(model.getPos().getZ(), model.getPos().getY(), model.getPos().getX());
+            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
+
+            BlockPos rotatedPos1 = new BlockPos(-model.getPos().getX(), model.getPos().getY(), -model.getPos().getZ());
+            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
+
+            BlockPos rotatedPos2 = new BlockPos(-model.getPos().getZ(), model.getPos().getY(), -model.getPos().getX());
+            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
+        }
+
+        this.models = new ArrayList<>();
+        this.models.add(models);
+        this.models.add(rotated);
+        this.models.add(rotated1);
+        this.models.add(rotated2);
         this.controllerId = controllerId;
         this.id = id;
     }
@@ -61,12 +82,23 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         return false;
     }
 
-    public boolean matches(BlockPos controllerPos, World world, String controllerId) {
+    public int matches(BlockPos controllerPos, World world, String controllerId) {
         if (!this.controllerId.equals(controllerId)) {
-            return false;
+            return -1;
         }
 
-        for (MachineStructureRecipeKeyModel model : models) {
+        int index = 0;
+        for (List<MachineStructureRecipeKeyModel> model : models) {
+            if (matchesWithRotation(controllerPos, world, model)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    private boolean matchesWithRotation(BlockPos controllerPos, World world, List<MachineStructureRecipeKeyModel> items) {
+        for (MachineStructureRecipeKeyModel model : items) {
             if (!innerBlockMatch(controllerPos, world, model)) {
                 return false;
             }
@@ -117,9 +149,9 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         return false;
     }
 
-    public ArrayList<BlockPos> getPorts(BlockPos controllerPos, World world) {
+    public ArrayList<BlockPos> getPorts(BlockPos controllerPos, World world, int index) {
         ArrayList<BlockPos> result = new ArrayList<>();
-        for (MachineStructureRecipeKeyModel model : models) {
+        for (MachineStructureRecipeKeyModel model : models.get(index)) {
             BlockPos pos = controllerPos.offset(model.getPos().toVector());
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof MachinePortBlock) {
@@ -184,7 +216,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             buf.writeUtf(recipe.controllerId);
             buf.writeUtf(recipe.id);
             try {
-                buf.writeWithCodec(Codec.list(MachineStructureRecipeKeyModel.CODEC), recipe.models);
+                buf.writeWithCodec(Codec.list(MachineStructureRecipeKeyModel.CODEC), recipe.models.get(0));
             } catch (IOException e) {
                 e.printStackTrace();
             }

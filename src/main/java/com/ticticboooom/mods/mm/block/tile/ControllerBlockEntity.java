@@ -48,17 +48,18 @@ public class ControllerBlockEntity extends TileEntity implements ITickableTileEn
     public void tick() {
         List<MachineStructureRecipe> recipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_STRUCTURE);
         for (MachineStructureRecipe recipe : recipes) {
-            if (recipe.matches(this.worldPosition, level, controllerId)) {
+            int index = recipe.matches(this.worldPosition, level, controllerId);
+            if (index != -1) {
                 update.setMsg("Found structure");
-                onStructureFound(recipe);
+                onStructureFound(recipe, index);
                 return;
             }
         }
         update.setMsg("Failed to construct \nthe machine");
-    }
+}
 
-    private void onStructureFound(MachineStructureRecipe structure) {
-        ArrayList<BlockPos> ports = structure.getPorts(worldPosition, level);
+    private void onStructureFound(MachineStructureRecipe structure, int index) {
+        ArrayList<BlockPos> ports = structure.getPorts(worldPosition, level, index);
         List<IPortStorage> inputPorts = new ArrayList<>();
         List<IPortStorage> outputPorts = new ArrayList<>();
         for (BlockPos port : ports) {

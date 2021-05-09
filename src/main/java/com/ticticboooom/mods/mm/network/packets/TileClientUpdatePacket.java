@@ -36,7 +36,9 @@ public class TileClientUpdatePacket {
             ClientWorld level = Minecraft.getInstance().level;
             TileEntity blockEntity = level.getBlockEntity(data.getPos());
             BlockState state = level.getBlockState(data.getPos());
-            blockEntity.load(state, data.nbt);
+            if (blockEntity != null) {
+                blockEntity.load(state, data.nbt);
+            }
         });
         ctx.get().setPacketHandled(true);
     }

@@ -85,7 +85,7 @@ public class ItemPortStorage implements IPortStorage {
         ItemStackInventory items = InvHelper.getItems(this.inv);
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
-                container.addSlot(new Slot(items,  (y * rows) + x, x * 18 + offsetX, y * 18 + offsetY));
+                container.addSlot(new Slot(items,  (y * columns) + x, x * 18 + offsetX, y * 18 + offsetY));
             }
         }
         int playerOffsetX = 8;

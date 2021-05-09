@@ -3,6 +3,7 @@
   "ports": [
     {
       "type": "masterfulmachinery:items",
+      "id": "basic",
       "data": {
         "rows": 3,
         "columns": 3
@@ -10,14 +11,23 @@
     },
     {
       "type": "masterfulmachinery:energy",
+      "id": "chungus",
       "data": {
-        "capacity": 30000
+        "capacity": 1000000000
       }
     },
     {
       "type": "masterfulmachinery:fluids",
+      "id": "small",
       "data": {
         "capacity": 10000
+      }
+    },
+    {
+      "type": "masterfulmachinery:mekanism_gas",
+      "id": "gassy",
+      "data": {
+        "capacity": 100000
       }
     }
   ]
