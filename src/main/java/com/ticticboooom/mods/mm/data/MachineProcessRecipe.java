@@ -7,7 +7,7 @@ import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
-import com.ticticboooom.mods.mm.ports.state.IPortState;
+import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
@@ -30,12 +30,12 @@ import java.util.List;
 public class MachineProcessRecipe implements IRecipe<IInventory> {
 
 
-    private final List<IPortState> inputs;
-    private final List<IPortState> outputs;
+    private final List<PortState> inputs;
+    private final List<PortState> outputs;
     private int ticks;
     private String structureId;
 
-    public MachineProcessRecipe(List<IPortState> inputs, List<IPortState> outputs, int ticks, String structureId) {
+    public MachineProcessRecipe(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId) {
         this.inputs = inputs;
         this.outputs = outputs;
         this.ticks = ticks;
@@ -47,16 +47,18 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
     }
 
     private boolean canTake(List<IPortStorage> inputPorts) {
-        for (IPortState input : inputs) {
-            if (!input.validateRequirement(inputPorts)) {
-                return false;
+        for (PortState input : inputs) {
+            if (!input.isConsumePerTick()) {
+                if (!input.validateRequirement(inputPorts)) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
     private boolean canPut(List<IPortStorage> outputPorts) {
-        for (IPortState output : outputs) {
+        for (PortState output : outputs) {
             if (!output.validateResult(outputPorts)) {
                 return false;
             }
@@ -73,18 +75,50 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             return update;
         }
 
+
+
         if (update.getTicksTaken() >= ticks) {
-            for (IPortState output : inputs) {
-                output.processRequirement(inputPorts);
+            for (PortState input : inputs) {
+                input.processRequirement(inputPorts);
             }
-            for (IPortState output : outputs) {
+            for (PortState output : outputs) {
                 output.processResult(outputPorts);
             }
             update.setMsg("");
             update.setTicksTaken(0);
             return update;
         }
-        update.setTicksTaken(update.getTicksTaken() + 1);
+
+        boolean canTick = true;
+
+        for (PortState input : inputs) {
+            if (input.isConsumePerTick()) {
+                if (!input.validateRequirement(inputPorts)) {
+                    canTick = false;
+                }
+            }
+        }
+        for (PortState output : outputs) {
+            if (output.isConsumePerTick()) {
+                if (!output.validateResult(outputPorts)){
+                    canTick = false;
+                }
+            }
+        }
+
+        if (canTick) {
+            for (PortState input : inputs) {
+                if (input.isConsumePerTick()) {
+                    input.processRequirement(inputPorts);
+                }
+            }
+            for (PortState input : outputs) {
+                if (input.isConsumePerTick()) {
+                    input.processRequirement(outputPorts);
+                }
+            }
+            update.setTicksTaken(update.getTicksTaken() + 1);
+        }
         update.setMsg((int)(((float)update.getTicksTaken() /(float)ticks) * 100) + "%");
         return update;
     }
@@ -134,25 +168,30 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             JsonArray inputs = obj.get("inputs").getAsJsonArray();
             JsonArray outputs = obj.get("outputs").getAsJsonArray();
 
-            List<IPortState> inputStates = getStates(inputs);
-            List<IPortState> outputStates = getStates(outputs);
+            List<PortState> inputStates = getStates(inputs);
+            List<PortState> outputStates = getStates(outputs);
 
             return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId);
         }
 
         @SneakyThrows
-        private List<IPortState> getStates(JsonArray io) {
-            List<IPortState> ioStates = new ArrayList<>();
+        private List<PortState> getStates(JsonArray io) {
+            List<PortState> ioStates = new ArrayList<>();
             for (JsonElement elem : io) {
                 JsonObject out = elem.getAsJsonObject();
                 String type = out.get("type").getAsString();
+                boolean perTick = false;
+                if (out.has("consumePerTick")) {
+                    perTick = out.get("consumePerTick").getAsBoolean();
+                }
                 ResourceLocation typeRl = RLUtils.toRL(type);
                 if (!MMPorts.PORTS.containsKey(typeRl)) {
                     throw new Exception(type + " is not a valid input type");
                 }
 
                 MasterfulPortType value = MMPorts.PORTS.get(typeRl);
-                IPortState data = value.getParser().createState(out.get("data").getAsJsonObject());
+                PortState data = value.getParser().createState(out.get("data").getAsJsonObject());
+                data.setConsumePerTick(perTick);
                 ioStates.add(data);
             }
             return ioStates;
@@ -166,17 +205,18 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             int outputCount = buf.readInt();
             int ticks = buf.readInt();
             String structureId = buf.readUtf();
-            List<IPortState> inputs = getStates(buf, inputCount);
-            List<IPortState> outputs = getStates(buf, outputCount);
+            List<PortState> inputs = getStates(buf, inputCount);
+            List<PortState> outputs = getStates(buf, outputCount);
             return new MachineProcessRecipe(inputs, outputs, ticks, structureId);
         }
 
-        private List<IPortState> getStates(PacketBuffer buf, int count) {
-            List<IPortState> result = new ArrayList<>();
+        private List<PortState> getStates(PacketBuffer buf, int count) {
+            List<PortState> result = new ArrayList<>();
             for (int i = 0; i < count; i++) {
                 String inpType = buf.readUtf();
+                boolean perTick = buf.readBoolean();
                 MasterfulPortType value = MMPorts.PORTS.get(RLUtils.toRL(inpType));
-                IPortState state = value.getParser().createState(buf);
+                PortState state = value.getParser().createState(buf);
                 result.add(state);
             }
             return result;
@@ -193,10 +233,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             writeStates(buf, recipe.outputs);
         }
 
-        private void writeStates(PacketBuffer buf, List<IPortState> states) {
-            for (IPortState state : states) {
+        private void writeStates(PacketBuffer buf, List<PortState> states) {
+            for (PortState state : states) {
                 MasterfulPortType value = MMPorts.PORTS.get(state.getName());
                 buf.writeUtf(value.getRegistryName().toString());
+                buf.writeBoolean(state.isConsumePerTick());
                 value.getParser().write(buf, state);
             }
         }

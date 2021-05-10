@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 
-public class EnergyPortState implements IPortState {
+public class EnergyPortState extends PortState {
 
 public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -> x.group(
                 Codec.INT.fieldOf("amount").forGetter(z -> z.amount)
@@ -30,7 +30,7 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
         for (IPortStorage inv : storage) {
             if (inv instanceof EnergyPortStorage) {
                 EnergyPortStorage energyInv = (EnergyPortStorage) inv;
-                current = energyInv.getInv().extractEnergy(current, false);
+                current -= energyInv.getInv().extractEnergy(current, false);
                 if (current <= 0) {
                     return;
                 }
@@ -44,7 +44,7 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
         for (IPortStorage inv : storage) {
             if (inv instanceof EnergyPortStorage) {
                 EnergyPortStorage energyInv = (EnergyPortStorage) inv;
-                current = energyInv.getInv().extractEnergy(current, true);
+                current -= energyInv.getInv().extractEnergy(current, true);
                 if (current <= 0) {
                     return true;
                 }
@@ -59,7 +59,7 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
         for (IPortStorage inv : storage) {
             if (inv instanceof EnergyPortStorage) {
                 EnergyPortStorage energyInv = (EnergyPortStorage) inv;
-                current = energyInv.getInv().receiveEnergy(current, false);
+                current -= energyInv.getInv().receiveEnergy(current, false);
                 if (current <= 0) {
                     return;
                 }
@@ -73,7 +73,7 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
         for (IPortStorage inv : storage) {
             if (inv instanceof EnergyPortStorage) {
                 EnergyPortStorage energyInv = (EnergyPortStorage) inv;
-                current = energyInv.getInv().receiveEnergy(current, true);
+                current -= energyInv.getInv().receiveEnergy(current, true);
                 if (current <= 0) {
                     return true;
                 }

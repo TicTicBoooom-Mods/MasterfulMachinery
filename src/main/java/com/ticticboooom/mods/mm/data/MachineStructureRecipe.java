@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MachineStructureRecipe implements IRecipe<IInventory> {
@@ -41,10 +42,10 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     @Getter
     private List<List<MachineStructureRecipeKeyModel>> models;
     @Getter
-    private final String controllerId;
+    private final List<String> controllerId;
     private String id;
 
-    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, String controllerId, String id)  {
+    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id)  {
         List<MachineStructureRecipeKeyModel> rotated = new ArrayList<>();
         List<MachineStructureRecipeKeyModel> rotated1 = new ArrayList<>();
         List<MachineStructureRecipeKeyModel> rotated2 = new ArrayList<>();
@@ -85,7 +86,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     }
 
     public int matches(BlockPos controllerPos, World world, String controllerId) {
-        if (!this.controllerId.equals(controllerId)) {
+        if (!this.controllerId.contains(controllerId)) {
             return -1;
         }
 
@@ -192,17 +193,25 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
         @Override
         public MachineStructureRecipe fromJson(ResourceLocation rl, JsonObject obj) {
-            String controllerId = obj.get("controllerId").getAsString();
+            JsonElement controllerIdJson = obj.get("controllerId");
+            List<String> ids = new ArrayList<>();
+            if (controllerIdJson.isJsonPrimitive()){
+                ids.add(controllerIdJson.getAsString());
+            } else {
+                for (JsonElement jsonElement : controllerIdJson.getAsJsonArray()) {
+                    ids.add(jsonElement.getAsString());
+                }
+            }
             String id = obj.get("id").getAsString();
             DataResult<Pair<List<MachineStructureRecipeKeyModel>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(MachineStructureRecipeKeyModel.CODEC)).apply(obj.getAsJsonArray("blocks"));
             List<MachineStructureRecipeKeyModel> first = apply.result().get().getFirst();
-            return new MachineStructureRecipe(first, controllerId, id);
+            return new MachineStructureRecipe(first, ids, id);
         }
 
         @Nullable
         @Override
         public MachineStructureRecipe fromNetwork(ResourceLocation rl, PacketBuffer buf) {
-            String controllerId = buf.readUtf();
+            List<String> controllerId = Arrays.asList(buf.readUtf().split(","));
             String id = buf.readUtf();
             List<MachineStructureRecipeKeyModel> models = null;
             try {
@@ -215,7 +224,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
         @Override
         public void toNetwork(PacketBuffer buf, MachineStructureRecipe recipe) {
-            buf.writeUtf(recipe.controllerId);
+            buf.writeUtf(String.join(",", recipe.controllerId));
             buf.writeUtf(recipe.id);
             try {
                 buf.writeWithCodec(Codec.list(MachineStructureRecipeKeyModel.CODEC), recipe.models.get(0));

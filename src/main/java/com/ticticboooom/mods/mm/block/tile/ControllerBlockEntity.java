@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControllerBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class ControllerBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider {
 
 
     private RegistryObject<ContainerType<ControllerBlockContainer>> container;
@@ -83,7 +83,7 @@ public class ControllerBlockEntity extends TileEntity implements ITickableTileEn
         for (MachineProcessRecipe recipe : processRecipes) {
             if (recipe.matches(inputPorts, structure.getStructureId())) {
                 this.update = recipe.process(inputPorts, outputPorts, this.update);
-                PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(worldPosition, save(new CompoundNBT())));
+                update();
                 return;
             } else {
                 this.update.setTicksTaken(0);

@@ -25,7 +25,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class MachinePortBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider {
 
     private ContainerType<?> container;
     @Getter
@@ -75,6 +75,6 @@ public class MachinePortBlockEntity extends TileEntity implements ITickableTileE
 
     @Override
     public void tick() {
-        PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(worldPosition, save(new CompoundNBT())));
+        update();
     }
 }

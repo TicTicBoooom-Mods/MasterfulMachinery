@@ -12,7 +12,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import java.util.List;
 
-public class FluidPortState implements IPortState{
+public class FluidPortState extends PortState {
 
     public static final Codec<FluidPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("amount").forGetter(z -> z.amount),

@@ -8,7 +8,6 @@ import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.MekSlurryPortStorage;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.List;
 import java.util.Objects;
 
-public class MekSlurryPortState implements IPortState {
+public class MekSlurryPortState extends PortState {
 
     public static final Codec<MekSlurryPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
             Codec.STRING.fieldOf("slurry").forGetter(z -> z.slurry),

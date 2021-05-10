@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.ports.state;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
@@ -17,7 +16,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemPortState implements IPortState {
+public class ItemPortState extends PortState {
 
     public static final Codec<ItemPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("count").forGetter(z -> z.count),

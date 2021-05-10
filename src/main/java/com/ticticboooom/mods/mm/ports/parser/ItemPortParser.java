@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import com.ticticboooom.mods.mm.ports.state.IPortState;
+import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.state.ItemPortState;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
@@ -26,19 +26,19 @@ public class ItemPortParser implements IPortParser {
 
     @SneakyThrows
     @Override
-    public void write(PacketBuffer buf, IPortState state) {
+    public void write(PacketBuffer buf, PortState state) {
         buf.writeWithCodec(ItemPortState.CODEC, ((ItemPortState) state));
     }
 
     @Override
-    public IPortState createState(JsonObject obj) {
+    public PortState createState(JsonObject obj) {
         DataResult<Pair<ItemPortState, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(ItemPortState.CODEC).apply(obj);
         return apply.result().get().getFirst();
     }
 
     @SneakyThrows
     @Override
-    public IPortState createState(PacketBuffer buf) {
+    public PortState createState(PacketBuffer buf) {
         return buf.readWithCodec(ItemPortState.CODEC);
     }
 }

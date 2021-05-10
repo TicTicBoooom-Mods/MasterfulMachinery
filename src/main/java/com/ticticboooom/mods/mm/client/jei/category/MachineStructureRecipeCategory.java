@@ -164,7 +164,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         if (sliceY == 0) {
             ControllerBlock block = null;
             for (RegistryObject<ControllerBlock> reg : MMLoader.BLOCKS) {
-                if (reg.get().getControllerId().equals(recipe.getControllerId())) {
+                if (recipe.getControllerId().contains(reg.get().getControllerId())) {
                     block = reg.get();
                 }
             }

@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.List;
 import java.util.Objects;
 
-public class MekGasPortState implements IPortState {
+public class MekGasPortState extends PortState {
 
     public static final Codec<MekGasPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
             Codec.STRING.fieldOf("gas").forGetter(z -> z.gas),
