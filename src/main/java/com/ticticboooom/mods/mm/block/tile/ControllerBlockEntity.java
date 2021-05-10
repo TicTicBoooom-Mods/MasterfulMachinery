@@ -94,7 +94,7 @@ public class ControllerBlockEntity extends TileEntity implements ITickableTileEn
 
     @Override
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("container.masterfulmachinery.controller.name");
+        return new TranslationTextComponent("container.masterfulmachinery." + this.controllerId + "_controller.name");
     }
 
     @Nullable

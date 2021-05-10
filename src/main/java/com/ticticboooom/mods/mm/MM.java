@@ -13,6 +13,7 @@ import com.ticticboooom.mods.mm.datagen.MemoryDataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
 import com.ticticboooom.mods.mm.datagen.gen.MMBlockStateProvider;
 import com.ticticboooom.mods.mm.datagen.gen.MMItemModelProvider;
+import com.ticticboooom.mods.mm.datagen.gen.MMLangProvider;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
@@ -74,6 +75,7 @@ public class MM {
 
         generator.addProvider(new MMBlockStateProvider(generator, existingFileHelper));
         generator.addProvider(new MMItemModelProvider(generator, existingFileHelper));
+        generator.addProvider(new MMLangProvider(generator));
     }
 
     public static void generate() {

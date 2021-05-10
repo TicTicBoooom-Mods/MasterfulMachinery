@@ -1,12 +1,12 @@
 package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
+import lombok.Getter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -29,12 +29,18 @@ import javax.annotation.Nullable;
 public class ControllerBlock extends DirectionalBlock {
 
     private RegistryObject<TileEntityType<?>> type;
+    @Getter
+    private String controllerName;
+    @Getter
+    private String controllerId;
 
-    public ControllerBlock(RegistryObject<TileEntityType<?>> type) {
+    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id) {
         super(AbstractBlock.Properties.of(Material.METAL)
                 .harvestLevel(1)
                 .harvestTool(ToolType.PICKAXE));
         this.type = type;
+        this.controllerName = name;
+        this.controllerId = id;
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
     }
 

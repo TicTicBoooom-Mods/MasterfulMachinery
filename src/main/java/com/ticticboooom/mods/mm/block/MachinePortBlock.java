@@ -1,20 +1,15 @@
 package com.ticticboooom.mods.mm.block;
 
-import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
-import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
-import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
+import lombok.Getter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -31,10 +26,16 @@ import javax.annotation.Nullable;
 
 public class MachinePortBlock extends Block {
     private RegistryObject<TileEntityType<?>> type;
+    @Getter
+    private String langName;
+    @Getter
+    private String controllerId;
 
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type) {
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId) {
         super(AbstractBlock.Properties.of(Material.METAL));
         this.type = type;
+        this.langName = name;
+        this.controllerId = controllerId;
     }
 
     @Override
