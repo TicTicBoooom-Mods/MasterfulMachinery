@@ -2,10 +2,7 @@ package com.ticticboooom.mods.mm.registration;
 
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
-import com.ticticboooom.mods.mm.ports.parser.EnergyPortParser;
-import com.ticticboooom.mods.mm.ports.parser.FluidPortParser;
-import com.ticticboooom.mods.mm.ports.parser.ItemPortParser;
-import com.ticticboooom.mods.mm.ports.parser.MekGasPortParser;
+import com.ticticboooom.mods.mm.ports.parser.*;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -19,5 +16,6 @@ public class MMPorts {
         PORTS.put(new ResourceLocation(MM.ID, "fluids"), new MasterfulPortType(new ResourceLocation(MM.ID, "fluids"), new FluidPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "energy"),new MasterfulPortType(new ResourceLocation(MM.ID, "energy"), new EnergyPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "mekanism_gas"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_gas"), new MekGasPortParser()));
+        PORTS.put(new ResourceLocation(MM.ID, "mekanism_slurry"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_slurry"), new MekSlurryPortParser()));
     }
 }
