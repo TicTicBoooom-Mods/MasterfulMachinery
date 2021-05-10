@@ -38,7 +38,9 @@ import java.util.List;
 
 public class MachineStructureRecipe implements IRecipe<IInventory> {
     private final ResourceLocation rl = new ResourceLocation(MM.ID, "machine_structure");
+    @Getter
     private List<List<MachineStructureRecipeKeyModel>> models;
+    @Getter
     private final String controllerId;
     private String id;
 

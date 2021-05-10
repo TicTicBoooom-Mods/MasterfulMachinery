@@ -17,6 +17,7 @@ import com.ticticboooom.mods.mm.datagen.gen.MMLangProvider;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
+import com.ticticboooom.mods.mm.registration.MMSetup;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -57,10 +58,10 @@ public class MM {
         PacketHandler.init();
         registerDataGen();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        MMLoader.BLOCKS_REG.register(bus);
-        MMLoader.ITEMS_REG.register(bus);
-        MMLoader.TILES_REG.register(bus);
-        MMLoader.CONTAINER_REG.register(bus);
+        MMSetup.BLOCKS_REG.register(bus);
+        MMSetup.ITEMS_REG.register(bus);
+        MMSetup.TILES_REG.register(bus);
+        MMSetup.CONTAINER_REG.register(bus);
         RecipeTypes.RECIPE_SERIALIZERS.register(bus);
         bus.addListener(this::clientEvents);
         if (FMLEnvironment.dist == Dist.CLIENT) {

@@ -4,6 +4,7 @@ import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.registration.MMLoader;
+import com.ticticboooom.mods.mm.registration.MMSetup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -29,5 +30,7 @@ public class MMItemModelProvider extends ItemModelProvider {
         for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {
             this.getBuilder(port.getId().toString()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(port.getId().getNamespace(), "block/" + port.getId().getPath())));
         }
+
+        this.getBuilder(MMSetup.BLUEPRINT.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/blueprint");
     }
 }
