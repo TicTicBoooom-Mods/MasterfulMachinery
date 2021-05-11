@@ -31,6 +31,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -74,9 +75,11 @@ public class MM {
         generator = MemoryDataGeneratorFactory.createMemoryDataGenerator();
         ExistingFileHelper existingFileHelper = new ExistingFileHelper(ImmutableList.of(), ImmutableSet.of(), false);
 
-        generator.addProvider(new MMBlockStateProvider(generator, existingFileHelper));
-        generator.addProvider(new MMItemModelProvider(generator, existingFileHelper));
-        generator.addProvider(new MMLangProvider(generator));
+        if (FMLEnvironment.dist != Dist.DEDICATED_SERVER){
+            generator.addProvider(new MMBlockStateProvider(generator, existingFileHelper));
+            generator.addProvider(new MMItemModelProvider(generator, existingFileHelper));
+            generator.addProvider(new MMLangProvider(generator));
+        }
     }
 
     public static void generate() {

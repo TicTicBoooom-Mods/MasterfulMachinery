@@ -25,7 +25,7 @@ public class MekSlurryPortParser implements IPortParser {
     @SneakyThrows
     @Override
     public PortState createState(PacketBuffer buf) {
-        return buf.readWithCodec(MekGasPortState.CODEC);
+        return buf.readWithCodec(MekSlurryPortState.CODEC);
     }
 
     @Override

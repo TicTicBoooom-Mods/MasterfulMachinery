@@ -150,7 +150,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return new Serializer();
+        return RecipeTypes.PROCESS.get();
     }
 
     @Override
@@ -217,6 +217,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 boolean perTick = buf.readBoolean();
                 MasterfulPortType value = MMPorts.PORTS.get(RLUtils.toRL(inpType));
                 PortState state = value.getParser().createState(buf);
+                state.setConsumePerTick(perTick);
                 result.add(state);
             }
             return result;

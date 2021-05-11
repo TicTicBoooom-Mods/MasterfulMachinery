@@ -46,6 +46,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     @Override
     public void tick() {
+        update.setMsg("Failed to construct \nthe machine");
         List<MachineStructureRecipe> recipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_STRUCTURE);
         for (MachineStructureRecipe recipe : recipes) {
             int index = recipe.matches(this.worldPosition, level, controllerId);
@@ -55,8 +56,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
                 return;
             }
         }
-        update.setMsg("Failed to construct \nthe machine");
-}
+    }
 
     private void onStructureFound(MachineStructureRecipe structure, int index) {
         ArrayList<BlockPos> ports = structure.getPorts(worldPosition, level, index);

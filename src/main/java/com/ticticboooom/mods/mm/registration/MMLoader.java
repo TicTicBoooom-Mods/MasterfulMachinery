@@ -41,7 +41,7 @@ public class MMLoader {
     public static final ItemGroup MASTERFUL_ITEM_GROUP = new ItemGroup(MM.ID) {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(Items.PAPER);
+            return new ItemStack(MMSetup.BLUEPRINT.get());
         }
     };
 

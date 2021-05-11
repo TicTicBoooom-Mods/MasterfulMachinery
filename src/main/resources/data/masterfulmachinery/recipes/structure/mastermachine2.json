@@ -1,0 +1,23 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "controllerId": "mastermachine",
+  "id": "mastermachine2_structure",
+  "blocks": [
+    {
+      "pos":{
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "block": "minecraft:cobblestone"
+    },
+    {
+      "pos":{
+        "x": 0,
+        "y": -2,
+        "z": 0
+      },
+      "block": "minecraft:cobblestone"
+    }
+  ]
+}

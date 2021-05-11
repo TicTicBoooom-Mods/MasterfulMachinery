@@ -47,7 +47,7 @@ public class MMPackFinder implements IPackFinder {
 		Path rootPath = MemoryDataGeneratorFactory.ROOT_PATH;
 
 		ResourcePackInfo pack = ResourcePackInfo.create("mm_" + type.getSuffix(), true,
-				() -> new InMemoryPack(rootPath), infoFactory, ResourcePackInfo.Priority.BOTTOM, IPackNameDecorator.DEFAULT);
+				() -> new InMemoryPack(rootPath), infoFactory, ResourcePackInfo.Priority.TOP, IPackNameDecorator.DEFAULT);
 		if (pack != null) {
 			infoConsumer.accept(pack);
 		}

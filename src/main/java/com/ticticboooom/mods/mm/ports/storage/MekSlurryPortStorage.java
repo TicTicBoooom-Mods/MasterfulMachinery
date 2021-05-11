@@ -60,7 +60,9 @@ public class MekSlurryPortStorage implements IPortStorage {
 
     @Override
     public void load(CompoundNBT nbt) {
-        inv.setStack(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(nbt.getString("slurry")))), nbt.getLong("amount")));
+        if (nbt.contains("slurry")){
+            inv.setStack(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(nbt.getString("slurry")))), nbt.getLong("amount")));
+        }
     }
 
     @Override

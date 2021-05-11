@@ -14,7 +14,7 @@ public class MachineStructureRecipeKeyModel {
             MachineStructureBlockPos.CODEC.fieldOf("pos").forGetter(z -> z.pos),
             Codec.STRING.optionalFieldOf("tag").forGetter(z -> Optional.of(z.tag)),
             Codec.STRING.optionalFieldOf("block").forGetter(z -> Optional.of(z.block)),
-            Codec.STRING.optionalFieldOf("tag").forGetter(z -> Optional.of(z.nbt))
+            Codec.STRING.optionalFieldOf("nbt").forGetter(z -> Optional.of(z.nbt))
     ).apply(x, (w0, w, y, z) -> new MachineStructureRecipeKeyModel(w0, w.orElse(""), y.orElse(""), z.orElse(""))));
     private  MachineStructureBlockPos pos;
     private final String tag;

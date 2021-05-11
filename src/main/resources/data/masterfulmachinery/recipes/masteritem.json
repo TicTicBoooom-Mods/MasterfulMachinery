@@ -1,0 +1,37 @@
+{
+  "type": "masterfulmachinery:machine_process",
+  "structureId": "mastermachine_structure",
+  "controllerId": "mastermachine",
+  "ticks": 100,
+  "inputs": [
+    {
+      "type": "masterfulmachinery:items",
+      "data": {
+        "item": "minecraft:wool",
+        "count": 2
+      }
+    },
+    {
+      "type": "masterfulmachinery:energy",
+      "data": {
+        "amount": 69420
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "type": "masterfulmachinery:items",
+      "data": {
+        "item": "minecraft:nether_star",
+        "count": 1
+      }
+    },
+    {
+      "type": "masterfulmachinery:mekanism_slurry",
+      "data": {
+        "slurry": "mekanism:clean_gold",
+        "amount": 42069
+      }
+    }
+  ]
+}

@@ -10,9 +10,11 @@ import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
+import com.ticticboooom.mods.mm.data.model.structure.MachineStructureObject;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.IInventory;
@@ -38,14 +40,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MachineStructureRecipe implements IRecipe<IInventory> {
-    private final ResourceLocation rl = new ResourceLocation(MM.ID, "machine_structure");
+    private final ResourceLocation rl;
     @Getter
     private List<List<MachineStructureRecipeKeyModel>> models;
     @Getter
     private final List<String> controllerId;
     private String id;
 
-    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id)  {
+    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl)  {
+        this.rl = rl;
         List<MachineStructureRecipeKeyModel> rotated = new ArrayList<>();
         List<MachineStructureRecipeKeyModel> rotated1 = new ArrayList<>();
         List<MachineStructureRecipeKeyModel> rotated2 = new ArrayList<>();
@@ -175,12 +178,12 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
     @Override
     public ResourceLocation getId() {
-        return new ResourceLocation(MM.ID, "machine_structure");
+        return rl;
     }
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
-        return new Serializer();
+        return RecipeTypes.STRUCTURE.get();
     }
 
     @Override
@@ -205,30 +208,39 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             String id = obj.get("id").getAsString();
             DataResult<Pair<List<MachineStructureRecipeKeyModel>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(MachineStructureRecipeKeyModel.CODEC)).apply(obj.getAsJsonArray("blocks"));
             List<MachineStructureRecipeKeyModel> first = apply.result().get().getFirst();
-            return new MachineStructureRecipe(first, ids, id);
+            return new MachineStructureRecipe(first, ids, id, rl);
         }
 
+        @SneakyThrows
         @Nullable
         @Override
         public MachineStructureRecipe fromNetwork(ResourceLocation rl, PacketBuffer buf) {
-            List<String> controllerId = Arrays.asList(buf.readUtf().split(","));
+            List<String> controllerId = new ArrayList<>();
+            int idCount = buf.readInt();
+            for (int i = 0; i < idCount; i++) {
+                controllerId.add(buf.readUtf());
+            }
             String id = buf.readUtf();
-            List<MachineStructureRecipeKeyModel> models = null;
             try {
-                models = buf.readWithCodec(Codec.list(MachineStructureRecipeKeyModel.CODEC));
-            } catch (IOException e) {
+                MachineStructureObject machineStructureObject = buf.readWithCodec(MachineStructureObject.CODEC);
+                List<MachineStructureRecipeKeyModel> models = machineStructureObject.getInner();
+                return new MachineStructureRecipe(models, controllerId, id, rl);
+            } catch (Exception  e) {
                 e.printStackTrace();
             }
-            return new MachineStructureRecipe(models, controllerId, id);
+            return null;
         }
 
         @Override
         public void toNetwork(PacketBuffer buf, MachineStructureRecipe recipe) {
-            buf.writeUtf(String.join(",", recipe.controllerId));
+            buf.writeInt(recipe.controllerId.size());
+            for (String s : recipe.controllerId) {
+                buf.writeUtf(s);
+            }
             buf.writeUtf(recipe.id);
             try {
-                buf.writeWithCodec(Codec.list(MachineStructureRecipeKeyModel.CODEC), recipe.models.get(0));
-            } catch (IOException e) {
+                buf.writeWithCodec(MachineStructureObject.CODEC, new MachineStructureObject(recipe.getModels().get(0)));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
