@@ -147,7 +147,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 continue;
             }
 
-            BlockPos bp = new BlockPos(part.getPos().getX(), part.getPos().getY(), part.getPos().getZ());
+            BlockPos bp = new BlockPos(-part.getPos().getX(), part.getPos().getY(), -part.getPos().getZ());
 
             if (!part.getBlock().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getBlock());
@@ -168,19 +168,20 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                     block = reg.get();
                 }
             }
-            BlockState defaultState = block.defaultBlockState().setValue(DirectionalBlock.FACING, Direction.NORTH);
-            new GuiBlockRenderBuilder(defaultState).at(new BlockPos(0, 0, 0))
-                    .withPrePosition(new Vector3f(6.5f, -5, 10))
-                    .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                    .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                    .withScale(new Vector3f(12f, -12f, 12f))
-                    .finalize(matrixStack);
+            if (block != null) {
+                BlockState defaultState = block.defaultBlockState().setValue(DirectionalBlock.FACING, Direction.NORTH);
+                new GuiBlockRenderBuilder(defaultState).at(new BlockPos(0, 0, 0))
+                        .withPrePosition(new Vector3f(6.5f, -5, 10))
+                        .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                        .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                        .withScale(new Vector3f(12f, -12f, 12f))
+                        .finalize(matrixStack);
+            }
         }
 
         this.recipe = recipe;
         xLastMousePosition = mouseX;
         yLastMousePosition = mouseY;
-
         getButton().draw(matrixStack, 144, 125);
     }
 

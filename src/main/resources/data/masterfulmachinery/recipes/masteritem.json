@@ -7,7 +7,7 @@
     {
       "type": "masterfulmachinery:items",
       "data": {
-        "item": "minecraft:wool",
+        "item": "minecraft:white_wool",
         "count": 2
       }
     },

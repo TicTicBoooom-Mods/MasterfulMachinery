@@ -39,6 +39,9 @@ public class MekSlurryPortState extends PortState {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
                 SlurryStack extract = gasStorage.getInv().extract(current, Action.EXECUTE, AutomationType.EXTERNAL);
                 current -= extract.getAmount();
+                if (current <= 0){
+                    return;
+                }
             }
         }
     }
@@ -61,25 +64,28 @@ public class MekSlurryPortState extends PortState {
 
     @Override
     public void processResult(List<IPortStorage> storage) {
-        long current = 0;
+        long current = amount;
         for (IPortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
                 SlurryStack extract = gasStorage.getInv().insertChemical(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry))), current), Action.EXECUTE);
-                current += extract.getAmount();
+                current -= extract.getAmount();
+                if (current <= 0) {
+                    return;
+                }
             }
         }
     }
 
     @Override
     public boolean validateResult(List<IPortStorage> storage) {
-        long current = 0;
+        long current = amount;
         for (IPortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
-                SlurryStack extract = gasStorage.getInv().insertChemical(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry))), current), Action.EXECUTE);
-                current += extract.getAmount();
-                if (current >= amount) {
+                SlurryStack extract = gasStorage.getInv().insertChemical(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry))), current), Action.SIMULATE);
+                current -= extract.getAmount();
+                if (current <= 0) {
                     return true;
                 }
             }

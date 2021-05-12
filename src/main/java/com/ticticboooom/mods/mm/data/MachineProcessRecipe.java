@@ -25,8 +25,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: processing io
-
 public class MachineProcessRecipe implements IRecipe<IInventory> {
 
 
@@ -34,12 +32,14 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
     private final List<PortState> outputs;
     private int ticks;
     private String structureId;
+    private ResourceLocation rl;
 
-    public MachineProcessRecipe(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId) {
+    public MachineProcessRecipe(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
         this.inputs = inputs;
         this.outputs = outputs;
         this.ticks = ticks;
         this.structureId = structureId;
+        this.rl = rl;
     }
 
     public boolean matches(List<IPortStorage> inputPorts, String structureId) {
@@ -74,8 +74,6 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             update.setMsg("Not enough space \nin output ports");
             return update;
         }
-
-
 
         if (update.getTicksTaken() >= ticks) {
             for (PortState input : inputs) {
@@ -114,7 +112,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
             for (PortState input : outputs) {
                 if (input.isConsumePerTick()) {
-                    input.processRequirement(outputPorts);
+                    input.processResult(outputPorts);
                 }
             }
             update.setTicksTaken(update.getTicksTaken() + 1);
@@ -145,7 +143,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     @Override
     public ResourceLocation getId() {
-        return new ResourceLocation(MM.ID, "machine_process");
+        return rl;
     }
 
     @Override
@@ -171,7 +169,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             List<PortState> inputStates = getStates(inputs);
             List<PortState> outputStates = getStates(outputs);
 
-            return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId);
+            return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId, rl);
         }
 
         @SneakyThrows
@@ -207,7 +205,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             String structureId = buf.readUtf();
             List<PortState> inputs = getStates(buf, inputCount);
             List<PortState> outputs = getStates(buf, outputCount);
-            return new MachineProcessRecipe(inputs, outputs, ticks, structureId);
+            return new MachineProcessRecipe(inputs, outputs, ticks, structureId, rl);
         }
 
         private List<PortState> getStates(PacketBuffer buf, int count) {

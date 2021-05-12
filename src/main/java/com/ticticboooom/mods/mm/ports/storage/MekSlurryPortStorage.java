@@ -29,6 +29,7 @@ public class MekSlurryPortStorage implements IPortStorage {
     public static final Codec<MekSlurryPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.LONG.fieldOf("capacity").forGetter(z -> z.capacity)
     ).apply(x, MekSlurryPortStorage::new));
+
     @Getter
     private final PortMekSlurryInventory inv;
     private long capacity;

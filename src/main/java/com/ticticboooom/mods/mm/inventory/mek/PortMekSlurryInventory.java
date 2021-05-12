@@ -56,7 +56,7 @@ public class PortMekSlurryInventory implements ISlurryHandler, ISlurryTank {
             if (this.stack.getAmount() + stack.getAmount() > capacity) {
                 return new SlurryStack(stack.getType(), this.stack.getAmount() + stack.getAmount() - capacity);
             } else {
-                return SlurryStack.EMPTY;
+                return stack;
             }
         }
 
@@ -74,7 +74,7 @@ public class PortMekSlurryInventory implements ISlurryHandler, ISlurryTank {
             } else {
                 this.stack.setAmount(this.stack.getAmount() + stack.getAmount());
             }
-            return SlurryStack.EMPTY;
+            return stack;
         }
     }
 
