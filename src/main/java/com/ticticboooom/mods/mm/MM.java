@@ -105,6 +105,7 @@ public class MM {
         for (RegistryObject<ContainerType<?>> container : MMLoader.PORT_CONTAINERS) {
             ScreenManager.register((ContainerType<PortBlockContainer>) container.get(), PortBlockContainerScreen::new);
         }
+
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
             RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());
         }

@@ -41,19 +41,20 @@ public class PortFluidInventory implements IFluidHandler {
         }
         if (action == FluidAction.SIMULATE) {
             if (resource.getAmount() + stack.getAmount() > capacity) {
-                return capacity - resource.getAmount();
+                return resource.getAmount() - (stack.getAmount()  + resource.getAmount() - capacity);
             } else {
                 return resource.getAmount();
             }
         }
 
         if (resource.getAmount() + stack.getAmount() > capacity) {
+            int preAmount = stack.getAmount();
             if (stack.isEmpty()) {
                 stack = new FluidStack(resource.getFluid(), capacity);
             } else {
                 stack.setAmount(capacity);
             }
-            return capacity - resource.getAmount();
+            return resource.getAmount() - (preAmount  + resource.getAmount() - capacity);
         } else {
             if (stack.isEmpty()) {
                 stack = new FluidStack(resource.getFluid(), resource.getAmount());
@@ -89,8 +90,9 @@ public class PortFluidInventory implements IFluidHandler {
         }
 
         if (stack.getAmount() - amount < 0) {
+            FluidStack preStack = stack.copy();
             stack.setAmount(0);
-            return stack.copy();
+            return preStack;
         } else {
             stack.setAmount(stack.getAmount() - amount);
             return new FluidStack(stack.getFluid(), amount);

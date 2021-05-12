@@ -3,12 +3,14 @@ package com.ticticboooom.mods.mm.ports.state;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.storage.FluidPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class FluidPortState extends PortState {
                     continue;
                 }
 
-                current = fInv.getInv().drain(new FluidStack(fluidInTank.getFluid(), current), IFluidHandler.FluidAction.EXECUTE).getAmount();
+                current -= fInv.getInv().drain(new FluidStack(fluidInTank.getFluid(), current), IFluidHandler.FluidAction.EXECUTE).getAmount();
                 if (current <= 0) {
                     return;
                 }
@@ -60,7 +62,7 @@ public class FluidPortState extends PortState {
                     continue;
                 }
 
-                current = fInv.getInv().drain(new FluidStack(fluidInTank.getFluid(), current), IFluidHandler.FluidAction.SIMULATE).getAmount();
+                current -= fInv.getInv().drain(new FluidStack(fluidInTank.getFluid(), current), IFluidHandler.FluidAction.SIMULATE).getAmount();
                 if (current <= 0) {
                     return true;
                 }
@@ -76,11 +78,11 @@ public class FluidPortState extends PortState {
             if (inv instanceof FluidPortStorage) {
                 FluidPortStorage fInv = (FluidPortStorage) inv;
                 FluidStack fluidInTank = fInv.getInv().getFluidInTank(0);
-                if (!fluidInTank.getFluid().getRegistryName().toString().equals(fluid)) {
+                if (!fluidInTank.isEmpty() && !fluidInTank.getFluid().getRegistryName().toString().equals(fluid)) {
                     continue;
                 }
 
-                current = fInv.getInv().fill(new FluidStack(fluidInTank.getFluid(), current), IFluidHandler.FluidAction.EXECUTE);
+                current -= fInv.getInv().fill(new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), current), IFluidHandler.FluidAction.EXECUTE);
                 if (current <= 0) {
                     return;
                 }
@@ -95,11 +97,11 @@ public class FluidPortState extends PortState {
             if (inv instanceof FluidPortStorage) {
                 FluidPortStorage fInv = (FluidPortStorage) inv;
                 FluidStack fluidInTank = fInv.getInv().getFluidInTank(0);
-                if (!fluidInTank.getFluid().getRegistryName().toString().equals(fluid)) {
+                if (!fluidInTank.isEmpty() && !fluidInTank.getFluid().getRegistryName().toString().equals(fluid)) {
                     continue;
                 }
 
-                current = fInv.getInv().fill(new FluidStack(fluidInTank.getFluid(), current), IFluidHandler.FluidAction.SIMULATE);
+                current -= fInv.getInv().fill(new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), current), IFluidHandler.FluidAction.SIMULATE);
                 if (current <= 0) {
                     return true;
                 }

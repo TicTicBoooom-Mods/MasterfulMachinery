@@ -48,7 +48,7 @@ public class FluidPortStorage implements IPortStorage {
 
     @Override
     public CompoundNBT save(CompoundNBT nbt) {
-        inv.getFluidInTank(0).writeToNBT(nbt);
+        nbt = inv.getFluidInTank(0).writeToNBT(nbt);
         return nbt;
     }
 

@@ -117,7 +117,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
                         .element()
                         .from(0, 0, 0)
                         .to(16, 16, 16)
-                        .cube("#overlay")
+                        .allFaces((dir, uv) -> uv.texture("#overlay"))
                         .end()
                 )
                 .end();

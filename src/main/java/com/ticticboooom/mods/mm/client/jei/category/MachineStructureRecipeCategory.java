@@ -28,6 +28,7 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +184,9 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         xLastMousePosition = mouseX;
         yLastMousePosition = mouseY;
         getButton().draw(matrixStack, 144, 125);
+
+
+
     }
 
     @Override

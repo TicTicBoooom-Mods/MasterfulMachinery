@@ -51,9 +51,9 @@ public class PortMekGasInventory implements IGasHandler, IGasTank {
         }
         if (action.simulate()) {
             if (this.stack.getAmount() + stack.getAmount() > capacity) {
-                return new GasStack(stack.getType(), this.stack.getAmount() + stack.getAmount() - capacity);
+                return new GasStack(stack.getType(), stack.getAmount() - (this.stack.getAmount() + stack.getAmount() - capacity));
             } else {
-                return GasStack.EMPTY;
+                return stack;
             }
         }
 
@@ -71,7 +71,7 @@ public class PortMekGasInventory implements IGasHandler, IGasTank {
             } else {
                 this.stack.setAmount(this.stack.getAmount() + stack.getAmount());
             }
-            return GasStack.EMPTY;
+            return stack;
         }
     }
 
