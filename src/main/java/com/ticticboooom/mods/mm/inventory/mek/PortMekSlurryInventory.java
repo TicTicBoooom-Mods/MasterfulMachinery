@@ -50,7 +50,7 @@ public class PortMekSlurryInventory implements ISlurryHandler, ISlurryTank {
     @Override
     public SlurryStack insertChemical(int i, SlurryStack stack, Action action) {
         if (!isValid(i, stack)) {
-            return stack;
+            return SlurryStack.EMPTY;
         }
         if (action.simulate()) {
             if (this.stack.getAmount() + stack.getAmount() > capacity) {
@@ -82,12 +82,12 @@ public class PortMekSlurryInventory implements ISlurryHandler, ISlurryTank {
     @Override
     public SlurryStack extractChemical(int i, long l, Action action) {
         if (!isValid(i, stack)) {
-            return stack;
+            return SlurryStack.EMPTY;
         }
 
         if (action.simulate()) {
             if (stack.getAmount() - l < 0) {
-                return new SlurryStack(stack.getType(), Math.abs(stack.getAmount() - l));
+                return new SlurryStack(stack.getType(), l - (l + stack.getAmount() - capacity));
             } else {
                 return new SlurryStack(stack.getType(), l);
             }
@@ -96,7 +96,7 @@ public class PortMekSlurryInventory implements ISlurryHandler, ISlurryTank {
         if (stack.getAmount() - l < 0) {
             long preAmount = stack.getAmount();
             this.stack = SlurryStack.EMPTY;
-            return new SlurryStack(stack.getType(), Math.abs(preAmount - l));
+            return new SlurryStack(stack.getType(), l - (l + preAmount - capacity));
         } else {
             stack.setAmount(stack.getAmount() - l);
             return new SlurryStack(stack.getType(), l);

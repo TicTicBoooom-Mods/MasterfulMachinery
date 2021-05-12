@@ -46,6 +46,9 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     @Override
     public void tick() {
+        if (level.isClientSide()){
+            return;
+        }
         update.setMsg("Failed to construct \nthe machine");
         List<MachineStructureRecipe> recipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_STRUCTURE);
         for (MachineStructureRecipe recipe : recipes) {
@@ -87,6 +90,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
                 return;
             } else {
                 this.update.setTicksTaken(0);
+                update();
             }
         }
     }

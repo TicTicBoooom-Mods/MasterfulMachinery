@@ -59,7 +59,9 @@ public class MekGasPortStorage implements IPortStorage {
 
     @Override
     public void load(CompoundNBT nbt) {
-        inv.setStack(new GasStack(Objects.requireNonNull(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(nbt.getString("gas")))), nbt.getLong("amount")));
+        if (nbt.contains("gas")) {
+            inv.setStack(new GasStack(Objects.requireNonNull(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(nbt.getString("gas")))), nbt.getLong("amount")));
+        }
     }
 
     @Override

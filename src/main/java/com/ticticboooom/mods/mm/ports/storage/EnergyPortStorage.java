@@ -50,7 +50,9 @@ public class EnergyPortStorage implements IPortStorage {
 
     @Override
     public void load(CompoundNBT nbt) {
-        inv.setStored(nbt.getInt("stored"));
+        if (nbt.contains("stored")) {
+            inv.setStored(nbt.getInt("stored"));
+        }
     }
 
     @Override

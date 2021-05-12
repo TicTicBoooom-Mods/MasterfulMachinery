@@ -47,8 +47,9 @@ public class PortMekGasInventory implements IGasHandler, IGasTank {
     @Override
     public GasStack insertChemical(int i, GasStack stack, Action action) {
         if (!isValid(i, stack)) {
-            return stack;
+            return GasStack.EMPTY;
         }
+
         if (action.simulate()) {
             if (this.stack.getAmount() + stack.getAmount() > capacity) {
                 return new GasStack(stack.getType(), stack.getAmount() - (this.stack.getAmount() + stack.getAmount() - capacity));
@@ -78,13 +79,9 @@ public class PortMekGasInventory implements IGasHandler, IGasTank {
 
     @Override
     public GasStack extractChemical(int i, long l, Action action) {
-        if (!isValid(i, stack)) {
-            return stack;
-        }
-
         if (action.simulate()) {
             if (stack.getAmount() - l < 0) {
-                return new GasStack(stack.getType(), Math.abs(stack.getAmount() - l));
+                return new GasStack(stack.getType(), l - (l + stack.getAmount()));
             } else {
                 return new GasStack(stack.getType(), l);
             }
@@ -93,7 +90,7 @@ public class PortMekGasInventory implements IGasHandler, IGasTank {
         if (stack.getAmount() - l < 0) {
             long preAmount = stack.getAmount();
             this.stack = GasStack.EMPTY;
-            return new GasStack(stack.getType(), Math.abs(preAmount - l));
+            return new GasStack(stack.getType(),l - (preAmount - l));
         } else {
             stack.setAmount(stack.getAmount() - l);
             return new GasStack(stack.getType(), l);

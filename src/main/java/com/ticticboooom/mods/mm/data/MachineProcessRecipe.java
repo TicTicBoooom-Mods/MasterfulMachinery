@@ -11,6 +11,7 @@ import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -28,9 +29,13 @@ import java.util.List;
 public class MachineProcessRecipe implements IRecipe<IInventory> {
 
 
+    @Getter
     private final List<PortState> inputs;
+    @Getter
     private final List<PortState> outputs;
+    @Getter
     private int ticks;
+    @Getter
     private String structureId;
     private ResourceLocation rl;
 
@@ -48,10 +53,8 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     private boolean canTake(List<IPortStorage> inputPorts) {
         for (PortState input : inputs) {
-            if (!input.isConsumePerTick()) {
-                if (!input.validateRequirement(inputPorts)) {
-                    return false;
-                }
+            if (!input.validateRequirement(inputPorts)) {
+                return false;
             }
         }
         return true;

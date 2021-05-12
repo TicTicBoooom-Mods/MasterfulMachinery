@@ -37,8 +37,10 @@ public class MekSlurryPortState extends PortState {
         for (IPortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
-                SlurryStack extract = gasStorage.getInv().extract(current, Action.EXECUTE, AutomationType.EXTERNAL);
-                current -= extract.getAmount();
+                if (gasStorage.getInv().getStack().getType().getRegistryName().toString().equals(slurry)) {
+                    SlurryStack extract = gasStorage.getInv().extractChemical(0, current, Action.EXECUTE);
+                    current -= extract.getAmount();
+                }
                 if (current <= 0){
                     return;
                 }
@@ -52,8 +54,10 @@ public class MekSlurryPortState extends PortState {
         for (IPortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
-                SlurryStack extract = gasStorage.getInv().extract(current, Action.SIMULATE, AutomationType.EXTERNAL);
-                current -= extract.getAmount();
+                if (gasStorage.getInv().getStack().getType().getRegistryName().toString().equals(slurry)) {
+                    SlurryStack extract = gasStorage.getInv().extractChemical(0, current, Action.SIMULATE);
+                    current -= extract.getAmount();
+                }
                 if (current <= 0) {
                     return true;
                 }

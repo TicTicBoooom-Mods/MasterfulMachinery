@@ -68,7 +68,7 @@ public class FluidPortState extends PortState {
                 }
             }
         }
-        return true;
+        return false;
     }
 
     @Override

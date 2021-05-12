@@ -1,7 +1,9 @@
 package com.ticticboooom.mods.mm.client.jei.category;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
+import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -55,5 +57,12 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, MachineProcessRecipe recipe, IIngredients ingredients) {
 
+    }
+
+    @Override
+    public void draw(MachineProcessRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        for (PortState input : recipe.getInputs()) {
+
+        }
     }
 }
