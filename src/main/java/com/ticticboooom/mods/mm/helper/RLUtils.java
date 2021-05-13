@@ -4,7 +4,10 @@ import net.minecraft.util.ResourceLocation;
 
 public class RLUtils {
     public static ResourceLocation toRL(String str) {
-        String[] split = str.split(":");
-        return new ResourceLocation(split[0], split[1]);
+        return ResourceLocation.tryParse(str);
+    }
+
+    public static boolean isRL(String str) {
+        return ResourceLocation.isValidResourceLocation(str);
     }
 }

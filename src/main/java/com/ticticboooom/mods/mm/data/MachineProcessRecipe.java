@@ -258,5 +258,6 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         public Class<IRecipeSerializer<?>> getRegistryType() {
             return RecipeTypes.PROCESS.get().getRegistryType();
         }
+
     }
 }

@@ -8,10 +8,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureObject;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
+import com.ticticboooom.mods.mm.exception.InvalidStructureDefinitionException;
+import com.ticticboooom.mods.mm.helper.RLUtils;
+import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -32,6 +36,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -194,6 +200,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     public static final class Serializer implements IRecipeSerializer<MachineStructureRecipe> {
 
 
+
         @Override
         public MachineStructureRecipe fromJson(ResourceLocation rl, JsonObject obj) {
             JsonElement controllerIdJson = obj.get("controllerId");
@@ -208,6 +215,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             String id = obj.get("id").getAsString();
             DataResult<Pair<List<MachineStructureRecipeKeyModel>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(MachineStructureRecipeKeyModel.CODEC)).apply(obj.getAsJsonArray("blocks"));
             List<MachineStructureRecipeKeyModel> first = apply.result().get().getFirst();
+            validateStructure(first, ids, id, rl);
             return new MachineStructureRecipe(first, ids, id, rl);
         }
 
@@ -258,6 +266,41 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         @Override
         public Class<IRecipeSerializer<?>> getRegistryType() {
             return RecipeTypes.STRUCTURE.get().getRegistryType();
+        }
+
+        @SneakyThrows
+        private void validateStructure(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl) {
+            for (MachineStructureRecipeKeyModel model : models) {
+                if (!model.getBlock().equals("")) {
+                    if (RLUtils.isRL(model.getBlock())) {
+                        if (!ForgeRegistries.ITEMS.containsKey(RLUtils.toRL(model.getBlock()))) {
+                            throw new InvalidStructureDefinitionException("Block: " + model.getBlock() +  " is not an existing block in the game");
+                        }
+                    } else {
+                        throw new InvalidStructureDefinitionException("Block: " + model.getBlock() +  " is defined but not a valid block id (ResourceLocation)");
+                    }
+                } else if (!model.getTag().equals("")){
+                    if (RLUtils.isRL(model.getTag())) {
+                        if (!BlockTags.getAllTags().getAllTags().containsKey(RLUtils.toRL(model.getTag()))) {
+                            throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() +  " is not an existing block tag in the game");
+                        }
+                    } else {
+                        throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() +  " is defined but not a valid block tag id (ResourceLocation)");
+                    }
+                } else {
+                    throw new InvalidStructureDefinitionException("YUo must define at least 1 'block' or 'tag' per port within the 'data' object");
+                }
+            }
+
+            for (String s : controllerId) {
+                boolean controllerIdFound = false;
+                for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
+                    controllerIdFound = block.get().getControllerId().equals(s) || controllerIdFound;
+                }
+                if (!controllerIdFound){
+                    throw new InvalidStructureDefinitionException("controllerId: " + s + " does not exist");
+                }
+            }
         }
 
     }

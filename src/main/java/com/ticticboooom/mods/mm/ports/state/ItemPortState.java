@@ -9,6 +9,7 @@ import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
 import lombok.Getter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -86,7 +87,8 @@ public class ItemPortState extends PortState {
                             current -= stackInSlot.getCount();
                         }
                     } else if (!tag.equals("")) {
-                        if (ItemTags.getAllTags().getTag(RLUtils.toRL(tag)).contains(stackInSlot.getItem())) {
+                        ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
+                        if (tag != null && tag.contains(stackInSlot.getItem())) {
                             current -= stackInSlot.getCount();
                         }
                     }
