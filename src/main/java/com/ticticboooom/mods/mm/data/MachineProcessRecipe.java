@@ -171,7 +171,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
             List<PortState> inputStates = getStates(inputs);
             List<PortState> outputStates = getStates(outputs);
-
+            validateProcess(inputStates, outputStates, ticks, structureId, rl);
             return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId, rl);
         }
 
@@ -259,5 +259,15 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             return RecipeTypes.PROCESS.get().getRegistryType();
         }
 
+
+        private void validateProcess(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
+            for (PortState input : inputs) {
+                input.validateDefinition();
+            }
+
+            for (PortState output : outputs) {
+                output.validateDefinition();
+            }
+        }
     }
 }

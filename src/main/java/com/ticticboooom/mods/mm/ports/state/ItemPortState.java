@@ -1,21 +1,38 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
 import lombok.Getter;
+import lombok.SneakyThrows;
+import mekanism.common.integration.projecte.IngredientHelper;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IGuiIngredient;
+import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ItemPortState extends PortState {
 
@@ -165,5 +182,67 @@ public class ItemPortState extends PortState {
     @Override
     public ResourceLocation getName() {
         return new ResourceLocation(MM.ID, "items");
+    }
+
+    @SneakyThrows
+    @Override
+    public void validateDefinition() {
+        if (!item.equals("")){
+            if (!RLUtils.isRL(item)){
+                throw new InvalidProcessDefinitionException("Item: " + item + " is not a valid item id (ResourceLocation)");
+            }
+
+            if (!ForgeRegistries.ITEMS.containsKey(RLUtils.toRL(item))){
+                throw new InvalidProcessDefinitionException("Item: " + item + " does not exist in the game's item registry");
+            }
+        } else if (!tag.equals("")){
+            if (!RLUtils.isRL(tag)){
+                throw new InvalidProcessDefinitionException("Item Tag: " + tag + " is not a valid item tag id (ResourceLocation)");
+            }
+        } else{
+            throw new InvalidProcessDefinitionException("You must define a item id or item tag id in the items 'data' object");
+        }
+    }
+
+    private int tagIndex = 0;
+    private int tagIndexIncremement = 0;
+
+    @Override
+    public void render(MatrixStack ms, int x, int y, int mouseX, int mouseY, IJeiHelpers helpers) {
+        IDrawableStatic slot = helpers.getGuiHelper().getSlotDrawable();
+        slot.draw(ms, x, y);
+    }
+
+    @Override
+    public void setIngredient(IIngredients in, boolean input) {
+        if (!item.equals("") && RLUtils.isRL(item)) {
+            if (input){
+                in.setInput(VanillaTypes.ITEM, new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
+            } else {
+                in.setOutput(VanillaTypes.ITEM, new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
+            }
+        } else if (!tag.equals("") && RLUtils.isRL(tag)) {
+            ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
+            assert tag != null;
+            Stream<ItemStack> itemStackStream = tag.getValues().stream().map(x -> new ItemStack(x.getItem(), this.count));
+            if (input){
+                in.setInputs(VanillaTypes.ITEM, itemStackStream.collect(Collectors.toList()));
+            } else {
+                in.setOutputs(VanillaTypes.ITEM, itemStackStream.collect(Collectors.toList()));
+            }
+        }
+    }
+
+    @Override
+    public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
+        layout.getItemStacks().init(typeIndex, input, x, y);
+        if (!item.equals("") && RLUtils.isRL(item)) {
+            layout.getItemStacks().set(typeIndex, new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
+        } else if (!tag.equals("") && RLUtils.isRL(tag)) {
+            ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
+            assert tag != null;
+            Stream<ItemStack> itemStackStream = tag.getValues().stream().map(z -> new ItemStack(z.getItem(), this.count));
+            layout.getItemStacks().set(typeIndex, itemStackStream.collect(Collectors.toList()));
+    }
     }
 }

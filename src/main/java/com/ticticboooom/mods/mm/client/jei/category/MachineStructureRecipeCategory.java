@@ -40,6 +40,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private static final ResourceLocation iconRl = new ResourceLocation(MM.ID, "textures/items/blueprint.png");
     private static final ResourceLocation slotRl = new ResourceLocation(MM.ID, "textures/gui/slot_parts.png");
     private IJeiHelpers helpers;
+    private ControllerBlock controller;
     private MachineStructureRecipe recipe;
     private float xRotation = 0;
     private double xLastMousePosition = 0;
@@ -48,13 +49,14 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private int sliceY = 0;
     private boolean slicingActive = false;
 
-    public MachineStructureRecipeCategory(IJeiHelpers helpers) {
+    public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
+        this.controller = controller;
     }
 
     @Override
     public ResourceLocation getUid() {
-        return new ResourceLocation(MM.ID, "machine_structure");
+        return new ResourceLocation(MM.ID, "machine_structure_" + controller.getControllerId());
     }
 
     @Override
@@ -64,7 +66,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
     @Override
     public String getTitle() {
-        return "Machine Structures";
+        return controller.getControllerName();
     }
 
     @Override
@@ -84,6 +86,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         Ingredient ingredient = Ingredient.of(new ItemStack(MMSetup.BLUEPRINT.get()));
         ArrayList<Ingredient> objects = new ArrayList<>();
         objects.add(ingredient);
+        objects.add(Ingredient.of(new ItemStack(ForgeRegistries.ITEMS.getValue(controller.getRegistryName()))));
         iIngredients.setInputIngredients(objects);
     }
 

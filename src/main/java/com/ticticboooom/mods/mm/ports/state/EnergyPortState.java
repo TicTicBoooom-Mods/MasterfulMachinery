@@ -1,11 +1,14 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import lombok.Getter;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.helpers.IJeiHelpers;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -85,5 +88,11 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
     @Override
     public ResourceLocation getName() {
         return new ResourceLocation(MM.ID, "energy");
+    }
+
+    @Override
+    public void render(MatrixStack ms, int x, int y, int mouseX, int mouseY, IJeiHelpers helpers) {
+        IDrawableStatic drawable = helpers.getGuiHelper().createDrawable(new ResourceLocation(MM.ID, "textures/gui/slot_parts.png"), 18, 61, 4, 18);
+        drawable.draw(ms, x, y);
     }
 }

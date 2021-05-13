@@ -33,6 +33,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
@@ -60,13 +61,12 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         List<MachineStructureRecipeKeyModel> rotated2 = new ArrayList<>();
 
         for (MachineStructureRecipeKeyModel model : models) {
-            BlockPos rotatedPos = new BlockPos(model.getPos().getZ(), model.getPos().getY(), model.getPos().getX());
+            BlockPos rotatedPos = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.CLOCKWISE_90);
+            BlockPos rotatedPos1 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.CLOCKWISE_180);
+            BlockPos rotatedPos2 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.COUNTERCLOCKWISE_90);
+
             rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
-
-            BlockPos rotatedPos1 = new BlockPos(-model.getPos().getX(), model.getPos().getY(), -model.getPos().getZ());
             rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
-
-            BlockPos rotatedPos2 = new BlockPos(-model.getPos().getZ(), model.getPos().getY(), -model.getPos().getX());
             rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
         }
 
@@ -280,11 +280,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                         throw new InvalidStructureDefinitionException("Block: " + model.getBlock() +  " is defined but not a valid block id (ResourceLocation)");
                     }
                 } else if (!model.getTag().equals("")){
-                    if (RLUtils.isRL(model.getTag())) {
-                        if (!BlockTags.getAllTags().getAllTags().containsKey(RLUtils.toRL(model.getTag()))) {
-                            throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() +  " is not an existing block tag in the game");
-                        }
-                    } else {
+                    if (!RLUtils.isRL(model.getTag())) {
                         throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() +  " is defined but not a valid block tag id (ResourceLocation)");
                     }
                 } else {

@@ -1,18 +1,30 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.client.util.FluidRenderer;
+import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.storage.FluidPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
 import lombok.Getter;
+import lombok.SneakyThrows;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FluidPortState extends PortState {
 
@@ -113,5 +125,38 @@ public class FluidPortState extends PortState {
     @Override
     public ResourceLocation getName() {
         return new ResourceLocation(MM.ID, "fluids");
+    }
+
+    @SneakyThrows
+    @Override
+    public void validateDefinition() {
+        if (!RLUtils.isRL(fluid)) {
+            throw new InvalidProcessDefinitionException("Fluid: " + fluid + " is not a valid id (ResourceLocation)");
+        }
+        if (!ForgeRegistries.FLUIDS.containsKey(RLUtils.toRL(fluid))) {
+            throw new InvalidProcessDefinitionException("Fluid: " + fluid + " does not exist in the game's registered fluids");
+        }
+    }
+
+    @Override
+    public void render(MatrixStack ms, int x, int y, int mouseX, int mouseY, IJeiHelpers helpers) {
+        IDrawableStatic slot = helpers.getGuiHelper().getSlotDrawable();
+        slot.draw(ms, x, y);
+    }
+
+    @Override
+    public void setIngredient(IIngredients in, boolean input) {
+        FluidStack stack = new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), amount);
+        if (input) {
+            in.setInput(VanillaTypes.FLUID, stack);
+        } else {
+            in.setOutput(VanillaTypes.FLUID, stack);
+        }
+    }
+
+    @Override
+    public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
+        layout.getFluidStacks().init(typeIndex, input, x + 1, y + 1, 16, 16, 1, false, null);
+        layout.getFluidStacks().set(typeIndex, new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), 1));
     }
 }

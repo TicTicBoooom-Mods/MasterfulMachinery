@@ -8,6 +8,6 @@ public class RLUtils {
     }
 
     public static boolean isRL(String str) {
-        return ResourceLocation.isValidResourceLocation(str);
+        return ResourceLocation.tryParse(str) != null;
     }
 }

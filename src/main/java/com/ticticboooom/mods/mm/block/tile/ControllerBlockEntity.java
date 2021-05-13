@@ -56,9 +56,10 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
             if (index != -1) {
                 update.setMsg("Found structure");
                 onStructureFound(recipe, index);
-                return;
+                break;
             }
         }
+        update();
     }
 
     private void onStructureFound(MachineStructureRecipe structure, int index) {
@@ -83,15 +84,15 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     private void onPortsEstablished(List<IPortStorage> inputPorts, List<IPortStorage> outputPorts, MachineStructureRecipe structure) {
         List<MachineProcessRecipe> processRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_PROCESS);
+        boolean processed = false;
         for (MachineProcessRecipe recipe : processRecipes) {
             if (recipe.matches(inputPorts, structure.getStructureId())) {
                 this.update = recipe.process(inputPorts, outputPorts, this.update);
-                update();
-                return;
-            } else {
-                this.update.setTicksTaken(0);
-                update();
+                processed = true;
             }
+        }
+        if (!processed) {
+            this.update.setTicksTaken(0);
         }
     }
 
