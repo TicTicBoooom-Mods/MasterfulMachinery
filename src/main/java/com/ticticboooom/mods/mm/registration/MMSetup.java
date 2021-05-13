@@ -1,10 +1,18 @@
 package com.ticticboooom.mods.mm.registration;
 
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.block.ProjectorBlock;
+import com.ticticboooom.mods.mm.block.StructureGenBlock;
+import com.ticticboooom.mods.mm.block.container.ProjectorBlockContainer;
+import com.ticticboooom.mods.mm.block.container.StructureGenBlockContainer;
+import com.ticticboooom.mods.mm.block.tile.ProjectorBlockEntity;
+import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
+import com.ticticboooom.mods.mm.item.StructureGenSelectionDevice;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -18,4 +26,13 @@ public class MMSetup {
 
     public static final RegistryObject<Item> BLUEPRINT = ITEMS_REG.register("blueprint", () -> new Item(new Item.Properties().tab(MMLoader.MASTERFUL_ITEM_GROUP)));
 
+    public static final RegistryObject<TileEntityType<?>> PROJECTOR_TILE = TILES_REG.register("projector", () -> TileEntityType.Builder.of(ProjectorBlockEntity::new).build(null));
+    public static final RegistryObject<Block> PROJECTOR_BLOCK = BLOCKS_REG.register("projector", ProjectorBlock::new);
+    public static final RegistryObject<ContainerType<?>> PROJECTOR_CONTAINER = CONTAINER_REG.register("projector", () -> IForgeContainerType.create(ProjectorBlockContainer::new));
+
+    public static final RegistryObject<TileEntityType<?>> STRUCTURE_TILE = TILES_REG.register("structure_generator", () -> TileEntityType.Builder.of(StructureGenBlockEntity::new).build(null));
+    public static final RegistryObject<Block> STRUCTURE_BLOCK = BLOCKS_REG.register("structure_generator", StructureGenBlock::new);
+    public static final RegistryObject<ContainerType<?>> STRUCTURE_CONTAINER = CONTAINER_REG.register("structure_generator", () -> IForgeContainerType.create(StructureGenBlockContainer::new));
+
+    public static final RegistryObject<Item> STRUCTURE_DEVICE = ITEMS_REG.register("structure_gen_device", StructureGenSelectionDevice::new);
 }

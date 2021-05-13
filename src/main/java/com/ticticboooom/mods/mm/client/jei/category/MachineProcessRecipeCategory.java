@@ -4,10 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.helper.RLUtils;
+import com.ticticboooom.mods.mm.ports.MasterfulPortType;
 import com.ticticboooom.mods.mm.ports.state.FluidPortState;
 import com.ticticboooom.mods.mm.ports.state.ItemPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.storage.MekGasPortStorage;
+import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
@@ -26,10 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProcessRecipe> {
 
@@ -70,11 +69,35 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
 
     @Override
     public void setIngredients(MachineProcessRecipe recipe, IIngredients ingredients) {
-        for (PortState input : recipe.getInputs()) {
-            input.setIngredient(ingredients, true);
+        Map<ResourceLocation, List<?>> inputStacks = new HashMap<>();
+        Map<ResourceLocation, List<?>> outputStacks = new HashMap<>();
+
+        for (Map.Entry<ResourceLocation, MasterfulPortType> resource : MMPorts.PORTS.entrySet()) {
+            ResourceLocation registryName = resource.getKey();
+            inputStacks.put(registryName, new ArrayList<MasterfulPortType>());
+            outputStacks.put(registryName, new ArrayList<MasterfulPortType>());
         }
+
+        for (PortState input : recipe.getInputs()) {
+            List<?> stacks = inputStacks.getOrDefault(input.getName(), new ArrayList<>());
+            stacks.addAll(input.getIngredient(true));
+            inputStacks.put(input.getName(), stacks);
+        }
+
         for (PortState output : recipe.getOutputs()) {
-            output.setIngredient(ingredients, false);
+            List<?> stacks = inputStacks.getOrDefault(output.getName(), new ArrayList<>());
+            stacks.addAll(output.getIngredient(true));
+            outputStacks.put(output.getName(), stacks);
+        }
+
+        for (Map.Entry<ResourceLocation, List<?>> entry : inputStacks.entrySet()) {
+            MasterfulPortType masterfulPortType = MMPorts.PORTS.get(entry.getKey());
+            masterfulPortType.getParser().setIngredients(ingredients, entry.getValue(), true);
+        }
+
+        for (Map.Entry<ResourceLocation, List<?>> entry : outputStacks.entrySet()) {
+            MasterfulPortType masterfulPortType = MMPorts.PORTS.get(entry.getKey());
+            masterfulPortType.getParser().setIngredients(ingredients, entry.getValue(), false);
         }
     }
 
@@ -94,7 +117,6 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
                 currentY += 20;
             }
         }
-
 
         final int offsetX = 95;
         currentX = offsetX;

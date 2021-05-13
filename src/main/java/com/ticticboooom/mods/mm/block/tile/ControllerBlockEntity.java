@@ -4,9 +4,7 @@ import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
-import com.ticticboooom.mods.mm.network.PacketHandler;
-import com.ticticboooom.mods.mm.network.packets.TileClientUpdatePacket;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
 import net.minecraft.block.BlockState;
@@ -23,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -64,8 +61,8 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     private void onStructureFound(MachineStructureRecipe structure, int index) {
         ArrayList<BlockPos> ports = structure.getPorts(worldPosition, level, index);
-        List<IPortStorage> inputPorts = new ArrayList<>();
-        List<IPortStorage> outputPorts = new ArrayList<>();
+        List<PortStorage> inputPorts = new ArrayList<>();
+        List<PortStorage> outputPorts = new ArrayList<>();
         for (BlockPos port : ports) {
             TileEntity blockEntity = level.getBlockEntity(port);
             if (blockEntity instanceof MachinePortBlockEntity) {
@@ -82,7 +79,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         onPortsEstablished(inputPorts, outputPorts, structure);
     }
 
-    private void onPortsEstablished(List<IPortStorage> inputPorts, List<IPortStorage> outputPorts, MachineStructureRecipe structure) {
+    private void onPortsEstablished(List<PortStorage> inputPorts, List<PortStorage> outputPorts, MachineStructureRecipe structure) {
         List<MachineProcessRecipe> processRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_PROCESS);
         boolean processed = false;
         for (MachineProcessRecipe recipe : processRecipes) {

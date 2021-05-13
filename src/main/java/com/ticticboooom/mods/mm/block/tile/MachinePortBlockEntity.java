@@ -1,9 +1,7 @@
 package com.ticticboooom.mods.mm.block.tile;
 
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
-import com.ticticboooom.mods.mm.network.PacketHandler;
-import com.ticticboooom.mods.mm.network.packets.TileClientUpdatePacket;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.Getter;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,14 +11,12 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,12 +25,12 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
 
     private ContainerType<?> container;
     @Getter
-    private IPortStorage storage;
+    private PortStorage storage;
     @Getter
     private boolean input;
 
 
-    public MachinePortBlockEntity(TileEntityType<?> p_i48289_1_, ContainerType<?> container, IPortStorage storage, boolean input) {
+    public MachinePortBlockEntity(TileEntityType<?> p_i48289_1_, ContainerType<?> container, PortStorage storage, boolean input) {
         super(p_i48289_1_);
         this.container = container;
         this.storage = storage;

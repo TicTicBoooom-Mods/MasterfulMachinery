@@ -14,9 +14,7 @@ import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.IOHelper;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.Container;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
@@ -24,9 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.network.IContainerFactory;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -85,7 +80,7 @@ public class MMLoader {
 
                 ResourceLocation resourceLocation = RLUtils.toRL(type);
                 MasterfulPortType value = MMPorts.PORTS.get(resourceLocation);
-                Supplier<IPortStorage> data = value.getParser().createStorage(portObj.get("data").getAsJsonObject());
+                Supplier<PortStorage> data = value.getParser().createStorage(portObj.get("data").getAsJsonObject());
 
                 {
                     Registerable<RegistryObject<TileEntityType<?>>> tile = new Registerable<>();

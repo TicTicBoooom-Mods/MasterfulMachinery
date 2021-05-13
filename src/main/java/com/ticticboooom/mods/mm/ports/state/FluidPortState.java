@@ -1,14 +1,14 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.client.util.FluidRenderer;
 import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.storage.FluidPortStorage;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import mezz.jei.api.constants.VanillaTypes;
@@ -17,14 +17,13 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
-import java.util.Objects;
 
 public class FluidPortState extends PortState {
 
@@ -45,9 +44,9 @@ public class FluidPortState extends PortState {
     }
 
     @Override
-    public void processRequirement(List<IPortStorage> storage) {
+    public void processRequirement(List<PortStorage> storage) {
         int current = amount;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof FluidPortStorage) {
                 FluidPortStorage fInv = (FluidPortStorage) inv;
                 FluidStack fluidInTank = fInv.getInv().getFluidInTank(0);
@@ -64,9 +63,9 @@ public class FluidPortState extends PortState {
     }
 
     @Override
-    public boolean validateRequirement(List<IPortStorage> storage) {
+    public boolean validateRequirement(List<PortStorage> storage) {
         int current = amount;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof FluidPortStorage) {
                 FluidPortStorage fInv = (FluidPortStorage) inv;
                 FluidStack fluidInTank = fInv.getInv().getFluidInTank(0);
@@ -84,9 +83,9 @@ public class FluidPortState extends PortState {
     }
 
     @Override
-    public void processResult(List<IPortStorage> storage) {
+    public void processResult(List<PortStorage> storage) {
         int current = amount;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof FluidPortStorage) {
                 FluidPortStorage fInv = (FluidPortStorage) inv;
                 FluidStack fluidInTank = fInv.getInv().getFluidInTank(0);
@@ -103,9 +102,9 @@ public class FluidPortState extends PortState {
     }
 
     @Override
-    public boolean validateResult(List<IPortStorage> storage) {
+    public boolean validateResult(List<PortStorage> storage) {
         int current = amount;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof FluidPortStorage) {
                 FluidPortStorage fInv = (FluidPortStorage) inv;
                 FluidStack fluidInTank = fInv.getInv().getFluidInTank(0);
@@ -144,19 +143,20 @@ public class FluidPortState extends PortState {
         slot.draw(ms, x, y);
     }
 
-    @Override
-    public void setIngredient(IIngredients in, boolean input) {
-        FluidStack stack = new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), amount);
-        if (input) {
-            in.setInput(VanillaTypes.FLUID, stack);
-        } else {
-            in.setOutput(VanillaTypes.FLUID, stack);
-        }
-    }
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
         layout.getFluidStacks().init(typeIndex, input, x + 1, y + 1, 16, 16, 1, false, null);
         layout.getFluidStacks().set(typeIndex, new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), 1));
+    }
+
+    @Override
+    public IIngredientType<?> getJeiIngredientType() {
+        return VanillaTypes.FLUID;
+    }
+
+    @Override
+    public <T> List<T> getIngredient(boolean input) {
+        return (List<T>) ImmutableList.of(new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), amount));
     }
 }

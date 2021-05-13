@@ -32,5 +32,6 @@ public class MMItemModelProvider extends ItemModelProvider {
         }
 
         this.getBuilder(MMSetup.BLUEPRINT.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/blueprint");
+        this.getBuilder(MMSetup.STRUCTURE_DEVICE.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/scanning_tool");
     }
 }

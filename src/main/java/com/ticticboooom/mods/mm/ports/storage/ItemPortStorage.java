@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class ItemPortStorage implements IPortStorage {
+public class ItemPortStorage extends PortStorage {
     public static final Codec<ItemPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("rows").forGetter(z -> z.rows),
             Codec.INT.fieldOf("columns").forGetter(z -> z.columns)
@@ -87,17 +87,6 @@ public class ItemPortStorage implements IPortStorage {
             for (int x = 0; x < columns; x++) {
                 container.addSlot(new Slot(items,  (y * columns) + x, x * 18 + offsetX, y * 18 + offsetY));
             }
-        }
-        int playerOffsetX = 8;
-        int playerOffsetY = 141;
-        for (int j = 0; j < 3; j++) {
-            for (int i = 0; i < 9; i++) {
-                container.addSlot(new Slot(inv, 9 + (j * 9 + i), i* 18 + playerOffsetX, j* 18 + playerOffsetY));
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            container.addSlot(new Slot(inv, i,8 + (i * 18), 199));
         }
     }
 

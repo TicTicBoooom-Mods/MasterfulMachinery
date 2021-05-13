@@ -1,34 +1,31 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import mekanism.common.integration.projecte.IngredientHelper;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.http.annotation.Immutable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,9 +51,9 @@ public class ItemPortState extends PortState {
     }
 
     @Override
-    public void processRequirement(List<IPortStorage> storage) {
+    public void processRequirement(List<PortStorage> storage) {
         int current = count;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof ItemPortStorage) {
                 ItemPortStorage iinv = (ItemPortStorage) inv;
                 for (int i = 0; i < iinv.getInv().getSlots(); i++) {
@@ -88,9 +85,9 @@ public class ItemPortState extends PortState {
     }
 
     @Override
-    public boolean validateRequirement(List<IPortStorage> storage) {
+    public boolean validateRequirement(List<PortStorage> storage) {
         int current = count;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof ItemPortStorage) {
                 ItemPortStorage iinv = (ItemPortStorage) inv;
                  for (int i = 0; i < iinv.getInv().getSlots(); i++) {
@@ -119,9 +116,9 @@ public class ItemPortState extends PortState {
     }
 
     @Override
-    public void processResult(List<IPortStorage> storage) {
+    public void processResult(List<PortStorage> storage) {
         int current = 0;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof ItemPortStorage) {
                 ItemPortStorage iinv = (ItemPortStorage) inv;
                 for (int i = 0; i < iinv.getInv().getSlots(); i++) {
@@ -148,9 +145,9 @@ public class ItemPortState extends PortState {
     }
 
     @Override
-    public boolean validateResult(List<IPortStorage> storage) {
+    public boolean validateResult(List<PortStorage> storage) {
         int current = 0;
-        for (IPortStorage inv : storage) {
+        for (PortStorage inv : storage) {
             if (inv instanceof ItemPortStorage) {
                 ItemPortStorage iinv = (ItemPortStorage) inv;
                 for (int i = 0; i < iinv.getInv().getSlots(); i++) {
@@ -214,23 +211,18 @@ public class ItemPortState extends PortState {
     }
 
     @Override
-    public void setIngredient(IIngredients in, boolean input) {
+    public <T> List<T> getIngredient(boolean input) {
         if (!item.equals("") && RLUtils.isRL(item)) {
-            if (input){
-                in.setInput(VanillaTypes.ITEM, new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
-            } else {
-                in.setOutput(VanillaTypes.ITEM, new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
-            }
+            return (List<T>) ImmutableList.of(new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
         } else if (!tag.equals("") && RLUtils.isRL(tag)) {
             ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
             assert tag != null;
-            Stream<ItemStack> itemStackStream = tag.getValues().stream().map(x -> new ItemStack(x.getItem(), this.count));
-            if (input){
-                in.setInputs(VanillaTypes.ITEM, itemStackStream.collect(Collectors.toList()));
-            } else {
-                in.setOutputs(VanillaTypes.ITEM, itemStackStream.collect(Collectors.toList()));
-            }
+
+            List<ItemStack> stacks = new ArrayList<>();
+            tag.getValues().forEach(z -> stacks.add(new ItemStack(z, this.count)));
+            return (List<T>)stacks;
         }
+        return new ArrayList<>();
     }
 
     @Override
@@ -243,6 +235,11 @@ public class ItemPortState extends PortState {
             assert tag != null;
             Stream<ItemStack> itemStackStream = tag.getValues().stream().map(z -> new ItemStack(z.getItem(), this.count));
             layout.getItemStacks().set(typeIndex, itemStackStream.collect(Collectors.toList()));
+        }
     }
+
+    @Override
+    public IIngredientType<?> getJeiIngredientType() {
+        return VanillaTypes.ITEM;
     }
 }

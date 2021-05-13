@@ -7,14 +7,30 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.state.MekGasPortState;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.MekGasPortStorage;
 import lombok.SneakyThrows;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.client.jei.MekanismJEI;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
+import java.util.List;
 import java.util.function.Supplier;
 
-public class MekGasPortParser implements IPortParser {
+public class MekGasPortParser implements IPortFactory {
+
+    @Override
+    public void setIngredients(IIngredients ingredients, List<?> stacks, boolean input) {
+        if (input) {
+            ingredients.setInputs(MekanismJEI.TYPE_GAS, (List<GasStack>)stacks);
+        } else {
+            ingredients.setOutputs(MekanismJEI.TYPE_GAS, (List<GasStack>)stacks);
+        }
+    }
+
     @Override
     public PortState createState(JsonObject obj) {
         DataResult<Pair<MekGasPortState, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(MekGasPortState.CODEC).apply(obj);
@@ -28,7 +44,7 @@ public class MekGasPortParser implements IPortParser {
     }
 
     @Override
-    public Supplier<IPortStorage> createStorage(JsonObject obj) {
+    public Supplier<PortStorage> createStorage(JsonObject obj) {
         return () -> {
             DataResult<Pair<MekGasPortStorage, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(MekGasPortStorage.CODEC).apply(obj);
             return apply.result().get().getFirst();

@@ -13,15 +13,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class FluidPortStorage implements IPortStorage {
+public class FluidPortStorage extends PortStorage {
     public static final Codec<FluidPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("capacity").forGetter(z -> z.inv.getTankCapacity(0))
     ).apply(x, FluidPortStorage::new));
@@ -67,10 +67,5 @@ public class FluidPortStorage implements IPortStorage {
         FluidRenderer.INSTANCE.render(stack, left + x + 1, top + y + 1, inv.getFluidInTank(0), 16);
 
         AbstractGui.drawCenteredString(stack, Minecraft.getInstance().font, inv.getFluidInTank(0).getAmount() + " " + inv.getFluidInTank(0).getDisplayName().getString(), left + x + 9 + 1, top + y + 30, 0xfefefe);
-    }
-
-    @Override
-    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile) {
-
     }
 }

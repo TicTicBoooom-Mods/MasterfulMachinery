@@ -1,6 +1,6 @@
 package com.ticticboooom.mods.mm.ports;
 
-import com.ticticboooom.mods.mm.ports.parser.IPortParser;
+import com.ticticboooom.mods.mm.ports.parser.IPortFactory;
 import lombok.Getter;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -11,9 +11,9 @@ public class MasterfulPortType implements IForgeRegistryEntry<MasterfulPortType>
 
     private ResourceLocation name;
     @Getter
-    private IPortParser parser;
+    private IPortFactory parser;
 
-    public MasterfulPortType(ResourceLocation name, IPortParser parser) {
+    public MasterfulPortType(ResourceLocation name, IPortFactory parser) {
         this.name = name;
         this.parser = parser;
     }

@@ -12,13 +12,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public class EnergyPortStorage implements IPortStorage {
+public class EnergyPortStorage extends PortStorage {
     public static final Codec<EnergyPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("capacity").forGetter(z -> z.inv.getMaxEnergyStored())
     ).apply(x, EnergyPortStorage::new));
@@ -69,10 +70,5 @@ public class EnergyPortStorage implements IPortStorage {
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
         AbstractGui.drawString(stack, Minecraft.getInstance().font,Math.round((float)10000 * amount) / 100.f + "%", left + 30, top + 60, 0xfefefe);
         AbstractGui.drawString(stack, Minecraft.getInstance().font,inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
-    }
-
-    @Override
-    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile) {
-
     }
 }

@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
-import com.ticticboooom.mods.mm.client.util.FluidRenderer;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.inventory.mek.PortMekGasInventory;
 import lombok.Getter;
@@ -17,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,7 +24,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Objects;
 
-public class MekGasPortStorage implements IPortStorage {
+public class MekGasPortStorage extends PortStorage {
     public static final Codec<MekGasPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.LONG.fieldOf("capacity").forGetter(z -> z.capacity)
     ).apply(x, MekGasPortStorage::new));
@@ -78,11 +78,6 @@ public class MekGasPortStorage implements IPortStorage {
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
         AbstractGui.drawString(stack, Minecraft.getInstance().font,inv.getStack().getType().getTextComponent().getString(), left + 30, top + 60, 0xfefefe);
         AbstractGui.drawString(stack, Minecraft.getInstance().font, inv.getStack().getAmount() + "mB", left + 30, top + 80, 0xfefefe);
-
-    }
-
-    @Override
-    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile) {
 
     }
 }

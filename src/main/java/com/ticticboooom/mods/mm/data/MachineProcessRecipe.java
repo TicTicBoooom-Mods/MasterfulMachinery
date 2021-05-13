@@ -8,7 +8,7 @@ import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
 import com.ticticboooom.mods.mm.ports.state.PortState;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
@@ -47,11 +47,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         this.rl = rl;
     }
 
-    public boolean matches(List<IPortStorage> inputPorts, String structureId) {
+    public boolean matches(List<PortStorage> inputPorts, String structureId) {
         return structureId.equals(this.structureId) && canTake(inputPorts);
     }
 
-    private boolean canTake(List<IPortStorage> inputPorts) {
+    private boolean canTake(List<PortStorage> inputPorts) {
         for (PortState input : inputs) {
             if (!input.validateRequirement(inputPorts)) {
                 return false;
@@ -60,7 +60,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         return true;
     }
 
-    private boolean canPut(List<IPortStorage> outputPorts) {
+    private boolean canPut(List<PortStorage> outputPorts) {
         for (PortState output : outputs) {
             if (!output.validateResult(outputPorts)) {
                 return false;
@@ -69,7 +69,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         return true;
     }
 
-    public ProcessUpdate process(List<IPortStorage> inputPorts, List<IPortStorage> outputPorts, ProcessUpdate update) {
+    public ProcessUpdate process(List<PortStorage> inputPorts, List<PortStorage> outputPorts, ProcessUpdate update) {
         boolean canTake = canTake(inputPorts);
         boolean canPut = canPut(outputPorts);
 

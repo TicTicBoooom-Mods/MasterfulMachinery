@@ -7,17 +7,16 @@ import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.inventory.mek.PortMekGasInventory;
 import com.ticticboooom.mods.mm.inventory.mek.PortMekSlurryInventory;
 import lombok.Getter;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,7 +24,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Objects;
 
-public class MekSlurryPortStorage implements IPortStorage {
+public class MekSlurryPortStorage extends PortStorage {
     public static final Codec<MekSlurryPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.LONG.fieldOf("capacity").forGetter(z -> z.capacity)
     ).apply(x, MekSlurryPortStorage::new));
@@ -69,22 +68,17 @@ public class MekSlurryPortStorage implements IPortStorage {
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
         Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
-        screen.blit(stack, left, top, 0, 0,  175, 256);
+        screen.blit(stack, left, top, 0, 0, 175, 256);
         int barOffsetX = 175 - 30;
         int barOffsetY = 20;
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
         float amount = 0;
         if (inv.getStack().getAmount() > 0) {
-            amount = (float)inv.getStack().getAmount() / inv.getTankCapacity(0);
+            amount = (float) inv.getStack().getAmount() / inv.getTankCapacity(0);
         }
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
-        AbstractGui.drawString(stack, Minecraft.getInstance().font,inv.getStack().getType().getTextComponent().getString(), left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawString(stack, Minecraft.getInstance().font, inv.getStack().getType().getTextComponent().getString(), left + 30, top + 60, 0xfefefe);
         AbstractGui.drawString(stack, Minecraft.getInstance().font, inv.getStack().getAmount() + "mB", left + 30, top + 80, 0xfefefe);
-
-    }
-
-    @Override
-    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile) {
 
     }
 }

@@ -1,19 +1,18 @@
 package com.ticticboooom.mods.mm.ports.state;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.ports.storage.IPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.MekSlurryPortStorage;
 import lombok.SneakyThrows;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.inventory.AutomationType;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -43,9 +42,9 @@ public class MekSlurryPortState extends PortState {
     }
 
     @Override
-    public void processRequirement(List<IPortStorage> storage) {
+    public void processRequirement(List<PortStorage> storage) {
         long current = amount;
-        for (IPortStorage st : storage) {
+        for (PortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
                 if (gasStorage.getInv().getStack().getType().getRegistryName().toString().equals(slurry)) {
@@ -60,9 +59,9 @@ public class MekSlurryPortState extends PortState {
     }
 
     @Override
-    public boolean validateRequirement(List<IPortStorage> storage) {
+    public boolean validateRequirement(List<PortStorage> storage) {
         long current = amount;
-        for (IPortStorage st : storage) {
+        for (PortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
                 if (gasStorage.getInv().getStack().getType().getRegistryName().toString().equals(slurry)) {
@@ -78,9 +77,9 @@ public class MekSlurryPortState extends PortState {
     }
 
     @Override
-    public void processResult(List<IPortStorage> storage) {
+    public void processResult(List<PortStorage> storage) {
         long current = amount;
-        for (IPortStorage st : storage) {
+        for (PortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
                 SlurryStack extract = gasStorage.getInv().insertChemical(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry))), current), Action.EXECUTE);
@@ -93,9 +92,9 @@ public class MekSlurryPortState extends PortState {
     }
 
     @Override
-    public boolean validateResult(List<IPortStorage> storage) {
+    public boolean validateResult(List<PortStorage> storage) {
         long current = amount;
-        for (IPortStorage st : storage) {
+        for (PortStorage st : storage) {
             if (st instanceof MekSlurryPortStorage) {
                 MekSlurryPortStorage gasStorage = (MekSlurryPortStorage) st;
                 SlurryStack extract = gasStorage.getInv().insertChemical(new SlurryStack(Objects.requireNonNull(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry))), current), Action.SIMULATE);
@@ -140,11 +139,12 @@ public class MekSlurryPortState extends PortState {
 
 
     @Override
-    public void setIngredient(IIngredients in, boolean input) {
-        if (input) {
-            in.setInput(MekanismJEI.TYPE_SLURRY, new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), 1000));
-        } else {
-            in.setOutput(MekanismJEI.TYPE_SLURRY, new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), 1000));
-        }
+    public <T> List<T> getIngredient(boolean input) {
+        return (List<T>) ImmutableList.of(new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), 1000));
+    }
+
+    @Override
+    public IIngredientType<?> getJeiIngredientType() {
+        return MekanismJEI.TYPE_SLURRY;
     }
 }
