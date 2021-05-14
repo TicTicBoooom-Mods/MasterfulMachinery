@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
@@ -25,6 +26,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MachineProcessRecipe implements IRecipe<IInventory> {
 
@@ -38,6 +40,10 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
     @Getter
     private String structureId;
     private ResourceLocation rl;
+
+    private List<Double> inputRolls = new ArrayList<>();
+    private List<Double> outputRolls = new ArrayList<>();
+    private Random rand = new Random();
 
     public MachineProcessRecipe(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
         this.inputs = inputs;
@@ -69,7 +75,27 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         return true;
     }
 
+    private void resetChances() {
+        inputRolls.clear();
+        outputRolls.clear();
+        for (PortState input : inputs) {
+            if (input.supportsPerTick()) {
+                inputRolls.add(rand.nextDouble());
+            } else {
+                inputRolls.add(1.0);
+            }
+        }
+        for (PortState output : outputs) {
+            if (output.supportsPerTick()) {
+                outputRolls.add(rand.nextDouble());
+            } else {
+                outputRolls.add(1.0);
+            }
+        }
+    }
+
     public ProcessUpdate process(List<PortStorage> inputPorts, List<PortStorage> outputPorts, ProcessUpdate update) {
+        resetChances();
         boolean canTake = canTake(inputPorts);
         boolean canPut = canPut(outputPorts);
 
@@ -78,12 +104,19 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             return update;
         }
 
+        int index = 0;
         if (update.getTicksTaken() >= ticks) {
             for (PortState input : inputs) {
-                input.processRequirement(inputPorts);
+                if (inputRolls.get(index) < input.getChance()){
+                    input.processRequirement(inputPorts);
+                    index++;
+                }
             }
+            index = 0;
             for (PortState output : outputs) {
-                output.processResult(outputPorts);
+                if (outputRolls.get(index) < output.getChance()) {
+                    output.processResult(outputPorts);
+                }
             }
             update.setMsg("");
             update.setTicksTaken(0);
@@ -92,30 +125,40 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
         boolean canTick = true;
 
+        index = 0;
         for (PortState input : inputs) {
             if (input.isConsumePerTick()) {
-                if (!input.validateRequirement(inputPorts)) {
-                    canTick = false;
+                if (inputRolls.get(index) < input.getChance()){
+                    if (!input.validateRequirement(inputPorts)) {
+                        canTick = false;
+                    }
                 }
             }
         }
+        index = 0;
         for (PortState output : outputs) {
-            if (output.isConsumePerTick()) {
-                if (!output.validateResult(outputPorts)){
-                    canTick = false;
+            if (outputRolls.get(index) < output.getChance()) {
+                if (output.isConsumePerTick()) {
+                    if (!output.validateResult(outputPorts)) {
+                        canTick = false;
+                    }
                 }
             }
         }
 
         if (canTick) {
             for (PortState input : inputs) {
-                if (input.isConsumePerTick()) {
-                    input.processRequirement(inputPorts);
+                if (inputRolls.get(index) < input.getChance()) {
+                    if (input.isConsumePerTick()) {
+                        input.processRequirement(inputPorts);
+                    }
                 }
             }
-            for (PortState input : outputs) {
-                if (input.isConsumePerTick()) {
-                    input.processResult(outputPorts);
+            for (PortState output : outputs) {
+                if (outputRolls.get(index) < output.getChance()) {
+                    if (output.isConsumePerTick()) {
+                        output.processResult(outputPorts);
+                    }
                 }
             }
             update.setTicksTaken(update.getTicksTaken() + 1);
@@ -182,17 +225,26 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 JsonObject out = elem.getAsJsonObject();
                 String type = out.get("type").getAsString();
                 boolean perTick = false;
-                if (out.has("consumePerTick")) {
+                if (out.has("perTick")) {
+                    perTick = out.get("consumePerTick").getAsBoolean();
+                } else if (out.has("consumePerTick")){
                     perTick = out.get("consumePerTick").getAsBoolean();
                 }
+
                 ResourceLocation typeRl = RLUtils.toRL(type);
                 if (!MMPorts.PORTS.containsKey(typeRl)) {
                     throw new Exception(type + " is not a valid input type");
                 }
 
+                double chance = 1;
+                if (out.has("chance")) {
+                    chance = out.get("chance").getAsDouble();
+                }
+
                 MasterfulPortType value = MMPorts.PORTS.get(typeRl);
                 PortState data = value.getParser().createState(out.get("data").getAsJsonObject());
                 data.setConsumePerTick(perTick);
+                data.setChance(chance);
                 ioStates.add(data);
             }
             return ioStates;
@@ -216,9 +268,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             for (int i = 0; i < count; i++) {
                 String inpType = buf.readUtf();
                 boolean perTick = buf.readBoolean();
+                double chance = buf.readDouble();
                 MasterfulPortType value = MMPorts.PORTS.get(RLUtils.toRL(inpType));
                 PortState state = value.getParser().createState(buf);
                 state.setConsumePerTick(perTick);
+                state.setChance(chance);
                 result.add(state);
             }
             return result;
@@ -240,6 +294,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 MasterfulPortType value = MMPorts.PORTS.get(state.getName());
                 buf.writeUtf(value.getRegistryName().toString());
                 buf.writeBoolean(state.isConsumePerTick());
+                buf.writeDouble(state.getChance());
                 value.getParser().write(buf, state);
             }
         }
@@ -260,13 +315,29 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         }
 
 
+        @SneakyThrows
         private void validateProcess(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
             for (PortState input : inputs) {
                 input.validateDefinition();
+                commonValidate(input);
             }
 
             for (PortState output : outputs) {
                 output.validateDefinition();
+                commonValidate(output);
+            }
+        }
+
+        @SneakyThrows
+        private void commonValidate(PortState state) {
+            if (!state.supportsChances() && state.getChance() != 1) {
+                throw new InvalidProcessDefinitionException("Port Type: " + state.getName() + " does not support chanced operations (chance)");
+            }
+            if (state.getChance() < 0 || state.getChance() > 1){
+                throw new InvalidProcessDefinitionException("Ingredient chance must be between 0 and 1");
+            }
+            if (!state.supportsPerTick() && state.isConsumePerTick()){
+                throw new InvalidProcessDefinitionException("Port Type: " + state.getName() + " does not support per tick operations (perTick)");
             }
         }
     }

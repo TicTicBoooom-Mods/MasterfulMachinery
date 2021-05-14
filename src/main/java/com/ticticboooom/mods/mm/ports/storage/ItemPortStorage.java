@@ -88,6 +88,7 @@ public class ItemPortStorage extends PortStorage {
                 container.addSlot(new Slot(items,  (y * columns) + x, x * 18 + offsetX, y * 18 + offsetY));
             }
         }
+        super.setupContainer(container, inv, tile);
     }
 
 
