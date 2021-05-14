@@ -8,6 +8,7 @@ import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.client.screen.ControllerBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortBlockContainerScreen;
+import com.ticticboooom.mods.mm.client.screen.StructureGenBlockContainerScreen;
 import com.ticticboooom.mods.mm.datagen.MMPackFinder;
 import com.ticticboooom.mods.mm.datagen.MemoryDataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
@@ -117,5 +118,7 @@ public class MM {
         for (RegistryObject<MachinePortBlock> block : MMLoader.OPORT_BLOCKS) {
             RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());
         }
+
+        ScreenManager.register(MMSetup.STRUCTURE_CONTAINER.get(), StructureGenBlockContainerScreen::new);
     }
 }

@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.datagen.gen;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
+import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import net.minecraft.data.DataGenerator;
@@ -33,5 +34,7 @@ public class MMItemModelProvider extends ItemModelProvider {
 
         this.getBuilder(MMSetup.BLUEPRINT.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/blueprint");
         this.getBuilder(MMSetup.STRUCTURE_DEVICE.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/scanning_tool");
+        this.getBuilder(MMSetup.STRUCTURE_ITEM.getId().getPath()).parent(new ModelFile.UncheckedModelFile(RLUtils.toRL(MM.ID + ":block/" + MMSetup.STRUCTURE_BLOCK.getId().getPath())));
+        this.getBuilder(MMSetup.PROJECTOR_ITEM.getId().getPath()).parent(new ModelFile.UncheckedModelFile(RLUtils.toRL(MM.ID + ":block/" + MMSetup.PROJECTOR_BLOCK.getId().getPath())));
     }
 }
