@@ -33,7 +33,7 @@ public class ControllerBlockContainerScreen extends ContainerScreen<ControllerBl
 
     @Override
     protected void renderLabels(MatrixStack stack, int p_230451_2_, int p_230451_3_) {
-        drawString(stack, this.minecraft.font, container.getTile().getDisplayName(), 10, -10, 0xfefefe);
+        this.minecraft.font.drawWordWrap(container.getTile().getDisplayName(), 10, -10,   176, 0xfefefe);
         drawString(stack, this.minecraft.font, "Inventory", 7, 110, 0xfefefe);
         int y = 50;
         for (String s : container.getTile().getUpdate().getMsg().split("\n")) {

@@ -1,7 +1,7 @@
 ---
-title : "Modern Documentation Theme"
-description: "Doks is a Hugo theme helping you build modern documentation websites that are secure, fast, and SEO-ready — by default."
-lead: "Doks is a Hugo theme helping you build modern documentation websites that are secure, fast, and SEO-ready — by default."
+title : "Masterful Machinery Mod"
+description: "A Minecraft Mod which gives mod pack developers to ability to create multiblock machines from json files and datapacks"
+lead: "A Minecraft Mod which gives mod pack developers to ability to create multiblock machines from json files and datapacks"
 date: 2020-10-06T08:47:36+00:00
 lastmod: 2020-10-06T08:47:36+00:00
 draft: false

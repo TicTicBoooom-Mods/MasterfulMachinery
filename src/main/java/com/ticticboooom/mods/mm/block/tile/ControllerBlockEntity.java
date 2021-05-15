@@ -102,7 +102,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     @Nullable
     @Override
     public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
-        return new ControllerBlockContainer(container.get(), p_createMenu_1_, this);
+        return new ControllerBlockContainer(container.get(), p_createMenu_1_, p_createMenu_2_, this);
     }
 
     @Override
