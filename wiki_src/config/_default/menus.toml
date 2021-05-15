@@ -22,6 +22,13 @@
   weight = 60
   identifier = "structures"
   url = "/docs/structures/"
+  
+[[docs]]
+  name = "Gallery"
+  weight = 62
+  identifier = "gallery"
+  url = "/docs/gallery/"
+  
 [[main]]
   name = "Docs"
   url = "/docs/intro/welcome/"
