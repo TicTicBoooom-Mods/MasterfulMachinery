@@ -19,6 +19,7 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -146,8 +147,15 @@ public class FluidPortState extends PortState {
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
-        layout.getFluidStacks().init(typeIndex, input, x + 1, y + 1, 16, 16, 1, false, null);
-        layout.getFluidStacks().set(typeIndex, new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), 1));
+        layout.getFluidStacks().init(typeIndex, input, x + 1, y + 1, 16, 16, amount, false, null);
+        layout.getFluidStacks().set(typeIndex, new FluidStack(ForgeRegistries.FLUIDS.getValue(RLUtils.toRL(fluid)), amount));
+        if (this.getChance() < 1){
+            layout.getFluidStacks().addTooltipCallback((s, a, b, c) -> {
+                if (s == typeIndex) {
+                    c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));
+                }
+            });
+        }
     }
 
     @Override

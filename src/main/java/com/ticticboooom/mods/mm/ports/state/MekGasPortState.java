@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.client.jei.ChemicalStackRenderer;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -21,6 +22,7 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +41,7 @@ public class MekGasPortState extends PortState {
 
         this.gas = gas;
         this.amount = amount;
+        renderer = new ChemicalStackRenderer<>(amount, false, 16, 16, null);
     }
 
     @Override
@@ -128,16 +131,24 @@ public class MekGasPortState extends PortState {
         drawable.draw(ms, x, y);
     }
 
+    private final ChemicalStackRenderer<GasStack> renderer;
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
         IGuiIngredientGroup<GasStack> gasGroup = layout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        gasGroup.init(typeIndex, input, x + 1, y + 1);
-        gasGroup.set(typeIndex, new GasStack(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(gas)), 1000));
+        gasGroup.init(typeIndex, input, renderer, x + 1, y + 1, 16, 16, 0, 0);
+        gasGroup.set(typeIndex, new GasStack(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(gas)), amount));
+        if (this.getChance() < 1) {
+            gasGroup.addTooltipCallback((s, a, b, c) -> {
+                if (s == typeIndex) {
+                    c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));
+                }
+            });
+        }
     }
 
     @Override
     public <T> List<T> getIngredient(boolean input) {
-        return (List<T>) ImmutableList.of(new GasStack(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(gas)), 1000));
+        return (List<T>) ImmutableList.of(new GasStack(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(gas)), amount));
     }
 
     @Override

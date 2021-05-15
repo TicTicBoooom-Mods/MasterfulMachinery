@@ -12,7 +12,9 @@ import com.ticticboooom.mods.mm.ports.storage.MekSlurryPortStorage;
 import lombok.SneakyThrows;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.client.jei.ChemicalStackRenderer;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -21,6 +23,7 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,9 +39,9 @@ public class MekSlurryPortState extends PortState {
     private final long amount;
 
     public MekSlurryPortState(String gas, long amount) {
-
         this.slurry = gas;
         this.amount = amount;
+        renderer = new ChemicalStackRenderer<>(amount, false,  16, 16, null);
     }
 
     @Override
@@ -124,6 +127,7 @@ public class MekSlurryPortState extends PortState {
         }
     }
 
+    private final ChemicalStackRenderer<SlurryStack> renderer;
     @Override
     public void render(MatrixStack ms, int x, int y, int mouseX, int mouseY, IJeiHelpers helpers) {
         IDrawableStatic drawable = helpers.getGuiHelper().getSlotDrawable();
@@ -133,14 +137,20 @@ public class MekSlurryPortState extends PortState {
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
         IGuiIngredientGroup<SlurryStack> gasGroup = layout.getIngredientsGroup(MekanismJEI.TYPE_SLURRY);
-        gasGroup.init(typeIndex, input, x + 1,  y+ 1);
-        gasGroup.set(typeIndex, new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), 1000));
+        gasGroup.init(typeIndex, input, renderer, x + 1,  y + 1, 16, 16, 0, 0);
+        gasGroup.set(typeIndex, new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), amount));
+        if (this.getChance() < 1) {
+            gasGroup.addTooltipCallback((s, a, b, c) -> {
+                if (s == typeIndex) {
+                    c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));
+                }
+            });
+        }
     }
-
 
     @Override
     public <T> List<T> getIngredient(boolean input) {
-        return (List<T>) ImmutableList.of(new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), 1000));
+        return (List<T>) ImmutableList.of(new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(slurry)), amount));
     }
 
     @Override

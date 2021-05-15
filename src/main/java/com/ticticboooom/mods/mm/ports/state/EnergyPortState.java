@@ -4,15 +4,22 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
 import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.Getter;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 public class EnergyPortState extends PortState {
@@ -27,6 +34,7 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
 
     public EnergyPortState(int amount) {
         this.amount = amount;
+
     }
 
     @Override
@@ -94,12 +102,26 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
 
     @Override
     public void render(MatrixStack ms, int x, int y, int mouseX, int mouseY, IJeiHelpers helpers) {
-        IDrawableStatic drawable = helpers.getGuiHelper().createDrawable(new ResourceLocation(MM.ID, "textures/gui/slot_parts.png"), 18, 61, 4, 18);
+        IDrawableStatic drawable = helpers.getGuiHelper().createDrawable(new ResourceLocation(MM.ID, "textures/gui/slot_parts.png"), 18, 61, 18, 18);
         drawable.draw(ms, x, y);
     }
 
     @Override
+    public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
+        IGuiIngredientGroup<Integer> group = layout.getIngredientsGroup(MMJeiPlugin.ENERGY_TYPE);
+        group.init(typeIndex, input, x + 1, y + 1);
+        group.set(typeIndex, amount);
+        if (this.getChance() < 1){
+            group.addTooltipCallback((s, a, b, c) -> {
+                if (s == typeIndex) {
+                    c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));
+                }
+            });
+        }
+    }
+
+    @Override
     public IIngredientType<?> getJeiIngredientType() {
-        return null;
+        return MMJeiPlugin.ENERGY_TYPE;
     }
 }

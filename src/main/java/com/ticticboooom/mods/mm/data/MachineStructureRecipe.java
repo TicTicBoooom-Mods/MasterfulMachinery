@@ -49,13 +49,16 @@ import java.util.List;
 public class MachineStructureRecipe implements IRecipe<IInventory> {
     private final ResourceLocation rl;
     @Getter
+    private String name;
+    @Getter
     private List<List<MachineStructureRecipeKeyModel>> models;
     @Getter
     private final List<String> controllerId;
     private String id;
 
-    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl)  {
+    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl, String name)  {
         this.rl = rl;
+        this.name = name;
         List<MachineStructureRecipeKeyModel> rotated = new ArrayList<>();
         List<MachineStructureRecipeKeyModel> rotated1 = new ArrayList<>();
         List<MachineStructureRecipeKeyModel> rotated2 = new ArrayList<>();
@@ -213,10 +216,16 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 }
             }
             String id = obj.get("id").getAsString();
+            String name = "";
+            if (obj.has("name")){
+                name = obj.get("name").getAsString();
+            } else {
+                name = id;
+            }
             DataResult<Pair<List<MachineStructureRecipeKeyModel>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(MachineStructureRecipeKeyModel.CODEC)).apply(obj.getAsJsonArray("blocks"));
             List<MachineStructureRecipeKeyModel> first = apply.result().get().getFirst();
             validateStructure(first, ids, id, rl);
-            return new MachineStructureRecipe(first, ids, id, rl);
+            return new MachineStructureRecipe(first, ids, id, rl, name);
         }
 
         @SneakyThrows
@@ -229,10 +238,11 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 controllerId.add(buf.readUtf());
             }
             String id = buf.readUtf();
+            String name = buf.readUtf();
             try {
                 MachineStructureObject machineStructureObject = buf.readWithCodec(MachineStructureObject.CODEC);
                 List<MachineStructureRecipeKeyModel> models = machineStructureObject.getInner();
-                return new MachineStructureRecipe(models, controllerId, id, rl);
+                return new MachineStructureRecipe(models, controllerId, id, rl, name);
             } catch (Exception  e) {
                 e.printStackTrace();
             }
@@ -246,6 +256,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 buf.writeUtf(s);
             }
             buf.writeUtf(recipe.id);
+            buf.writeUtf(recipe.name);
             try {
                 buf.writeWithCodec(MachineStructureObject.CODEC, new MachineStructureObject(recipe.getModels().get(0)));
             } catch (Exception e) {

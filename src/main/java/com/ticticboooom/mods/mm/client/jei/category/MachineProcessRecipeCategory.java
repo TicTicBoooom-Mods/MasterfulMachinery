@@ -25,6 +25,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -36,11 +37,13 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
 
     private IJeiHelpers helpers;
     private String structureId;
+    private String structureName;
 
-    public MachineProcessRecipeCategory(IJeiHelpers helpers, String structureId) {
+    public MachineProcessRecipeCategory(IJeiHelpers helpers, String structureId, String structureName) {
         this.helpers = helpers;
 
         this.structureId = structureId;
+        this.structureName = structureName;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
 
     @Override
     public String getTitle() {
-        return "Process";
+        return structureName + " Recipes";
     }
 
     public IDrawable getBackground() {
@@ -85,7 +88,7 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
         }
 
         for (PortState output : recipe.getOutputs()) {
-            List<?> stacks = inputStacks.getOrDefault(output.getName(), new ArrayList<>());
+            List<?> stacks = outputStacks.getOrDefault(output.getName(), new ArrayList<>());
             stacks.addAll(output.getIngredient(true));
             outputStacks.put(output.getName(), stacks);
         }

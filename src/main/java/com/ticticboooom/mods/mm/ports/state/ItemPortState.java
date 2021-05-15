@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.http.annotation.Immutable;
 
@@ -235,6 +236,13 @@ public class ItemPortState extends PortState {
             assert tag != null;
             Stream<ItemStack> itemStackStream = tag.getValues().stream().map(z -> new ItemStack(z.getItem(), this.count));
             layout.getItemStacks().set(typeIndex, itemStackStream.collect(Collectors.toList()));
+        }
+        if (this.getChance() < 1){
+            layout.getItemStacks().addTooltipCallback((s, a, b, c) -> {
+                if (s == typeIndex) {
+                    c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));
+                }
+            });
         }
     }
 
