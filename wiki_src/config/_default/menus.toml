@@ -6,10 +6,10 @@
   url = "/docs/intro/"
 
 [[docs]]
-  name = "Config"
+  name = "Controllers & Ports"
   weight = 10
   identifier = "config"
-  url = "/docs/controllers/"
+  url = "/docs/config/"
 
 [[docs]]
   name = "Process Recipes"
@@ -22,6 +22,7 @@
   weight = 60
   identifier = "structures"
   url = "/docs/structures/"
+
 [[main]]
   name = "Docs"
   url = "/docs/intro/welcome/"

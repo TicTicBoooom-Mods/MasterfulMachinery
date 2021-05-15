@@ -17,6 +17,7 @@ toc: true
 
 ```json
 {
-  "type": "masterfulmachinery:machine_structure"
+  "type": "masterfulmachinery:machine_structure",
+  "controllerId": [""]
 }
 ```
