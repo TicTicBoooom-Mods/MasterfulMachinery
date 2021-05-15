@@ -3,9 +3,7 @@ package com.ticticboooom.mods.mm.client.jei.category;
 import com.google.common.collect.ImmutableList;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
-import com.ticticboooom.mods.mm.client.jei.ingredients.EnergyIngredientHelper;
-import com.ticticboooom.mods.mm.client.jei.ingredients.EnergyIngredientRenderer;
-import com.ticticboooom.mods.mm.client.jei.ingredients.EnergyIngredientType;
+import com.ticticboooom.mods.mm.client.jei.ingredients.*;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
 import com.ticticboooom.mods.mm.registration.MMLoader;
@@ -30,6 +28,10 @@ public class MMJeiPlugin implements IModPlugin {
     public static final EnergyIngredientRenderer ENERGY_TYPE_RENDERER = new EnergyIngredientRenderer();
     public static final EnergyIngredientHelper ENERGY_TYPE_HELPER = new EnergyIngredientHelper();
 
+    public static final PNCPressureIngredientType PRESSURE_TYPE = new PNCPressureIngredientType();
+    public static final PNCPressureIngredientRenderer PRESSURE_TYPE_RENDERER = new PNCPressureIngredientRenderer();
+    public static final PNCPressureIngredientHelper PRESSURE_TYPE_HELPER = new PNCPressureIngredientHelper();
+
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(MM.ID, "jei_main");
@@ -38,6 +40,7 @@ public class MMJeiPlugin implements IModPlugin {
     @Override
     public void registerIngredients(IModIngredientRegistration registration) {
         registration.register(MMJeiPlugin.ENERGY_TYPE, ImmutableList.of(), ENERGY_TYPE_HELPER, ENERGY_TYPE_RENDERER);
+        registration.register(MMJeiPlugin.PRESSURE_TYPE, ImmutableList.of(), PRESSURE_TYPE_HELPER, PRESSURE_TYPE_RENDERER);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients;
 
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.EnergyStack;
 import mezz.jei.api.ingredients.IIngredientType;
 
-public class EnergyIngredientType implements IIngredientType<Integer> {
+public class EnergyIngredientType implements IIngredientType<EnergyStack> {
     @Override
-    public Class<? extends Integer> getIngredientClass() {
-        return Integer.class;
+    public Class<? extends EnergyStack> getIngredientClass() {
+        return EnergyStack.class;
     }
 }

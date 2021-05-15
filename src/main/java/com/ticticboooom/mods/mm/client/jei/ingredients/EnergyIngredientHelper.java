@@ -1,43 +1,44 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients;
 
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.EnergyStack;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
 import javax.annotation.Nullable;
 
-public class EnergyIngredientHelper implements IIngredientHelper<Integer> {
+public class EnergyIngredientHelper implements IIngredientHelper<EnergyStack> {
     @Nullable
     @Override
-    public Integer getMatch(Iterable<Integer> ingredients, Integer ingredientToMatch) {
+    public EnergyStack getMatch(Iterable<EnergyStack> ingredients, EnergyStack ingredientToMatch) {
         return ingredientToMatch;
     }
 
     @Override
-    public String getDisplayName(Integer ingredient) {
+    public String getDisplayName(EnergyStack ingredient) {
         return "Forge Energy";
     }
 
     @Override
-    public String getUniqueId(Integer ingredient) {
-        return ingredient + "";
+    public String getUniqueId(EnergyStack ingredient) {
+        return "fe_" + ingredient + "_fe";
     }
 
     @Override
-    public String getModId(Integer ingredient) {
-        return "forge";
+    public String getModId(EnergyStack ingredient) {
+        return "mjkbnhsadfhvdasjeu";
     }
 
     @Override
-    public String getResourceId(Integer ingredient) {
-        return "";
+    public String getResourceId(EnergyStack ingredient) {
+        return "fe_" + ingredient.getAmount() + "_fe";
     }
 
     @Override
-    public Integer copyIngredient(Integer ingredient) {
-        return ingredient;
+    public EnergyStack copyIngredient(EnergyStack ingredient) {
+        return new EnergyStack(ingredient.getAmount());
     }
 
     @Override
-    public String getErrorInfo(@Nullable Integer ingredient) {
+    public String getErrorInfo(@Nullable EnergyStack ingredient) {
         return "Error";
     }
 }

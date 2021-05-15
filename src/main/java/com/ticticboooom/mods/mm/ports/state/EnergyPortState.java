@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.EnergyStack;
 import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.Getter;
@@ -108,9 +109,9 @@ public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
-        IGuiIngredientGroup<Integer> group = layout.getIngredientsGroup(MMJeiPlugin.ENERGY_TYPE);
+        IGuiIngredientGroup<EnergyStack> group = layout.getIngredientsGroup(MMJeiPlugin.ENERGY_TYPE);
         group.init(typeIndex, input, x + 1, y + 1);
-        group.set(typeIndex, amount);
+        group.set(typeIndex, new EnergyStack(amount));
         if (this.getChance() < 1){
             group.addTooltipCallback((s, a, b, c) -> {
                 if (s == typeIndex) {

@@ -156,7 +156,7 @@ dependencies {
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
-    implementation fg.deobf("curse.maven:tesseractapi-462718:3293214")
+    implementation fg.deobf('me.desht.pneumaticcraft:pneumaticcraft-repressurized:1.16.5-2.12.2-186');
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"

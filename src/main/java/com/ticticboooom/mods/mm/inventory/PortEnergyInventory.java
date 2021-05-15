@@ -2,9 +2,6 @@ package com.ticticboooom.mods.mm.inventory;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.energy.IEnergyStorage;
-import tesseract.api.gt.GTConsumer;
-import tesseract.api.gt.IEnergyHandler;
-import tesseract.util.Dir;
 
 public class PortEnergyInventory implements IEnergyStorage {
 

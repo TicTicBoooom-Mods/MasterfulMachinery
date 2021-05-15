@@ -31,4 +31,8 @@ public abstract class PortStorage {
             container.addSlot(new Slot(inv, i,8 + (i * 18), 199));
         }
     };
+
+    public void tick(MachinePortBlockEntity tile) {
+
+    }
 }

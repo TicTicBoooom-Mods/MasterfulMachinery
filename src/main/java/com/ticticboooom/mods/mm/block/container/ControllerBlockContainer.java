@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nullable;
@@ -20,7 +21,7 @@ public class ControllerBlockContainer extends Container {
         super(p_i50105_1_, windowId);
         this.tile = tile;
         int playerOffsetX = 8;
-        int playerOffsetY = 141;
+        int playerOffsetY = 121;
         for (int j = 0; j < 3; j++) {
             for (int i = 0; i < 9; i++) {
                 this.addSlot(new Slot(inv, 9 + (j * 9 + i), i* 18 + playerOffsetX, j* 18 + playerOffsetY));
@@ -28,7 +29,7 @@ public class ControllerBlockContainer extends Container {
         }
 
         for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(inv, i,8 + (i * 18), 199));
+            this.addSlot(new Slot(inv, i,8 + (i * 18), 179));
         }
     }
 
@@ -42,4 +43,8 @@ public class ControllerBlockContainer extends Container {
     }
 
 
+    @Override
+    public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
+        return ItemStack.EMPTY;
+    }
 }
