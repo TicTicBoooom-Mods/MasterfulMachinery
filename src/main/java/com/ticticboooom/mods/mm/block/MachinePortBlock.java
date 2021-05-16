@@ -30,12 +30,15 @@ public class MachinePortBlock extends Block {
     private String langName;
     @Getter
     private String controllerId;
+    @Getter
+    private String textureOverride;
 
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId) {
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride) {
         super(AbstractBlock.Properties.of(Material.METAL));
         this.type = type;
         this.langName = name;
         this.controllerId = controllerId;
+        this.textureOverride = textureOverride;
     }
 
     @Override

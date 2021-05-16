@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.datagen.gen;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
+import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.renderer.RenderType;
@@ -29,7 +30,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         for (RegistryObject<ControllerBlock> controller : MMLoader.BLOCKS) {
-            dynamicBlockNorthOverlay(controller.getId(), BASE_TEXTURE, CONTROLLER_TEXTURE);
+            dynamicBlockNorthOverlay(controller.getId(), controller.get().getTexOverride() != null ? RLUtils.toRL(controller.get().getTexOverride()) : BASE_TEXTURE, CONTROLLER_TEXTURE);
             VariantBlockStateBuilder variantBuilder = getVariantBuilder(controller.get());
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.NORTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.SOUTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(180).addModel();
@@ -38,13 +39,12 @@ public class MMBlockStateProvider extends BlockStateProvider {
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.UP).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.DOWN).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
         }
-
         for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {
-            dynamicBlock(port.getId(), BASE_TEXTURE, IPORT_TEXTURE);
+            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, IPORT_TEXTURE);
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
         }
         for (RegistryObject<MachinePortBlock> port : MMLoader.OPORT_BLOCKS) {
-            dynamicBlock(port.getId(), BASE_TEXTURE, OPORT_TEXTURE);
+            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, OPORT_TEXTURE);
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
         }
     }

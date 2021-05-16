@@ -33,14 +33,17 @@ public class ControllerBlock extends DirectionalBlock {
     private String controllerName;
     @Getter
     private String controllerId;
+    @Getter
+    private String texOverride;
 
-    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id) {
+    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride) {
         super(AbstractBlock.Properties.of(Material.METAL)
                 .harvestLevel(1)
                 .harvestTool(ToolType.PICKAXE));
         this.type = type;
         this.controllerName = name;
         this.controllerId = id;
+        this.texOverride = texOverride;
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
     }
 
