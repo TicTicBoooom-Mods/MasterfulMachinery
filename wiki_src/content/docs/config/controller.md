@@ -29,4 +29,3 @@ Once you are inside the above directory. create a new JSON file, you can call it
 
 Open the JSON file in your favorite JSON supporting text editor
 
-![Image](/images/screenshot.png)
