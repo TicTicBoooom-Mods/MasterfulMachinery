@@ -83,7 +83,7 @@ public class MMLoader {
                 String name = portObj.get("name").getAsString();
                 String portTexOverride = null;
                 if (portObj.has("textureOverride")){
-                    portTexOverride = portObj.get("name").getAsString();
+                    portTexOverride = portObj.get("textureOverride").getAsString();
                 } else {
                     portTexOverride = textureOverrideFinal;
                 }

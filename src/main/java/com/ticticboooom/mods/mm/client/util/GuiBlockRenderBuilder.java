@@ -10,6 +10,9 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
@@ -25,10 +28,16 @@ public class GuiBlockRenderBuilder {
     private Minecraft mc = Minecraft.getInstance();
     private Vector3f scale;
     private Vector3f prePosition = new Vector3f();
+    private TileEntityRenderer<TileEntity> ter = null;
+    private TileEntity tile;
 
     public GuiBlockRenderBuilder(BlockState blockState) {
         this.blockState = blockState;
         position = new BlockPos(0, 0, 0);
+        tile = blockState.createTileEntity(Minecraft.getInstance().level);
+        if (tile != null) {
+            ter = TileEntityRendererDispatcher.instance.getRenderer(tile);
+        }
     }
 
     public GuiBlockRenderBuilder at(BlockPos position) {
@@ -73,6 +82,9 @@ public class GuiBlockRenderBuilder {
         ms.pushPose();
         transformMatrix(ms);
         brd.renderBlock(blockState, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+        if (ter != null) {
+            ter.render(tile, 1.0f, ms, buf, 0, 1);
+        }
         buf.endBatch();
         ms.popPose();
         cleanupRender();

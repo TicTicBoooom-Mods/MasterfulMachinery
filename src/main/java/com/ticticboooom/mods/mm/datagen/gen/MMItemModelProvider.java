@@ -32,9 +32,9 @@ public class MMItemModelProvider extends ItemModelProvider {
             this.getBuilder(port.getId().toString()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(port.getId().getNamespace(), "block/" + port.getId().getPath())));
         }
 
-        this.getBuilder(MMSetup.BLUEPRINT.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/blueprint");
-        this.getBuilder(MMSetup.STRUCTURE_DEVICE.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "items/scanning_tool");
-        this.getBuilder(MMSetup.STRUCTURE_ITEM.getId().getPath()).parent(new ModelFile.UncheckedModelFile(RLUtils.toRL(MM.ID + ":block/" + MMSetup.STRUCTURE_BLOCK.getId().getPath())));
+        this.getBuilder(MMSetup.BLUEPRINT.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "item/blueprint");
+        this.getBuilder(MMSetup.STRUCTURE_DEVICE.getId().getPath()).parent(new ModelFile.UncheckedModelFile("item/generated")).texture("layer0", "item/scanning_tool");
+        this.getBuilder(MMSetup.STRUCTURE_ITEM.getId().getPath()).parent(new ModelFile.UncheckedModelFile(RLUtils.toRL(MM.ID + ":block/config_generator")));
         this.getBuilder(MMSetup.PROJECTOR_ITEM.getId().getPath()).parent(new ModelFile.UncheckedModelFile(RLUtils.toRL(MM.ID + ":block/" + MMSetup.PROJECTOR_BLOCK.getId().getPath())));
     }
 }

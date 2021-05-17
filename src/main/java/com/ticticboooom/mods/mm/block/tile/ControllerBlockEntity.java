@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -32,14 +33,13 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     private RegistryObject<ContainerType<ControllerBlockContainer>> container;
     private String controllerId;
     @Getter
-    private ProcessUpdate update = new ProcessUpdate(0, "");
+    private ProcessUpdate update = new ProcessUpdate(0, "", "", "");
 
     public ControllerBlockEntity(RegistryObject<TileEntityType<?>> type, RegistryObject<ContainerType<ControllerBlockContainer>> container, String controllerId) {
         super(type.get());
         this.container = container;
         this.controllerId = controllerId;
     }
-
 
     @Override
     public void tick() {
@@ -51,6 +51,10 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         for (MachineStructureRecipe recipe : recipes) {
             int index = recipe.matches(this.worldPosition, level, controllerId);
             if (index != -1) {
+                if (!update.getSid().equals(recipe.getId().toString())){
+                    update.setTicksTaken(0);
+                }
+                update.setSid(recipe.getId().toString());
                 update.setMsg("Found structure");
                 onStructureFound(recipe, index);
                 break;
@@ -84,8 +88,13 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         boolean processed = false;
         for (MachineProcessRecipe recipe : processRecipes) {
             if (recipe.matches(inputPorts, structure.getStructureId())) {
+                if (!update.getId().equals(recipe.getId().toString())){
+                    update.setTicksTaken(0);
+                }
+                this.update.setId(recipe.getId().toString());
                 this.update = recipe.process(inputPorts, outputPorts, this.update);
                 processed = true;
+                break;
             }
         }
         if (!processed) {

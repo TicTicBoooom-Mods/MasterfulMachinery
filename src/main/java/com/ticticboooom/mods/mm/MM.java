@@ -118,7 +118,7 @@ public class MM {
         for (RegistryObject<MachinePortBlock> block : MMLoader.OPORT_BLOCKS) {
             RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());
         }
-
+        RenderTypeLookup.setRenderLayer(MMSetup.PROJECTOR_BLOCK.get(), RenderType.translucent());
         ScreenManager.register(MMSetup.STRUCTURE_CONTAINER.get(), StructureGenBlockContainerScreen::new);
     }
 }

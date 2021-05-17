@@ -180,6 +180,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                         .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
                         .withScale(new Vector3f(12f, -12f, 12f))
                         .finalize(matrixStack);
+
             }
         }
 
@@ -187,9 +188,6 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         xLastMousePosition = mouseX;
         yLastMousePosition = mouseY;
         getButton().draw(matrixStack, 144, 125);
-
-
-
     }
 
     @Override

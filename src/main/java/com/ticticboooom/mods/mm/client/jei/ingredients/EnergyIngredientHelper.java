@@ -24,7 +24,7 @@ public class EnergyIngredientHelper implements IIngredientHelper<EnergyStack> {
 
     @Override
     public String getModId(EnergyStack ingredient) {
-        return "mjkbnhsadfhvdasjeu";
+        return "forge";
     }
 
     @Override
