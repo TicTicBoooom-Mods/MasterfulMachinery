@@ -12,4 +12,41 @@ menu:
 toc: true
 weight: 620
 ---
+## Czbüendel
+<details>
+<summary>Structure's</summary>
+<br>
+
+Industrial Kiln made by Czbüendel
 ![Industrial Kiln made by Czbüendel](/images/czbüendel-industrialkiln.png "Czbüendel - Industrial Kiln")
+</details>
+
+## Jerome226
+<details>
+<summary>Structure's</summary>
+<br>
+
+Infuser made by Jerome226
+![Infuser made by Jerome226](/images/jerome226-infuser.png "Jerome226 - Infuser")
+
+Metalurgic Fabricator made by Jerome226
+![Metalurgic Fabricator made by Jerome226](/images/jerome226-metallurgicfabricator.png "Jerome226 - Metalurgic Fabricator")
+
+Multiblock Inscriber made by Jerome226
+![Multiblock Inscriber made by Jerome226](/images/jerome226-multiblockinscriber.png "Jerome226 - Multiblock Inscriber")
+
+Improved Metalurgic Fabricator made by Jerome226
+![Improved Metalurgic Fabricator made by Jerome226](/images/jerome226-improvedmetallurgicfabricator.png "Jerome226 - Improved Metalurgic Fabricator")
+</details>
+
+## ThomasR
+<details>
+<summary>Structure's</summary>
+<br>
+
+Quantum Implosion Compressor made by ThomasR
+![Quantum Implosion Compressor made by ThomasR](/images/thomasr-quantumimplosioncompressor.png "ThomasR - Quantum Implosion Compressor")
+
+UU Oven made by ThomasR
+![UU Oven made by ThomasR](/images/thomasr-uuoven.png "ThomasR UU Oven")
+</details>
