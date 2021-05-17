@@ -59,8 +59,10 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     private boolean canTake(List<PortStorage> inputPorts) {
         for (PortState input : inputs) {
-            if (!input.validateRequirement(inputPorts)) {
-                return false;
+            if (!input.isConsumePerTick()){
+                if (!input.validateRequirement(inputPorts)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -100,7 +102,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         boolean canPut = canPut(outputPorts);
 
         if (!canTake || !canPut) {
-            update.setMsg("Not enough space \nin output ports");
+            update.setMsg("Found Structure");
             return update;
         }
 
@@ -226,7 +228,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 String type = out.get("type").getAsString();
                 boolean perTick = false;
                 if (out.has("perTick")) {
-                    perTick = out.get("consumePerTick").getAsBoolean();
+                    perTick = out.get("perTick").getAsBoolean();
                 } else if (out.has("consumePerTick")){
                     perTick = out.get("consumePerTick").getAsBoolean();
                 }

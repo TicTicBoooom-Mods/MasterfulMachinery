@@ -13,6 +13,7 @@ import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureObject;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
+import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeLegendModel;
 import com.ticticboooom.mods.mm.exception.InvalidStructureDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
@@ -42,9 +43,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MachineStructureRecipe implements IRecipe<IInventory> {
     private final ResourceLocation rl;
@@ -222,10 +221,67 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             } else {
                 name = id;
             }
-            DataResult<Pair<List<MachineStructureRecipeKeyModel>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(MachineStructureRecipeKeyModel.CODEC)).apply(obj.getAsJsonArray("blocks"));
-            List<MachineStructureRecipeKeyModel> first = apply.result().get().getFirst();
-            validateStructure(first, ids, id, rl);
-            return new MachineStructureRecipe(first, ids, id, rl, name);
+            DataResult<Pair<List<List<String>>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(Codec.list(Codec.STRING))).apply(obj.getAsJsonArray("layout"));
+            List<List<String>> layout = apply.result().get().getFirst();
+
+            List<MachineStructureRecipeKeyModel> result = getResult(obj.getAsJsonObject("legend"), layout);
+
+
+            validateStructure(result, ids, id, rl);
+            return new MachineStructureRecipe(result, ids, id, rl, name);
+        }
+
+        private List<MachineStructureRecipeKeyModel> getResult(JsonObject legend, List<List<String>> layout){
+            HashMap<Character, MachineStructureRecipeLegendModel> model = new HashMap<>();
+            for (Map.Entry<String, JsonElement> entry : legend.entrySet()) {
+                DataResult<Pair<MachineStructureRecipeLegendModel, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(MachineStructureRecipeLegendModel.CODEC).apply(entry.getValue());
+                MachineStructureRecipeLegendModel first = apply.result().get().getFirst();
+                model.put(entry.getKey().charAt(0), first);
+            }
+            ArrayList<MachineStructureRecipeKeyModel> result = new ArrayList<>();
+            Vector3i controllerPos = getControllerPos(layout);
+
+            int y = 0;
+            int z = 0;
+            for (List<String> layer : layout) {
+                for (String row : layer) {
+                    for (int x = 0; x < row.length(); x++) {
+                        char c = row.charAt(x);
+                        if (c == 'C'){
+                            continue;
+                        }
+                        if (c == ' '){
+                            continue;
+                        }
+                        MachineStructureRecipeLegendModel machineStructureRecipeLegendModel = model.get(c);
+                        BlockPos pos = new BlockPos(x, y, z).subtract(new BlockPos(controllerPos));
+                        result.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()), machineStructureRecipeLegendModel.getTag(), machineStructureRecipeLegendModel.getBlock(), machineStructureRecipeLegendModel.getNbt()));
+                    }
+                    z++;
+                }
+                y++;
+                z = 0;
+            }
+            return result;
+        }
+
+        @SneakyThrows
+        private Vector3i getControllerPos(List<List<String>> layout) {
+            int y = 0;
+            int z = 0;
+            for (List<String> layer : layout) {
+                for (String row : layer) {
+                    for (int x = 0; x < row.length(); x++) {
+                        if (row.charAt(x) == 'C'){
+                            return new Vector3i(x, y, z);
+                        }
+                    }
+                    z++;
+                }
+                y++;
+                z = 0;
+            }
+            throw new InvalidStructureDefinitionException("'C' AKA controller not found in layout section");
         }
 
         @SneakyThrows

@@ -40,14 +40,14 @@ public class PortFluidInventory implements IFluidHandler {
             return 0;
         }
         if (action == FluidAction.SIMULATE) {
-            if (resource.getAmount() + stack.getAmount() > capacity) {
+            if ((long)resource.getAmount() + stack.getAmount() > capacity) {
                 return resource.getAmount() - (stack.getAmount()  + resource.getAmount() - capacity);
             } else {
                 return resource.getAmount();
             }
         }
 
-        if (resource.getAmount() + stack.getAmount() > capacity) {
+        if ((long)resource.getAmount() + stack.getAmount() > capacity) {
             int preAmount = stack.getAmount();
             if (stack.isEmpty()) {
                 stack = new FluidStack(resource.getFluid(), capacity);

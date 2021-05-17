@@ -5,6 +5,7 @@ import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
+import com.ticticboooom.mods.mm.registration.MMSetup;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
@@ -22,10 +23,10 @@ public class MMBlockStateProvider extends BlockStateProvider {
         super(gen, MM.ID, exFileHelper);
     }
 
-    private static final ResourceLocation BASE_TEXTURE = new ResourceLocation(MM.ID, "blocks/base_block");
-    private static final ResourceLocation CONTROLLER_TEXTURE = new ResourceLocation(MM.ID, "blocks/controller_cutout");
-    private static final ResourceLocation IPORT_TEXTURE = new ResourceLocation(MM.ID, "blocks/port/input_cutout");
-    private static final ResourceLocation OPORT_TEXTURE = new ResourceLocation(MM.ID, "blocks/port/output_cutout");
+    private static final ResourceLocation BASE_TEXTURE = new ResourceLocation(MM.ID, "block/base_block");
+    private static final ResourceLocation CONTROLLER_TEXTURE = new ResourceLocation(MM.ID, "block/controller_cutout");
+    private static final ResourceLocation IPORT_TEXTURE = new ResourceLocation(MM.ID, "block/base_ports/item_input_cutout");
+    private static final ResourceLocation OPORT_TEXTURE = new ResourceLocation(MM.ID, "block/base_ports/item_output_cutout");
 
     @Override
     protected void registerStatesAndModels() {
@@ -39,6 +40,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.UP).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.DOWN).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();
         }
+
         for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {
             dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, IPORT_TEXTURE);
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
@@ -47,6 +49,9 @@ public class MMBlockStateProvider extends BlockStateProvider {
             dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, OPORT_TEXTURE);
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
         }
+
+        simpleBlock(MMSetup.PROJECTOR_BLOCK.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/projector")));
+        simpleBlock(MMSetup.STRUCTURE_BLOCK.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/config_generator")));
     }
 
     public void dynamicBlockNorthOverlay(ResourceLocation loc, ResourceLocation baseTexture, ResourceLocation overlayTexture) {
