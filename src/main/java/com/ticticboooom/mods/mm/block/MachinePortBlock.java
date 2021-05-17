@@ -14,9 +14,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -32,13 +34,16 @@ public class MachinePortBlock extends Block {
     private String controllerId;
     @Getter
     private String textureOverride;
+    @Getter
+    private ResourceLocation overlay;
 
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride) {
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
         super(AbstractBlock.Properties.of(Material.METAL));
         this.type = type;
         this.langName = name;
         this.controllerId = controllerId;
         this.textureOverride = textureOverride;
+        this.overlay = overlay;
     }
 
     @Override
@@ -74,5 +79,15 @@ public class MachinePortBlock extends Block {
             }
         }
         super.onRemove(state, world, pos, state1, p_196243_5_);
+    }
+
+
+    @Override
+    public void neighborChanged(BlockState p_220069_1_, World world, BlockPos pos, Block p_220069_4_, BlockPos changedPos, boolean p_220069_6_) {
+        super.neighborChanged(p_220069_1_, world, pos, p_220069_4_, changedPos, p_220069_6_);
+        TileEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof MachinePortBlockEntity){
+            ((MachinePortBlockEntity) tile).getStorage().neighborChanged();
+        }
     }
 }

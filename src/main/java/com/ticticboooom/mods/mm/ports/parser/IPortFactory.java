@@ -6,6 +6,7 @@ import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,4 +18,6 @@ public interface IPortFactory {
     Supplier<PortStorage> createStorage(JsonObject obj);
     void write(PacketBuffer buf, PortState state);
     void setIngredients(IIngredients ingredients, List<?> stacks, boolean input);
+    ResourceLocation getInputOverlay();
+    ResourceLocation getOutputOverlay();
 }

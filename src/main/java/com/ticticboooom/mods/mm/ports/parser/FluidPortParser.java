@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.ports.state.FluidPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.storage.FluidPortStorage;
@@ -13,6 +14,7 @@ import lombok.SneakyThrows;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -52,5 +54,15 @@ public class FluidPortParser implements IPortFactory {
     @SneakyThrows
     public PortState createState(PacketBuffer buf) {
         return buf.readWithCodec(FluidPortState.CODEC);
+    }
+
+    @Override
+    public ResourceLocation getInputOverlay() {
+        return new ResourceLocation(MM.ID, "block/base_ports/fluid_input_cutout");
+    }
+
+    @Override
+    public ResourceLocation getOutputOverlay() {
+        return new ResourceLocation(MM.ID, "block/base_ports/fluid_output_cutout");
     }
 }

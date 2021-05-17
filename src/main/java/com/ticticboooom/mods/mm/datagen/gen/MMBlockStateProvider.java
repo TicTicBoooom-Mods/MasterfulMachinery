@@ -42,11 +42,11 @@ public class MMBlockStateProvider extends BlockStateProvider {
         }
 
         for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {
-            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, IPORT_TEXTURE);
+            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, port.get().getOverlay());
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
         }
         for (RegistryObject<MachinePortBlock> port : MMLoader.OPORT_BLOCKS) {
-            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, OPORT_TEXTURE);
+            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, port.get().getOverlay());
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
         }
 

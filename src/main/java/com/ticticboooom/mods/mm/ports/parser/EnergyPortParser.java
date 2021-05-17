@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.ports.state.EnergyPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
@@ -12,6 +13,7 @@ import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.SneakyThrows;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -36,6 +38,16 @@ public class EnergyPortParser implements IPortFactory {
 
     @Override
     public void setIngredients(IIngredients ingredients, List<?> stacks, boolean input) {
+    }
+
+    @Override
+    public ResourceLocation getInputOverlay() {
+        return new ResourceLocation(MM.ID, "block/base_ports/energy_input_cutout");
+    }
+
+    @Override
+    public ResourceLocation getOutputOverlay() {
+        return new ResourceLocation(MM.ID, "block/base_ports/energy_output_cutout");
     }
 
     @Override

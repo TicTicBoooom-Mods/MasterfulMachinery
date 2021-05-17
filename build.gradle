@@ -18,7 +18,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.1.27-T' + System.currentTimeMillis()
+version = '1.16.5-0.1.28-T' + System.currentTimeMillis()
 group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'MasterfulMachinery'
 
@@ -155,7 +155,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-    compileOnly fg.deobf('me.desht.pneumaticcraft:pneumaticcraft-repressurized:1.16.5-2.12.2-186');
+    implementation fg.deobf('me.desht.pneumaticcraft:pneumaticcraft-repressurized:1.16.5-2.12.2-186');
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"

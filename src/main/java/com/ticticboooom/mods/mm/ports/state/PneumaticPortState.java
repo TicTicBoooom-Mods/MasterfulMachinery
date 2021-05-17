@@ -22,7 +22,7 @@ import java.util.List;
 public class PneumaticPortState extends PortState {
 
     public static final Codec<PneumaticPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
-            Codec.FLOAT.fieldOf("pressure").forGetter(z -> z.pressure)
+            Codec.FLOAT.fieldOf("air").forGetter(z -> z.pressure)
     ).apply(x, PneumaticPortState::new));
 
     private float pressure;
@@ -33,29 +33,19 @@ public class PneumaticPortState extends PortState {
 
     @Override
     public void processRequirement(List<PortStorage> storage) {
-        float current = pressure;
         for (PortStorage portStorage : storage) {
             if (portStorage instanceof PneumaticPortStorage){
                 PneumaticPortStorage pnc = (PneumaticPortStorage) portStorage;
-                float prePressure = pnc.getInv().getPressure();
-                pnc.getInv().setPressure(pnc.getInv().getPressure() - current);
-                current -= prePressure;
-                if (current  <= 0){
-                    return;
-                }
+                pnc.getInv().addAir(-(int) pressure);
             }
         }
     }
 
     @Override
     public boolean validateRequirement(List<PortStorage> storage) {
-        float current = pressure;
         for (PortStorage portStorage : storage) {
             if (portStorage instanceof PneumaticPortStorage){
-                PneumaticPortStorage pnc = (PneumaticPortStorage) portStorage;
-                float prePressure = pnc.getInv().getPressure();
-                current -= prePressure;
-                if (current  <= 0){
+                if (((PneumaticPortStorage) portStorage).getInv().getAir() >= this.pressure){
                     return true;
                 }
             }
@@ -65,42 +55,19 @@ public class PneumaticPortState extends PortState {
 
     @Override
     public void processResult(List<PortStorage> storage) {
-        float current = pressure;
         for (PortStorage portStorage : storage) {
             if (portStorage instanceof PneumaticPortStorage){
                 PneumaticPortStorage pnc = (PneumaticPortStorage) portStorage;
-                float prePressure = pnc.getInv().getPressure();
-                if (pnc.getInv().getPressure() - current > pnc.getInv().getDangerPressure()){
-                    pnc.getInv().setPressure(pnc.getInv().getDangerPressure());
-                    current -= pnc.getInv().getDangerPressure() - prePressure;
-                } else {
-                    pnc.getInv().setPressure(prePressure + current);
-                    current -= prePressure;
-                }
-                if (current  <= 0){
-                    return;
-                }
+                pnc.getInv().addAir((int)pressure);
             }
         }
     }
 
     @Override
     public boolean validateResult(List<PortStorage> storage) {
-        float current = pressure;
         for (PortStorage portStorage : storage) {
             if (portStorage instanceof PneumaticPortStorage){
-                PneumaticPortStorage pnc = (PneumaticPortStorage) portStorage;
-                float prePressure = pnc.getInv().getPressure();
-                if (pnc.getInv().getPressure() - current > pnc.getInv().getDangerPressure()){
-                    pnc.getInv().setPressure(pnc.getInv().getDangerPressure());
-                    current -= pnc.getInv().getDangerPressure() - prePressure;
-                } else {
-                    pnc.getInv().setPressure(prePressure + current);
-                    current -= prePressure;
-                }
-                if (current  <= 0){
-                    return true;
-                }
+                return true;
             }
         }
         return false;
@@ -108,7 +75,7 @@ public class PneumaticPortState extends PortState {
 
     @Override
     public ResourceLocation getName() {
-        return new ResourceLocation(MM.ID, "pressure");
+        return new ResourceLocation(MM.ID, "pncr_pressure");
     }
 
     @Override

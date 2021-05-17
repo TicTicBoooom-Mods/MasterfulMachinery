@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.ports.state.FluidPortState;
@@ -17,6 +18,7 @@ import lombok.SneakyThrows;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -44,6 +46,16 @@ public class PneumaticPortParser implements IPortFactory{
         } else {
             ingredients.setOutputs(MMJeiPlugin.PRESSURE_TYPE, (List<PressureStack>)stacks);
         }
+    }
+
+    @Override
+    public ResourceLocation getInputOverlay() {
+        return new ResourceLocation(MM.ID, "block/compat_ports/pncr_pressure_cutout");
+    }
+
+    @Override
+    public ResourceLocation getOutputOverlay() {
+        return new ResourceLocation(MM.ID, "block/compat_ports/pncr_pressure_cutout");
     }
 
     @Override

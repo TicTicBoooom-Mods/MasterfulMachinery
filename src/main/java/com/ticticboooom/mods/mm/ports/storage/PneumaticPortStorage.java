@@ -3,14 +3,27 @@ package com.ticticboooom.mods.mm.ports.storage;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import lombok.Getter;
 import me.desht.pneumaticcraft.api.PNCCapabilities;
+import me.desht.pneumaticcraft.api.tileentity.IAirHandlerMachine;
 import me.desht.pneumaticcraft.common.capabilities.MachineAirHandler;
+import me.desht.pneumaticcraft.common.util.DirectionUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PneumaticPortStorage extends PortStorage {
 
@@ -26,6 +39,7 @@ public class PneumaticPortStorage extends PortStorage {
     private float danger;
     private float critical;
     private int volume;
+    private final Map<IAirHandlerMachine, List<Direction>> airHandlerMap = new HashMap<>();
 
     public PneumaticPortStorage(float danger, float critical, int volume) {
         this.danger = danger;
@@ -33,6 +47,7 @@ public class PneumaticPortStorage extends PortStorage {
         this.volume = volume;
         inv = new MachineAirHandler(danger, critical, volume);
         invLO = LazyOptional.of(() -> inv);
+        neighborChanged();
     }
 
     @Override
@@ -47,23 +62,37 @@ public class PneumaticPortStorage extends PortStorage {
 
     @Override
     public CompoundNBT save(CompoundNBT nbt) {
-        CompoundNBT compound = new CompoundNBT();
-        nbt.putFloat("pressure", inv.getPressure());
-        return compound;
+        nbt.putInt("air", inv.getAir());
+        return nbt;
     }
 
     @Override
     public void load(CompoundNBT nbt) {
-        inv.setPressure(nbt.getFloat("pressure"));
+        inv.addAir(-inv.getAir());
+        inv.addAir(nbt.getInt("air"));
     }
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-
+        Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        screen.blit(stack, left, top, 0, 0, 175, 256);
+        int barOffsetX = 175 - 30;
+        int barOffsetY = 20;
+        screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
+        AbstractGui.drawString(stack, Minecraft.getInstance().font, NumberFormat.getInstance().format(inv.getPressure()) + "P", left + 30, top + 60, 0xfefefe);
     }
 
     @Override
     public void tick(MachinePortBlockEntity tile) {
         this.inv.tick(tile);
+    }
+
+    @Override
+    public void neighborChanged() {
+        airHandlerMap.clear();
+        for (Direction side : DirectionUtil.VALUES) {
+            getLO().ifPresent(handler -> airHandlerMap.computeIfAbsent((IAirHandlerMachine) handler, k -> new ArrayList<>()).add(side));
+        }
+        airHandlerMap.forEach(IAirHandlerMachine::setConnectedFaces);
     }
 }

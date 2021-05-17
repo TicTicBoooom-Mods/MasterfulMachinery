@@ -71,6 +71,8 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
 
     @Override
     public void tick() {
+        this.getStorage().tick(this);
         update();
     }
+
 }
