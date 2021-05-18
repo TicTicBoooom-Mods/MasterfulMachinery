@@ -47,14 +47,14 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundNBT write(CompoundNBT nbt) {
         nbt.put("inv", storage.save(new CompoundNBT()));
-        return super.save(nbt);
+        return super.write(nbt);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt) {
-        super.load(state, nbt);
+    public void read(BlockState state, CompoundNBT nbt) {
+        super.read(state, nbt);
         storage.load(nbt.getCompound("inv"));
     }
 
@@ -71,6 +71,9 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
 
     @Override
     public void tick() {
+        if (world.isRemote()){
+            return;
+        }
         this.getStorage().tick(this);
         update();
     }

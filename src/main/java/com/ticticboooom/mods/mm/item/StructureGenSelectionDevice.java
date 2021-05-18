@@ -15,13 +15,14 @@ import net.minecraft.world.World;
 
 public class StructureGenSelectionDevice extends Item {
     public StructureGenSelectionDevice() {
-        super(new Item.Properties().tab(MMLoader.MASTERFUL_ITEM_GROUP));
+        super(new Item.Properties().group(MMLoader.MASTERFUL_ITEM_GROUP));
     }
 
+
     @Override
-    public ActionResultType useOn(ItemUseContext ctx) {
-        BlockPos clickedPos = ctx.getClickedPos();
-        ItemStack iih = ctx.getItemInHand();
+    public ActionResultType onItemUse(ItemUseContext ctx) {
+        BlockPos clickedPos = ctx.getPos();
+        ItemStack iih = ctx.getItem();
         CompoundNBT tag = iih.getTag();
         if (tag == null) {
             tag = new CompoundNBT();

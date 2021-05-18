@@ -32,7 +32,7 @@ public class FluidPortParser implements IPortFactory {
     @SneakyThrows
     @Override
     public void write(PacketBuffer buf, PortState state) {
-        buf.writeWithCodec(FluidPortState.CODEC, ((FluidPortState) state));
+        buf.func_240629_a_(FluidPortState.CODEC, ((FluidPortState) state));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FluidPortParser implements IPortFactory {
     @Override
     @SneakyThrows
     public PortState createState(PacketBuffer buf) {
-        return buf.readWithCodec(FluidPortState.CODEC);
+        return buf.func_240628_a_(FluidPortState.CODEC);
     }
 
     @Override

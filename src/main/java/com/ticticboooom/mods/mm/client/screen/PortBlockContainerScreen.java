@@ -18,22 +18,23 @@ public class PortBlockContainerScreen extends ContainerScreen<PortBlockContainer
     }
 
     private static final ResourceLocation GUI = new ResourceLocation(MM.ID, "textures/gui/port_gui.png");
-
-    @Override
-    protected void renderBg(MatrixStack stack, float p_230450_2_, int mouseX, int mouseY) {
-        this.renderBackground(stack);
-        container.getTile().getStorage().render(stack, mouseX, mouseY, this.leftPos, this.topPos, this);
-    }
-
     @Override
     public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
-        this.renderTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
+        this.renderHoveredTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
     }
 
     @Override
-    protected void renderLabels(MatrixStack stack, int p_230451_2_, int p_230451_3_) {
-        drawString(stack, this.minecraft.font, container.getTile().getDisplayName(), 7, 5, 0xfefefe);
-        drawString(stack, this.minecraft.font, "Inventory", 7, 130, 0xfefefe);
+    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int x, int y) {
+        this.renderBackground(stack);
+        container.getTile().getStorage().render(stack, x, y, this.guiLeft, this.guiTop, this);
+
     }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(MatrixStack stack, int x, int y) {
+        drawString(stack, this.minecraft.fontRenderer, container.getTile().getDisplayName(), 7, 5, 0xfefefe);
+        drawString(stack, this.minecraft.fontRenderer, "Inventory", 7, 130, 0xfefefe);
+    }
+
 }

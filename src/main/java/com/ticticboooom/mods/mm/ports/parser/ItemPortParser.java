@@ -44,7 +44,7 @@ public class ItemPortParser implements IPortFactory {
     @SneakyThrows
     @Override
     public void write(PacketBuffer buf, PortState state) {
-        buf.writeWithCodec(ItemPortState.CODEC, ((ItemPortState) state));
+        buf.func_240629_a_(ItemPortState.CODEC, ((ItemPortState) state));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ItemPortParser implements IPortFactory {
     @SneakyThrows
     @Override
     public PortState createState(PacketBuffer buf) {
-        return buf.readWithCodec(ItemPortState.CODEC);
+        return buf.func_240628_a_(ItemPortState.CODEC);
     }
     @Override
     public ResourceLocation getInputOverlay() {

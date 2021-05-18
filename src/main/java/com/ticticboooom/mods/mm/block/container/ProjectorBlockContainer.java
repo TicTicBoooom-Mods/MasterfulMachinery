@@ -16,11 +16,11 @@ public class ProjectorBlockContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
+    public boolean canInteractWith(PlayerEntity p_75145_1_) {
         return true;
     }
 
     public ProjectorBlockContainer(int w, PlayerInventory inv, PacketBuffer buf) {
-        this(w, (ProjectorBlockEntity) inv.player.level.getBlockEntity(buf.readBlockPos()));
+        this(w, (ProjectorBlockEntity) inv.player.world.getTileEntity(buf.readBlockPos()));
     }
 }

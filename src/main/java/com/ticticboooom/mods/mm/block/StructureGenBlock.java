@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 
 public class StructureGenBlock extends Block {
     public StructureGenBlock() {
-        super(Properties.of(Material.METAL));
+        super(Properties.create(Material.IRON));
     }
 
     @Override
@@ -36,9 +36,9 @@ public class StructureGenBlock extends Block {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
-        if (!level.isClientSide()) {
-            TileEntity blockEntity = level.getBlockEntity(pos);
+    public ActionResultType onBlockActivated(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
+        if (!level.isRemote()) {
+            TileEntity blockEntity = level.getTileEntity(pos);
             if (blockEntity instanceof ControllerBlockEntity) {
                 NetworkHooks.openGui(((ServerPlayerEntity) player), (StructureGenBlockEntity)blockEntity, pos);
             }

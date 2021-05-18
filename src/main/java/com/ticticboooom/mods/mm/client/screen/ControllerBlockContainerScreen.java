@@ -20,26 +20,27 @@ public class ControllerBlockContainerScreen extends ContainerScreen<ControllerBl
     private static final ResourceLocation GUI = new ResourceLocation(MM.ID, "textures/gui/gui_large.png");
 
     @Override
-    protected void renderBg(MatrixStack stack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
-        this.renderBackground(stack);
-        this.minecraft.textureManager.bind(GUI);
-        this.blit(stack, this.leftPos, this.topPos - 20, 0, 0, 256, 256);
+    public void render(MatrixStack stack, int mouseX, int mouseY, float p_230430_4_) {
+
+        super.render(stack, mouseX, mouseY, p_230430_4_);
     }
 
-    @Override
-    public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
-    }
 
     @Override
-    protected void renderLabels(MatrixStack stack, int p_230451_2_, int p_230451_3_) {
-        this.minecraft.font.drawWordWrap(container.getTile().getDisplayName(), 10, -10,   176, 0xfefefe);
-        drawString(stack, this.minecraft.font, "Inventory", 7, 110, 0xfefefe);
+    protected void drawGuiContainerForegroundLayer(MatrixStack stack, int x0, int y0) {
+        this.minecraft.fontRenderer.func_238418_a_(container.getTile().getDisplayName(), 10, -10,   176, 0xfefefe);
+        drawString(stack, this.minecraft.fontRenderer, "Inventory", 7, 110, 0xfefefe);
         int y = 50;
         for (String s : container.getTile().getUpdate().getMsg().split("\n")) {
-            drawString(stack, this.minecraft.font, s, 12, y, 0xfefefe);
+            drawString(stack, this.minecraft.fontRenderer, s, 12, y, 0xfefefe);
             y += 12;
         }
+    }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int x, int y) {
+        this.renderBackground(stack);
+        this.minecraft.textureManager.bindTexture(GUI);
+        this.blit(stack, this.guiLeft, this.guiTop - 20, 0, 0, 256, 256);
     }
 }

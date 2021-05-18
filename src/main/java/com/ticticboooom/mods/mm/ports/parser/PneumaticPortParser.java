@@ -36,7 +36,7 @@ public class PneumaticPortParser implements IPortFactory{
     @SneakyThrows
     @Override
     public void write(PacketBuffer buf, PortState state) {
-        buf.writeWithCodec(PneumaticPortState.CODEC, ((PneumaticPortState) state));
+        buf.func_240629_a_(PneumaticPortState.CODEC, ((PneumaticPortState) state));
     }
 
     @Override
@@ -67,6 +67,6 @@ public class PneumaticPortParser implements IPortFactory{
     @Override
     @SneakyThrows
     public PortState createState(PacketBuffer buf) {
-        return buf.readWithCodec(PneumaticPortState.CODEC);
+        return buf.func_240628_a_(PneumaticPortState.CODEC);
     }
 }

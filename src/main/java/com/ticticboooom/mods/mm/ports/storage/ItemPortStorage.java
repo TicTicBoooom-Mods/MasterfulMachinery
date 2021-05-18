@@ -67,7 +67,7 @@ public class ItemPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0, 175, 256);
         int offsetY = ((108 - (rows * 18)) / 2) + 7;
         int offsetX = ((162 - (columns * 18)) / 2) + 7;

@@ -14,16 +14,17 @@ public class StructureGenBlockContainerScreen extends ContainerScreen<StructureG
         super(p_i51105_1_, p_i51105_2_, p_i51105_3_);
     }
 
-    @Override
-    protected void renderBg(MatrixStack ms, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
-        Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
-        blit(ms, leftPos, topPos, 0, 0, 175, 256);
-    }
 
     @Override
     public void render(MatrixStack ms, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
         super.render(ms, p_230430_2_, p_230430_3_, p_230430_4_);
 
 
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack ms, float partialTicks, int x, int y) {
+        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        blit(ms, guiLeft, guiTop, 0, 0, 175, 256);
     }
 }

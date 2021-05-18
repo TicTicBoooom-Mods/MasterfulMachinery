@@ -14,8 +14,8 @@ public class UpdatableTile extends TileEntity{
     }
 
     public void update() {
-        if (!level.isClientSide()){
-            PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(worldPosition, save(new CompoundNBT())));
+        if (!world.isRemote()){
+            PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(pos, write(new CompoundNBT())));
         }
     }
 }

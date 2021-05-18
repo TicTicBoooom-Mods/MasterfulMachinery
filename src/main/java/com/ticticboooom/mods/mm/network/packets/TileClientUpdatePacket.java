@@ -23,21 +23,21 @@ public class TileClientUpdatePacket {
 
         public static void encode(Data data, PacketBuffer buffer){
             buffer.writeBlockPos(data.getPos());
-            buffer.writeNbt(data.nbt);
+            buffer.writeCompoundTag(data.nbt);
         }
 
         public static Data decode(PacketBuffer buffer){
-            return new Data(buffer.readBlockPos(), buffer.readNbt());
+            return new Data(buffer.readBlockPos(), buffer.readCompoundTag());
         }
     }
 
     public static void handle(Data data, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ClientWorld level = Minecraft.getInstance().level;
-            TileEntity blockEntity = level.getBlockEntity(data.getPos());
+            ClientWorld level = Minecraft.getInstance().world;
+            TileEntity blockEntity = level.getTileEntity(data.getPos());
             BlockState state = level.getBlockState(data.getPos());
             if (blockEntity != null) {
-                blockEntity.load(state, data.nbt);
+                blockEntity.read(state, data.nbt);
             }
         });
         ctx.get().setPacketHandled(true);

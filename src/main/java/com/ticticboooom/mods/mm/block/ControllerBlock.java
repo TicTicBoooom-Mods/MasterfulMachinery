@@ -40,25 +40,25 @@ public class ControllerBlock extends DirectionalBlock {
     private String texOverride;
 
     public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride) {
-        super(AbstractBlock.Properties.of(Material.METAL)
+        super(AbstractBlock.Properties.create(Material.IRON)
                 .harvestLevel(1)
                 .harvestTool(ToolType.PICKAXE));
         this.type = type;
         this.controllerName = name;
         this.controllerId = id;
         this.texOverride = texOverride;
-        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
+        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(FACING));
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder.add(FACING));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext ctx) {
-        return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
+        return this.getDefaultState().with(FACING, ctx.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
@@ -73,9 +73,9 @@ public class ControllerBlock extends DirectionalBlock {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
-        if (!level.isClientSide()) {
-            TileEntity blockEntity = level.getBlockEntity(pos);
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!worldIn.isRemote()) {
+            TileEntity blockEntity = worldIn.getTileEntity(pos);
             if (blockEntity instanceof ControllerBlockEntity) {
                 NetworkHooks.openGui(((ServerPlayerEntity) player), (ControllerBlockEntity)blockEntity, pos);
             }

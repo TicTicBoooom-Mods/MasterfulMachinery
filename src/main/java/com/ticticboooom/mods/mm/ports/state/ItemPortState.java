@@ -70,7 +70,7 @@ public class ItemPortState extends PortState {
                             current -= amount;
                         }
                     } else if (!tag.equals("")) {
-                        if (ItemTags.getAllTags().getTag(RLUtils.toRL(tag)).contains(stackInSlot.getItem())) {
+                        if (ItemTags.getCollection().get(RLUtils.toRL(tag)).contains(stackInSlot.getItem())) {
                             int amount = stackInSlot.getCount();
                             stackInSlot.setCount(amount - (amount - current < 0 ? amount : current));
                             current -= amount;
@@ -102,7 +102,7 @@ public class ItemPortState extends PortState {
                             current -= stackInSlot.getCount();
                         }
                     } else if (!tag.equals("")) {
-                        ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
+                        ITag<Item> tag = ItemTags.getCollection().get(RLUtils.toRL(this.tag));
                         if (tag != null && tag.contains(stackInSlot.getItem())) {
                             current -= stackInSlot.getCount();
                         }
@@ -216,11 +216,11 @@ public class ItemPortState extends PortState {
         if (!item.equals("") && RLUtils.isRL(item)) {
             return (List<T>) ImmutableList.of(new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
         } else if (!tag.equals("") && RLUtils.isRL(tag)) {
-            ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
+            ITag<Item> tag = ItemTags.getCollection().get(RLUtils.toRL(this.tag));
             assert tag != null;
 
             List<ItemStack> stacks = new ArrayList<>();
-            tag.getValues().forEach(z -> stacks.add(new ItemStack(z, this.count)));
+            tag.getAllElements().forEach(z -> stacks.add(new ItemStack(z, this.count)));
             return (List<T>)stacks;
         }
         return new ArrayList<>();
@@ -232,9 +232,9 @@ public class ItemPortState extends PortState {
         if (!item.equals("") && RLUtils.isRL(item)) {
             layout.getItemStacks().set(typeIndex, new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
         } else if (!tag.equals("") && RLUtils.isRL(tag)) {
-            ITag<Item> tag = ItemTags.getAllTags().getTag(RLUtils.toRL(this.tag));
+            ITag<Item> tag = ItemTags.getCollection().get(RLUtils.toRL(this.tag));
             assert tag != null;
-            Stream<ItemStack> itemStackStream = tag.getValues().stream().map(z -> new ItemStack(z.getItem(), this.count));
+            Stream<ItemStack> itemStackStream = tag.getAllElements().stream().map(z -> new ItemStack(z.getItem(), this.count));
             layout.getItemStacks().set(typeIndex, itemStackStream.collect(Collectors.toList()));
         }
         if (this.getChance() < 1){

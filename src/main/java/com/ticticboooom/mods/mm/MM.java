@@ -67,7 +67,7 @@ public class MM {
         RecipeTypes.RECIPE_SERIALIZERS.register(bus);
         bus.addListener(this::clientEvents);
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            Minecraft.getInstance().getResourcePackRepository().addPackFinder(new MMPackFinder(PackType.RESOURCE));
+            Minecraft.getInstance().getResourcePackList().addPackFinder(new MMPackFinder(PackType.RESOURCE));
         }
         MinecraftForge.EVENT_BUS.addListener(this::onServerStart);
     }
@@ -95,30 +95,30 @@ public class MM {
     }
 
     public void onServerStart(final FMLServerAboutToStartEvent event) {
-        event.getServer().getPackRepository().addPackFinder(new MMPackFinder(PackType.DATA));
+        event.getServer().getResourcePacks().addPackFinder(new MMPackFinder(PackType.DATA));
     }
 
     private void clientEvents(final FMLClientSetupEvent event) {
 
         for (RegistryObject<ContainerType<ControllerBlockContainer>> container : MMLoader.CONTAINERS) {
-            ScreenManager.register(container.get(), ControllerBlockContainerScreen::new);
+            ScreenManager.registerFactory(container.get(), ControllerBlockContainerScreen::new);
         }
         for (RegistryObject<ContainerType<?>> container : MMLoader.PORT_CONTAINERS) {
-            ScreenManager.register((ContainerType<PortBlockContainer>) container.get(), PortBlockContainerScreen::new);
+            ScreenManager.registerFactory((ContainerType<PortBlockContainer>) container.get(), PortBlockContainerScreen::new);
         }
 
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
 
         for (RegistryObject<MachinePortBlock> block : MMLoader.IPORT_BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
 
         for (RegistryObject<MachinePortBlock> block : MMLoader.OPORT_BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.solid() || layer == RenderType.translucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
-        RenderTypeLookup.setRenderLayer(MMSetup.PROJECTOR_BLOCK.get(), RenderType.translucent());
-        ScreenManager.register(MMSetup.STRUCTURE_CONTAINER.get(), StructureGenBlockContainerScreen::new);
+        RenderTypeLookup.setRenderLayer(MMSetup.PROJECTOR_BLOCK.get(), RenderType.getTranslucent());
+        ScreenManager.registerFactory(MMSetup.STRUCTURE_CONTAINER.get(), StructureGenBlockContainerScreen::new);
     }
 }

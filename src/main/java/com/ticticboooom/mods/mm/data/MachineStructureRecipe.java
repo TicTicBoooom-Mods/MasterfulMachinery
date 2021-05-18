@@ -87,12 +87,12 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ItemStack assemble(IInventory p_77572_1_) {
+    public ItemStack getCraftingResult(IInventory p_77572_1_) {
         return null;
     }
 
     @Override
-    public boolean canCraftInDimensions(int p_194133_1_, int p_194133_2_) {
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
         return false;
     }
 
@@ -122,7 +122,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
 
     private boolean innerBlockMatch(BlockPos controllerPos, World world, MachineStructureRecipeKeyModel model) {
-        BlockPos pos = controllerPos.offset(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
+        BlockPos pos = controllerPos.add(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
         BlockState blockState = world.getBlockState(pos);
         boolean valid = false;
         if (!model.getTag().equals("")) {
@@ -131,7 +131,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 MM.LOG.fatal("too many : (colons) in structure tag: {}", model.getTag());
                 return false;
             }
-            ITag<Block> tag = BlockTags.getAllTags().getTag(new ResourceLocation(split[0], split[1]));
+            ITag<Block> tag = BlockTags.getCollection().get(new ResourceLocation(split[0], split[1]));
             if (tag == null) {
                 MM.LOG.fatal("no existing block tag for structure tag: {}", model.getTag());
                 return false;
@@ -153,8 +153,8 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             return true;
         }
         try {
-            CompoundNBT compoundNBT = JsonToNBT.parseTag(model.getNbt());
-            TileEntity blockEntity = world.getBlockEntity(pos);
+            CompoundNBT compoundNBT = JsonToNBT.getTagFromJson(model.getNbt());
+            TileEntity blockEntity = world.getTileEntity(pos);
 
             return compoundNBT.equals(blockEntity.getTileData());
         } catch (CommandSyntaxException e) {
@@ -166,7 +166,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     public ArrayList<BlockPos> getPorts(BlockPos controllerPos, World world, int index) {
         ArrayList<BlockPos> result = new ArrayList<>();
         for (MachineStructureRecipeKeyModel model : models.get(index)) {
-            BlockPos pos = controllerPos.offset(model.getPos().toVector());
+            BlockPos pos = controllerPos.add(model.getPos().toVector());
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof MachinePortBlock) {
                 result.add(pos);
@@ -180,7 +180,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getRecipeOutput() {
         return ItemStack.EMPTY;
     }
 
@@ -204,7 +204,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
 
         @Override
-        public MachineStructureRecipe fromJson(ResourceLocation rl, JsonObject obj) {
+        public MachineStructureRecipe read(ResourceLocation rl, JsonObject obj) {
             JsonElement controllerIdJson = obj.get("controllerId");
             List<String> ids = new ArrayList<>();
             if (controllerIdJson.isJsonPrimitive()){
@@ -287,16 +287,16 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         @SneakyThrows
         @Nullable
         @Override
-        public MachineStructureRecipe fromNetwork(ResourceLocation rl, PacketBuffer buf) {
+        public MachineStructureRecipe read(ResourceLocation rl, PacketBuffer buf) {
             List<String> controllerId = new ArrayList<>();
             int idCount = buf.readInt();
             for (int i = 0; i < idCount; i++) {
-                controllerId.add(buf.readUtf());
+                controllerId.add(buf.readString());
             }
-            String id = buf.readUtf();
-            String name = buf.readUtf();
+            String id = buf.readString();
+            String name = buf.readString();
             try {
-                MachineStructureObject machineStructureObject = buf.readWithCodec(MachineStructureObject.CODEC);
+                MachineStructureObject machineStructureObject = buf.func_240628_a_(MachineStructureObject.CODEC);
                 List<MachineStructureRecipeKeyModel> models = machineStructureObject.getInner();
                 return new MachineStructureRecipe(models, controllerId, id, rl, name);
             } catch (Exception  e) {
@@ -306,15 +306,15 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buf, MachineStructureRecipe recipe) {
+        public void write(PacketBuffer buf, MachineStructureRecipe recipe) {
             buf.writeInt(recipe.controllerId.size());
             for (String s : recipe.controllerId) {
-                buf.writeUtf(s);
+                buf.writeString(s);
             }
-            buf.writeUtf(recipe.id);
-            buf.writeUtf(recipe.name);
+            buf.writeString(recipe.id);
+            buf.writeString(recipe.name);
             try {
-                buf.writeWithCodec(MachineStructureObject.CODEC, new MachineStructureObject(recipe.getModels().get(0)));
+                buf.func_240629_a_(MachineStructureObject.CODEC, new MachineStructureObject(recipe.getModels().get(0)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -365,6 +365,5 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 }
             }
         }
-
     }
 }

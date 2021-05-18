@@ -46,12 +46,12 @@ public class MMJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ENERGY_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
-        List<MachineStructureRecipe> structureRecipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_STRUCTURE);
+        List<MachineStructureRecipe> structureRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
             registration.addRecipes(structureRecipes.stream().filter(x -> x.getControllerId().contains(block.get().getControllerId())).collect(Collectors.toList()), new ResourceLocation(MM.ID, "machine_structure_" + block.get().getControllerId()));
         }
 
-        List<MachineProcessRecipe> processRecipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_PROCESS);
+        List<MachineProcessRecipe> processRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_PROCESS);
         for (MachineStructureRecipe structureRecipe : structureRecipes) {
             List<MachineProcessRecipe> recipes = processRecipes.stream().filter(x -> x.getStructureId().equals(structureRecipe.getStructureId())).collect(Collectors.toList());
             registration.addRecipes(recipes, new ResourceLocation(MM.ID, "machine_process_" + structureRecipe.getStructureId()));
@@ -64,7 +64,7 @@ public class MMJeiPlugin implements IModPlugin {
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
             registration.addRecipeCategories(new MachineStructureRecipeCategory(registration.getJeiHelpers(), block.get()));
         }
-        List<MachineStructureRecipe> structureRecipes = Minecraft.getInstance().level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_STRUCTURE);
+        List<MachineStructureRecipe> structureRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         for (MachineStructureRecipe structureRecipe : structureRecipes) {
             registration.addRecipeCategories(new MachineProcessRecipeCategory(registration.getJeiHelpers(), structureRecipe.getStructureId(), structureRecipe.getName()));
         }

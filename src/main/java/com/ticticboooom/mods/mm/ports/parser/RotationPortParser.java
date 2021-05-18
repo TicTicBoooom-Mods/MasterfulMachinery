@@ -6,10 +6,13 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.ports.state.EnergyPortState;
+import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
+import com.ticticboooom.mods.mm.ports.state.PneumaticPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
-import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
+import com.ticticboooom.mods.mm.ports.state.RotationPortState;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
+import com.ticticboooom.mods.mm.ports.storage.RotationPortStorage;
 import lombok.SneakyThrows;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.network.PacketBuffer;
@@ -18,22 +21,16 @@ import net.minecraft.util.ResourceLocation;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class EnergyPortParser implements IPortFactory {
-
-
+public class RotationPortParser implements IPortFactory{
 
     @Override
     public Supplier<PortStorage> createStorage(JsonObject obj) {
-        return () -> {
-            DataResult<Pair<EnergyPortStorage, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(EnergyPortStorage.CODEC).apply(obj);
-            return apply.result().get().getFirst();
-        };
+        return RotationPortStorage::new;
     }
-
     @SneakyThrows
     @Override
     public void write(PacketBuffer buf, PortState state) {
-        buf.func_240629_a_(EnergyPortState.CODEC, ((EnergyPortState) state));
+        buf.func_240629_a_(RotationPortState.CODEC, ((RotationPortState) state));
     }
 
     @Override
@@ -42,23 +39,23 @@ public class EnergyPortParser implements IPortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/base_ports/energy_input_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/create_rotation_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/base_ports/energy_output_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/create_rotation_cutout");
     }
 
     @Override
     public PortState createState(JsonObject obj) {
-        DataResult<Pair<EnergyPortState, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(EnergyPortState.CODEC).apply(obj);
+        DataResult<Pair<RotationPortState, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(RotationPortState.CODEC).apply(obj);
         return apply.result().get().getFirst();
     }
 
     @Override
     @SneakyThrows
     public PortState createState(PacketBuffer buf) {
-        return buf.func_240628_a_(EnergyPortState.CODEC);
+        return buf.func_240628_a_(RotationPortState.CODEC);
     }
 }

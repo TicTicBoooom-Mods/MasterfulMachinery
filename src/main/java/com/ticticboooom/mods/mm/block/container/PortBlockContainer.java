@@ -28,11 +28,11 @@ public class PortBlockContainer extends Container {
     }
 
     public PortBlockContainer(ContainerType<?> container, int windowId, PlayerInventory player, PacketBuffer buf) {
-        this(container, windowId, player, (MachinePortBlockEntity) player.player.level.getBlockEntity(buf.readBlockPos()));
+        this(container, windowId, player, (MachinePortBlockEntity) player.player.world.getTileEntity(buf.readBlockPos()));
     }
 
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
+    public boolean canInteractWith(PlayerEntity p_75145_1_) {
         return true;
     }
 
@@ -42,27 +42,27 @@ public class PortBlockContainer extends Container {
     }
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity p_82846_1_, int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Object o = tile.getStorage().getLO().orElse(null);
         if (o instanceof ItemStackHandler) {
             ItemStackHandler handler = ((ItemStackHandler) o);
             Slot slot = this.getSlot(index);
-            if (slot.hasItem()) {
-                ItemStack itemStack1 = slot.getItem();
+            if (slot.getHasStack()) {
+                ItemStack itemStack1 = slot.getStack();
                 itemStack = itemStack1.copy();
                 if (index < handler.getSlots()) {
-                    if (!this.moveItemStackTo(itemStack1, handler.getSlots(), inv.getContainerSize(), true)) {
+                    if (!this.mergeItemStack(itemStack1, handler.getSlots(), this.inventorySlots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (!this.moveItemStackTo(itemStack1, 0, handler.getSlots(), false)) {
+                } else if (!this.mergeItemStack(itemStack1, 0, handler.getSlots(), false)) {
                     return ItemStack.EMPTY;
                 }
 
                 if (itemStack1.isEmpty()) {
-                    slot.set(ItemStack.EMPTY);
+                    slot.putStack(ItemStack.EMPTY);
                 } else {
-                    slot.setChanged();
+                    slot.onSlotChanged();
                 }
             }
         }

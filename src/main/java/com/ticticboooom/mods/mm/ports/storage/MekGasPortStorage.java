@@ -66,7 +66,7 @@ public class MekGasPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0,  175, 256);
         int barOffsetX = 175 - 30;
         int barOffsetY = 20;
@@ -76,8 +76,8 @@ public class MekGasPortStorage extends PortStorage {
             amount = (float)inv.getStack().getAmount() / inv.getTankCapacity(0);
         }
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
-        AbstractGui.drawString(stack, Minecraft.getInstance().font,inv.getStack().getType().getTextComponent().getString(), left + 30, top + 60, 0xfefefe);
-        AbstractGui.drawString(stack, Minecraft.getInstance().font, inv.getStack().getAmount() + "mB", left + 30, top + 80, 0xfefefe);
+        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,inv.getStack().getType().getTextComponent().getString(), left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getStack().getAmount() + "mB", left + 30, top + 80, 0xfefefe);
 
     }
 }

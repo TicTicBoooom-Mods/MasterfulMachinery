@@ -74,14 +74,18 @@ public class PneumaticPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bind(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0, 175, 256);
         int barOffsetX = 175 - 30;
         int barOffsetY = 20;
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
-        AbstractGui.drawString(stack, Minecraft.getInstance().font, NumberFormat.getInstance().format(inv.getPressure()) + "P", left + 30, top + 60, 0xfefefe);
-    }
+        float amount = inv.getPressure() / inv.getCriticalPressure();
+        screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
 
+        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, NumberFormat.getInstance().format(inv.getPressure()) + "P", left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getAir() + " Air", left + mouseX + 9 + 1, top + mouseY + 30, 0xfefefe);
+
+    }
     @Override
     public void tick(MachinePortBlockEntity tile) {
         this.inv.tick(tile);

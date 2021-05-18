@@ -42,7 +42,7 @@ public class MekGasPortParser implements IPortFactory {
     @SneakyThrows
     @Override
     public PortState createState(PacketBuffer buf) {
-        return buf.readWithCodec(MekGasPortState.CODEC);
+        return buf.func_240628_a_(MekGasPortState.CODEC);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class MekGasPortParser implements IPortFactory {
     @SneakyThrows
     @Override
     public void write(PacketBuffer buf, PortState state) {
-        buf.writeWithCodec(MekGasPortState.CODEC, (MekGasPortState)state);
+        buf.func_240629_a_(MekGasPortState.CODEC, (MekGasPortState)state);
     }
 
     @Override

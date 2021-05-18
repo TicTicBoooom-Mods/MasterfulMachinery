@@ -18,5 +18,6 @@ public class MMPorts {
         PORTS.put(new ResourceLocation(MM.ID, "mekanism_gas"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_gas"), new MekGasPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "mekanism_slurry"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_slurry"), new MekSlurryPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "pncr_pressure"),new MasterfulPortType(new ResourceLocation(MM.ID, "pncr_pressure"), new PneumaticPortParser()));
+        PORTS.put(new ResourceLocation(MM.ID, "create_rotation"),new MasterfulPortType(new ResourceLocation(MM.ID, "create_rotation"), new RotationPortParser()));
     }
 }

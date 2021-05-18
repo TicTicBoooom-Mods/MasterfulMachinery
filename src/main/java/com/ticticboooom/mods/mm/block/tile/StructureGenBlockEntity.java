@@ -27,18 +27,18 @@ public class StructureGenBlockEntity extends UpdatableTile implements ITickableT
     private ItemStack device = ItemStack.EMPTY;
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
-        NonNullList<ItemStack> list = NonNullList.of(device);
+    public CompoundNBT write(CompoundNBT nbt) {
+        NonNullList<ItemStack> list = NonNullList.from(device);
         nbt = ItemStackHelper.saveAllItems(nbt, list);
-        return super.save(nbt);
+        return super.write(nbt);
     }
 
     @Override
-    public void load(BlockState p_230337_1_, CompoundNBT nbt) {
+    public void read(BlockState p_230337_1_, CompoundNBT nbt) {
         NonNullList<ItemStack> list = NonNullList.withSize(1, ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(nbt, list);
         device = list.get(0);
-        super.load(p_230337_1_, nbt);
+        super.read(p_230337_1_, nbt);
     }
 
 

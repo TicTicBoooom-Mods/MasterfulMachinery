@@ -175,17 +175,17 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ItemStack assemble(IInventory p_77572_1_) {
+    public ItemStack getCraftingResult(IInventory inv) {
         return null;
     }
 
     @Override
-    public boolean canCraftInDimensions(int p_194133_1_, int p_194133_2_) {
+    public boolean canFit(int p_194133_1_, int p_194133_2_) {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getRecipeOutput() {
         return ItemStack.EMPTY;
     }
 
@@ -208,7 +208,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
         @SneakyThrows
         @Override
-        public MachineProcessRecipe fromJson(ResourceLocation rl, JsonObject obj) {
+        public MachineProcessRecipe read(ResourceLocation rl, JsonObject obj) {
             int ticks = obj.get("ticks").getAsInt();
             String structureId = obj.get("structureId").getAsString();
             JsonArray inputs = obj.get("inputs").getAsJsonArray();
@@ -255,11 +255,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
         @Nullable
         @Override
-        public MachineProcessRecipe fromNetwork(ResourceLocation rl, PacketBuffer buf) {
+        public MachineProcessRecipe read(ResourceLocation rl, PacketBuffer buf) {
             int inputCount = buf.readInt();
             int outputCount = buf.readInt();
             int ticks = buf.readInt();
-            String structureId = buf.readUtf();
+            String structureId = buf.readString();
             List<PortState> inputs = getStates(buf, inputCount);
             List<PortState> outputs = getStates(buf, outputCount);
             return new MachineProcessRecipe(inputs, outputs, ticks, structureId, rl);
@@ -268,7 +268,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         private List<PortState> getStates(PacketBuffer buf, int count) {
             List<PortState> result = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-                String inpType = buf.readUtf();
+                String inpType = buf.readString();
                 boolean perTick = buf.readBoolean();
                 double chance = buf.readDouble();
                 MasterfulPortType value = MMPorts.PORTS.get(RLUtils.toRL(inpType));
@@ -281,11 +281,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buf, MachineProcessRecipe recipe) {
+        public void write(PacketBuffer buf, MachineProcessRecipe recipe) {
             buf.writeInt(recipe.inputs.size());
             buf.writeInt(recipe.outputs.size());
             buf.writeInt(recipe.ticks);
-            buf.writeUtf(recipe.structureId);
+            buf.writeString(recipe.structureId);
 
             writeStates(buf, recipe.inputs);
             writeStates(buf, recipe.outputs);
@@ -294,7 +294,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         private void writeStates(PacketBuffer buf, List<PortState> states) {
             for (PortState state : states) {
                 MasterfulPortType value = MMPorts.PORTS.get(state.getName());
-                buf.writeUtf(value.getRegistryName().toString());
+                buf.writeString(value.getRegistryName().toString());
                 buf.writeBoolean(state.isConsumePerTick());
                 buf.writeDouble(state.getChance());
                 value.getParser().write(buf, state);

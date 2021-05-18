@@ -84,8 +84,8 @@ public class MekGasPortState extends PortState {
             if (st instanceof MekGasPortStorage) {
                 MekGasPortStorage gasStorage = (MekGasPortStorage) st;
                     GasStack extract = gasStorage.getInv().insertChemical(new GasStack(Objects.requireNonNull(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(gas))), current), Action.EXECUTE);
-                    current -= extract.getAmount();
-                if (current <= 0){
+                    current -= current - extract.getAmount();
+                if (current <= 0) {
                     return;
                 }
             }
@@ -99,7 +99,7 @@ public class MekGasPortState extends PortState {
             if (st instanceof MekGasPortStorage) {
                 MekGasPortStorage gasStorage = (MekGasPortStorage) st;
                 GasStack extract = gasStorage.getInv().insertChemical(new GasStack(Objects.requireNonNull(MekanismAPI.gasRegistry().getValue(RLUtils.toRL(gas))), current), Action.SIMULATE);
-                current -= extract.getAmount();
+                current -= current - extract.getAmount();
                 if (current <= 0) {
                     return true;
                 }

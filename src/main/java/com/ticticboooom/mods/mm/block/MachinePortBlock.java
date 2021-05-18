@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
@@ -38,7 +39,7 @@ public class MachinePortBlock extends Block {
     private ResourceLocation overlay;
 
     public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
-        super(AbstractBlock.Properties.of(Material.METAL));
+        super(AbstractBlock.Properties.create(Material.IRON));
         this.type = type;
         this.langName = name;
         this.controllerId = controllerId;
@@ -58,9 +59,9 @@ public class MachinePortBlock extends Block {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
-        if (!level.isClientSide()) {
-            TileEntity blockEntity = level.getBlockEntity(pos);
+    public ActionResultType onBlockActivated(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
+        if (!level.isRemote()) {
+            TileEntity blockEntity = level.getTileEntity(pos);
             if (blockEntity instanceof MachinePortBlockEntity) {
                 NetworkHooks.openGui(((ServerPlayerEntity) player), (MachinePortBlockEntity)blockEntity, pos);
             }
@@ -70,22 +71,26 @@ public class MachinePortBlock extends Block {
 
 
     @Override
-    public void onRemove(BlockState state, World world, BlockPos pos, BlockState state1, boolean p_196243_5_) {
-        TileEntity tile = world.getBlockEntity(pos);
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        TileEntity tile = worldIn.getTileEntity(pos);
         if (tile instanceof MachinePortBlockEntity){
-            Object o = ((MachinePortBlockEntity) tile).getStorage().getLO().orElse(null);
+            LazyOptional<Object> lo = ((MachinePortBlockEntity) tile).getStorage().getLO();
+            if (lo == null){
+                return;
+            }
+            Object o = lo.orElse(null);
             if (o instanceof ItemStackHandler) {
-                InventoryHelper.dropContents(world, pos, new ItemStackInventory((ItemStackHandler) o));
+                InventoryHelper.dropInventoryItems(worldIn, pos, new ItemStackInventory((ItemStackHandler) o));
             }
         }
-        super.onRemove(state, world, pos, state1, p_196243_5_);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
 
     @Override
     public void neighborChanged(BlockState p_220069_1_, World world, BlockPos pos, Block p_220069_4_, BlockPos changedPos, boolean p_220069_6_) {
         super.neighborChanged(p_220069_1_, world, pos, p_220069_4_, changedPos, p_220069_6_);
-        TileEntity tile = world.getBlockEntity(pos);
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof MachinePortBlockEntity){
             ((MachinePortBlockEntity) tile).getStorage().neighborChanged();
         }

@@ -34,7 +34,7 @@ public class GuiBlockRenderBuilder {
     public GuiBlockRenderBuilder(BlockState blockState) {
         this.blockState = blockState;
         position = new BlockPos(0, 0, 0);
-        tile = blockState.createTileEntity(Minecraft.getInstance().level);
+        tile = blockState.createTileEntity(Minecraft.getInstance().world);
         if (tile != null) {
             ter = TileEntityRendererDispatcher.instance.getRenderer(tile);
         }
@@ -64,7 +64,7 @@ public class GuiBlockRenderBuilder {
         RenderSystem.enableBlend();
         RenderSystem.enableRescaleNormal();
         RenderSystem.enableAlphaTest();
-        RenderHelper.setupFor3DItems();
+        RenderHelper.setupGui3DDiffuseLighting();
         RenderSystem.alphaFunc(516, 0.1F);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -77,24 +77,24 @@ public class GuiBlockRenderBuilder {
 
     public void finalize(MatrixStack ms) {
         prepareRender();
-        IRenderTypeBuffer.Impl buf = mc.renderBuffers().bufferSource();
-        BlockRendererDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-        ms.pushPose();
+        IRenderTypeBuffer.Impl buf = mc.getRenderTypeBuffers().getBufferSource();
+        BlockRendererDispatcher brd = Minecraft.getInstance().getBlockRendererDispatcher();
+        ms.push();
         transformMatrix(ms);
         brd.renderBlock(blockState, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
         if (ter != null) {
             ter.render(tile, 1.0f, ms, buf, 0, 1);
         }
-        buf.endBatch();
-        ms.popPose();
+        buf.finish();
+        ms.pop();
         cleanupRender();
     }
 
     private void transformMatrix(MatrixStack ms) {
-        ms.scale(scale.x(), scale.y(), scale.z());
-        ms.translate(prePosition.x(), prePosition.y(), prePosition.z());
+        ms.scale(scale.getX(), scale.getY(), scale.getZ());
+        ms.translate(prePosition.getX(), prePosition.getY(), prePosition.getZ());
         for (Quaternion quaternion : orderedRotation) {
-            ms.mulPose(quaternion);
+            ms.rotate(quaternion);
         }
         ms.translate(position.getX(), position.getY(), position.getZ());
     }

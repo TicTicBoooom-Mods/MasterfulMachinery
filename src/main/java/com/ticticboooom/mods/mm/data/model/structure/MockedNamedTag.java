@@ -5,6 +5,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MockedNamedTag<T> implements ITag.INamedTag<T> {
     private final ResourceLocation name;
@@ -24,7 +25,12 @@ public class MockedNamedTag<T> implements ITag.INamedTag<T> {
     }
 
     @Override
-    public List<T> getValues() {
+    public List<T> getAllElements() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public T getRandomElement(Random random) {
+        return INamedTag.super.getRandomElement(random);
     }
 }

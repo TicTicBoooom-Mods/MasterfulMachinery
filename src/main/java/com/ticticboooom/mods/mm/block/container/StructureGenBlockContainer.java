@@ -17,11 +17,11 @@ public class StructureGenBlockContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
+    public boolean canInteractWith(PlayerEntity p_75145_1_) {
         return true;
     }
 
     public StructureGenBlockContainer(int w, PlayerInventory inv, PacketBuffer buf) {
-        this(w, (StructureGenBlockEntity) inv.player.level.getBlockEntity(buf.readBlockPos()));
+        this(w, (StructureGenBlockEntity) inv.player.world.getTileEntity(buf.readBlockPos()));
     }
 }

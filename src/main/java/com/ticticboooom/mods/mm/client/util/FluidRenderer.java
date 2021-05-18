@@ -65,8 +65,8 @@ public class FluidRenderer {
 
   private void drawTiledSprite(MatrixStack matrixStack, int xPosition, int yPosition, int width, int height, int color, int scaledAmount, TextureAtlasSprite sprite) {
     Minecraft minecraft = Minecraft.getInstance();
-    minecraft.getTextureManager().bind(PlayerContainer.BLOCK_ATLAS);
-    Matrix4f matrix = matrixStack.last().pose();
+    minecraft.getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
+    Matrix4f matrix = matrixStack.getLast().getMatrix();
     setGLColorFromInt(color);
 
     final int xTileCount = width / TEX_WIDTH;
@@ -93,21 +93,21 @@ public class FluidRenderer {
   }
 
   private void drawTextureWithMasking(Matrix4f matrix, int x, int y, TextureAtlasSprite sprite, int maskTop, int maskRight, int z) {
-    float uMin = sprite.getU0();
-    float uMax = sprite.getU1();
-    float vMin = sprite.getV0();
-    float vMax = sprite.getV1();
+    float uMin = sprite.getMinU();
+    float uMax = sprite.getMaxU();
+    float vMin = sprite.getMinV();
+    float vMax = sprite.getMaxV();
     uMax = uMax - (maskRight / 16F * (uMax - uMin));
     vMax = vMax - (maskTop / 16F * (vMax - vMin));
 
     Tessellator tessellator = Tessellator.getInstance();
-    BufferBuilder bufferBuilder = tessellator.getBuilder();
+    BufferBuilder bufferBuilder = tessellator.getBuffer();
     bufferBuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-    bufferBuilder.vertex(matrix, x, y + 16, z).uv(uMin, vMax).endVertex();
-    bufferBuilder.vertex(matrix, x + 16 - maskRight, y + 16, z).uv(uMax, vMax).endVertex();
-    bufferBuilder.vertex(matrix, x + 16 - maskRight, y + maskTop, z).uv(uMax, vMin).endVertex();
-    bufferBuilder.vertex(matrix, x, y + maskTop, z).uv(uMin, vMin).endVertex();
-    tessellator.end();
+    bufferBuilder.pos(matrix, x, y + 16, z).tex(uMin, vMax).endVertex();
+    bufferBuilder.pos(matrix, x + 16 - maskRight, y + 16, z).tex(uMax, vMax).endVertex();
+    bufferBuilder.pos(matrix, x + 16 - maskRight, y + maskTop, z).tex(uMax, vMin).endVertex();
+    bufferBuilder.pos(matrix, x, y + maskTop, z).tex(uMin, vMin).endVertex();
+    tessellator.draw();
   }
 
   private static void setGLColorFromInt(int color) {
@@ -124,6 +124,6 @@ public class FluidRenderer {
     Fluid fluid = stack.getFluid();
     FluidAttributes attributes = fluid.getAttributes();
     ResourceLocation fluidStill = attributes.getStillTexture(stack);
-    return minecraft.getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(fluidStill);
+    return minecraft.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(fluidStill);
   }
 }

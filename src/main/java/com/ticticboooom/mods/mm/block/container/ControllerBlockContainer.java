@@ -34,17 +34,20 @@ public class ControllerBlockContainer extends Container {
     }
 
     public ControllerBlockContainer(ContainerType<?> container, int windowId, PlayerInventory player, PacketBuffer buf) {
-        this(container, windowId, player, (ControllerBlockEntity) player.player.level.getBlockEntity(buf.readBlockPos()));
+        this(container, windowId, player, (ControllerBlockEntity) player.player.world.getTileEntity(buf.readBlockPos()));
     }
 
+
+
     @Override
-    public boolean stillValid(PlayerEntity p_75145_1_) {
+    public boolean canInteractWith(PlayerEntity p_75145_1_) {
         return true;
     }
 
 
     @Override
-    public ItemStack quickMoveStack(PlayerEntity p_82846_1_, int p_82846_2_) {
+    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
         return ItemStack.EMPTY;
     }
+
 }

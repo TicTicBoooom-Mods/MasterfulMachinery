@@ -43,13 +43,13 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     @Override
     public void tick() {
-        if (level.isClientSide()){
+        if (world.isRemote()){
             return;
         }
         update.setMsg("Failed to construct \nthe machine");
-        List<MachineStructureRecipe> recipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_STRUCTURE);
+        List<MachineStructureRecipe> recipes = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         for (MachineStructureRecipe recipe : recipes) {
-            int index = recipe.matches(this.worldPosition, level, controllerId);
+            int index = recipe.matches(this.pos, world, controllerId);
             if (index != -1) {
                 if (!update.getSid().equals(recipe.getId().toString())){
                     update.setTicksTaken(0);
@@ -64,11 +64,11 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     }
 
     private void onStructureFound(MachineStructureRecipe structure, int index) {
-        ArrayList<BlockPos> ports = structure.getPorts(worldPosition, level, index);
+        ArrayList<BlockPos> ports = structure.getPorts(pos, world, index);
         List<PortStorage> inputPorts = new ArrayList<>();
         List<PortStorage> outputPorts = new ArrayList<>();
         for (BlockPos port : ports) {
-            TileEntity blockEntity = level.getBlockEntity(port);
+            TileEntity blockEntity = world.getTileEntity(port);
             if (blockEntity instanceof MachinePortBlockEntity) {
                 MachinePortBlockEntity portBE = (MachinePortBlockEntity) blockEntity;
 
@@ -84,7 +84,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     }
 
     private void onPortsEstablished(List<PortStorage> inputPorts, List<PortStorage> outputPorts, MachineStructureRecipe structure) {
-        List<MachineProcessRecipe> processRecipes = level.getRecipeManager().getAllRecipesFor(RecipeTypes.MACHINE_PROCESS);
+        List<MachineProcessRecipe> processRecipes = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_PROCESS);
         boolean processed = false;
         for (MachineProcessRecipe recipe : processRecipes) {
             if (recipe.matches(inputPorts, structure.getStructureId())) {
@@ -115,15 +115,15 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
+    public CompoundNBT write(CompoundNBT nbt) {
         nbt.putInt("ticks", update.getTicksTaken());
         nbt.putString("msg", update.getMsg());
-        return super.save(nbt);
+        return super.write(nbt);
     }
 
     @Override
-    public void load(BlockState p_230337_1_, CompoundNBT nbt) {
-        super.load(p_230337_1_, nbt);
+    public void read(BlockState p_230337_1_, CompoundNBT nbt) {
+        super.read(p_230337_1_, nbt);
         update.setTicksTaken(nbt.getInt("ticks"));
         update.setMsg(nbt.getString("msg"));
     }

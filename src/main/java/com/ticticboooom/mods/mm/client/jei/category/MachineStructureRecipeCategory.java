@@ -83,10 +83,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
     @Override
     public void setIngredients(MachineStructureRecipe machineStructureRecipe, IIngredients iIngredients) {
-        Ingredient ingredient = Ingredient.of(new ItemStack(MMSetup.BLUEPRINT.get()));
+        Ingredient ingredient = Ingredient.fromStacks(new ItemStack(MMSetup.BLUEPRINT.get()));
         ArrayList<Ingredient> objects = new ArrayList<>();
         objects.add(ingredient);
-        objects.add(Ingredient.of(new ItemStack(ForgeRegistries.ITEMS.getValue(controller.getRegistryName()))));
+        objects.add(Ingredient.fromStacks(new ItemStack(ForgeRegistries.ITEMS.getValue(controller.getRegistryName()))));
         iIngredients.setInputIngredients(objects);
     }
 
@@ -112,7 +112,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             yLastMousePosition = mouseY;
         }
 
-        if (GLFW.glfwGetMouseButton(mc.getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_1) != 0) {
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) != 0) {
             double relMoveX = mouseX - xLastMousePosition;
             double relMoveY = mouseY - yLastMousePosition;
             xRotation += relMoveX;
@@ -156,7 +156,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             if (!part.getBlock().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getBlock());
                 Block block = ForgeRegistries.BLOCKS.getValue(resourceLocation);
-                BlockState defaultState = block.defaultBlockState();
+                BlockState defaultState = block.getDefaultState();
                 new GuiBlockRenderBuilder(defaultState).at(bp)
                         .withPrePosition(new Vector3f(6.5f, -5, 10))
                 .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
@@ -173,7 +173,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 }
             }
             if (block != null) {
-                BlockState defaultState = block.defaultBlockState().setValue(DirectionalBlock.FACING, Direction.NORTH);
+                BlockState defaultState = block.getDefaultState().with(DirectionalBlock.FACING, Direction.NORTH);
                 new GuiBlockRenderBuilder(defaultState).at(new BlockPos(0, 0, 0))
                         .withPrePosition(new Vector3f(6.5f, -5, 10))
                         .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
