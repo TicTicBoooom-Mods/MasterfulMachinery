@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://ticticboooom-mods.github.io/MasterfulMachinery/sitemap.xml
