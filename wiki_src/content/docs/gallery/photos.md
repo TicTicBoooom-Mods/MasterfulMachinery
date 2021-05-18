@@ -19,6 +19,21 @@ weight: 620
 
 Industrial Kiln made by Czbüendel
 ![Industrial Kiln made by Czbüendel](/images/czbüendel-industrialkiln.png "Czbüendel - Industrial Kiln")
+
+
+<details>
+<summary>Industrial Crusher</summary>
+<br>
+
+Industrial Crusher made by Czbüendel
+![Industrial Crusher made by Czbüendel](/images/czbüendel-industrialcrusher1.png "Czbüendel - Industrial Crusher")
+
+![Industrial Crusher made by Czbüendel](/images/czbüendel-industrialcrusher2.png "Czbüendel - Industrial Crusher")
+
+![Industrial Crusher made by Czbüendel](/images/czbüendel-industrialcrusher3.png "Czbüendel - Industrial Crusher")
+
+![Industrial Crusher made by Czbüendel](/images/czbüendel-industrialcrusher4.png "Czbüendel - Industrial Crusher")
+</details>
 </details>
 
 ## Jerome226
