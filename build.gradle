@@ -20,7 +20,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.1.31-T' + System.currentTimeMillis()
+version = '1.16.5-0.1.32-T' + System.currentTimeMillis()
 group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'MasterfulMachinery'
 
@@ -152,22 +152,23 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     compileOnly 'org.projectlombok:lombok:1.18.18'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.16'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.23'
 
     shade 'com.github.marschall:memoryfilesystem:2.1.0'
 
-    implementation fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
+    compileOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
+//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
+//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
+//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
 
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
     implementation fg.deobf('me.desht.pneumaticcraft:pneumaticcraft-repressurized:1.16.5-2.12.2-186');
     implementation fg.deobf("curse.maven:create-328085:3278516")
-//    implementation fg.deobf("curse.maven:astral-sorcery-241721:3156477")
-//    implementation fg.deobf("curse.maven:curios-309927:3275653")
+    implementation fg.deobf("curse.maven:astral-sorcery-241721:3156477")
+    implementation fg.deobf("curse.maven:curios-309927:3275653")
+    implementation fg.deobf("curse.maven:observerlib-316833:3162044")
 
 
     // You may put jars on which you depend on in ./libs or you may define them like so..

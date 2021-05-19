@@ -3,33 +3,21 @@ package com.ticticboooom.mods.mm.client.jei.category;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
-import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
-import com.ticticboooom.mods.mm.ports.state.FluidPortState;
-import com.ticticboooom.mods.mm.ports.state.ItemPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
-import com.ticticboooom.mods.mm.ports.storage.MekGasPortStorage;
 import com.ticticboooom.mods.mm.registration.MMPorts;
-import com.ticticboooom.mods.mm.registration.RecipeTypes;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProcessRecipe> {
 
@@ -75,19 +63,15 @@ public class MachineProcessRecipeCategory implements IRecipeCategory<MachineProc
         Map<ResourceLocation, List<?>> inputStacks = new HashMap<>();
         Map<ResourceLocation, List<?>> outputStacks = new HashMap<>();
 
-        for (Map.Entry<ResourceLocation, MasterfulPortType> resource : MMPorts.PORTS.entrySet()) {
-            ResourceLocation registryName = resource.getKey();
-            inputStacks.put(registryName, new ArrayList<MasterfulPortType>());
-            outputStacks.put(registryName, new ArrayList<MasterfulPortType>());
-        }
-
         for (PortState input : recipe.getInputs()) {
+            inputStacks.putIfAbsent(input.getName(), new ArrayList<MasterfulPortType>());
             List<?> stacks = inputStacks.getOrDefault(input.getName(), new ArrayList<>());
             stacks.addAll(input.getIngredient(true));
             inputStacks.put(input.getName(), stacks);
         }
 
         for (PortState output : recipe.getOutputs()) {
+            outputStacks.putIfAbsent(output.getName(), new ArrayList<MasterfulPortType>());
             List<?> stacks = outputStacks.getOrDefault(output.getName(), new ArrayList<>());
             stacks.addAll(output.getIngredient(true));
             outputStacks.put(output.getName(), stacks);

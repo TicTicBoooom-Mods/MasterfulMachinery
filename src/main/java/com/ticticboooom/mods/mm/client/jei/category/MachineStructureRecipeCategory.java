@@ -20,6 +20,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +33,9 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MachineStructureRecipeCategory implements IRecipeCategory<MachineStructureRecipe> {
@@ -48,7 +52,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private double yLastMousePosition = 0;
     private int sliceY = 0;
     private boolean slicingActive = false;
-
+    private Map<Integer, Integer> tagIndexes = new HashMap<>();
+    private Map<Integer, Integer> tagIndexCounter = new HashMap<>();
     public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
         this.controller = controller;
@@ -146,7 +151,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             parts = parts.stream().filter(x -> x.getPos().getY() == sliceY).collect(Collectors.toList());
         }
 
+        int i = 0;
         for (MachineStructureRecipeKeyModel part : parts) {
+            tagIndexes.putIfAbsent(i, 0);
+            tagIndexCounter.putIfAbsent(i, 0);
             if (part.getBlock().isEmpty() && part.getTag().isEmpty()) {
                 continue;
             }
@@ -156,13 +164,41 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             if (!part.getBlock().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getBlock());
                 Block block = ForgeRegistries.BLOCKS.getValue(resourceLocation);
+                if (block != null){
                 BlockState defaultState = block.getDefaultState();
-                new GuiBlockRenderBuilder(defaultState).at(bp)
-                        .withPrePosition(new Vector3f(6.5f, -5, 10))
-                .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                .withScale(new Vector3f(12f, -12, 12))
-                .finalize(matrixStack);
+                    new GuiBlockRenderBuilder(defaultState).at(bp)
+                            .withPrePosition(new Vector3f(6.5f, -5, 10))
+                    .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                    .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                    .withScale(new Vector3f(12f, -12, 12))
+                    .finalize(matrixStack);
+                }
+            } else if (!part.getTag().equals("")){
+                ResourceLocation resourceLocation = new ResourceLocation(part.getTag());
+                ITag<Block> tag = BlockTags.getCollection().getTagByID(resourceLocation);
+                if (tag != null){
+                    Integer index = tagIndexes.get(i);
+
+                    Block block = tag.getAllElements().get(index);
+                    tagIndexCounter.put(i, tagIndexCounter.get(i) + 1);
+                    if (tagIndexCounter.get(i) > 30){
+                        tagIndexCounter.put(i, 0);
+                        index++;
+                    }
+                    if (index >= tag.getAllElements().size()){
+                        index = 0;
+                    }
+                    tagIndexes.put(i, index);
+                    if (block != null) {
+                        BlockState defaultState = block.getDefaultState();
+                        new GuiBlockRenderBuilder(defaultState).at(bp)
+                                .withPrePosition(new Vector3f(6.5f, -5, 10))
+                                .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                                .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                                .withScale(new Vector3f(12f, -12, 12))
+                                .finalize(matrixStack);
+                    }
+                }
             }
         }
         if (sliceY == 0) {

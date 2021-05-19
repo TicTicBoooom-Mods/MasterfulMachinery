@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.client.util;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.ticticboooom.mods.mm.client.jei.category.render.AirBlockReader;
 import mekanism.client.model.BaseModelCache;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.ArrayList;
@@ -30,17 +32,20 @@ public class GuiBlockRenderBuilder {
     private Vector3f prePosition = new Vector3f();
     private TileEntityRenderer<TileEntity> ter = null;
     private TileEntity tile;
-
+    private static final IBlockReader reader= new AirBlockReader();
     public GuiBlockRenderBuilder(BlockState blockState) {
         this.blockState = blockState;
         position = new BlockPos(0, 0, 0);
-        tile = blockState.createTileEntity(Minecraft.getInstance().world);
+        tile = blockState.createTileEntity(reader);
         if (tile != null) {
             ter = TileEntityRendererDispatcher.instance.getRenderer(tile);
         }
     }
 
     public GuiBlockRenderBuilder at(BlockPos position) {
+        if (tile != null) {
+            tile.setWorldAndPos(Minecraft.getInstance().world, BlockPos.ZERO);
+        }
         this.position = position;
         return this;
     }
@@ -81,9 +86,10 @@ public class GuiBlockRenderBuilder {
         BlockRendererDispatcher brd = Minecraft.getInstance().getBlockRendererDispatcher();
         ms.push();
         transformMatrix(ms);
+
         brd.renderBlock(blockState, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
         if (ter != null) {
-            ter.render(tile, 1.0f, ms, buf, 0, 1);
+            ter.render(tile, 4.f, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY);
         }
         buf.finish();
         ms.pop();
