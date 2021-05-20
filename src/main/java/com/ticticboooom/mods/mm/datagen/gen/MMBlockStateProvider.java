@@ -6,7 +6,9 @@ import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMSetup;
+import net.minecraft.block.Block;
 import net.minecraft.block.DirectionalBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
@@ -50,8 +52,9 @@ public class MMBlockStateProvider extends BlockStateProvider {
             simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
         }
 
-        simpleBlock(MMSetup.PROJECTOR_BLOCK.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/projector")));
-        simpleBlock(MMSetup.STRUCTURE_BLOCK.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/config_generator")));
+        directionalState(MMSetup.PROJECTOR_BLOCK.get());
+
+        directionalState(MMSetup.STRUCTURE_BLOCK.get());
     }
 
     public void dynamicBlockNorthOverlay(ResourceLocation loc, ResourceLocation baseTexture, ResourceLocation overlayTexture) {
@@ -126,5 +129,14 @@ public class MMBlockStateProvider extends BlockStateProvider {
                         .end()
                 )
                 .end();
+    }
+
+    private void directionalState(Block block){
+        VariantBlockStateBuilder variantBuilder = getVariantBuilder(block);
+        variantBuilder.partialState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.NORTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" +  block.getRegistryName().getPath()))).rotationY(0).addModel();
+        variantBuilder.partialState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.SOUTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" +  block.getRegistryName().getPath()))).rotationY(180).addModel();
+        variantBuilder.partialState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.EAST).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" +   block.getRegistryName().getPath()))).rotationY(90).addModel();
+        variantBuilder.partialState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.WEST).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" +   block.getRegistryName().getPath()))).rotationY(270).addModel();
+
     }
 }

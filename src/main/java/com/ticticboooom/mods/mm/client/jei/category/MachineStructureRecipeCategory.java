@@ -13,10 +13,12 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.java.games.input.Mouse;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -50,10 +52,13 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private double xLastMousePosition = 0;
     private float yRotation = 0;
     private double yLastMousePosition = 0;
+    private int scrollLastPos = 0;
+
     private int sliceY = 0;
     private boolean slicingActive = false;
     private Map<Integer, Integer> tagIndexes = new HashMap<>();
     private Map<Integer, Integer> tagIndexCounter = new HashMap<>();
+    private float scaleFactor = 12F;
     public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
         this.controller = controller;
@@ -139,8 +144,13 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             topY = Math.max(part.getPos().getY(), topY);
             bottomY = Math.min(part.getPos().getY(), bottomY);
         }
-        int scaleFactor = Math.abs(furthestX) + Math.abs(nearestX) + Math.abs(furthestZ) + Math.abs(nearestZ);
-        scaleFactor = scaleFactor / 4;
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != 0){
+            if (scrollLastPos == 0){
+                scrollLastPos = (int) mouseY;
+            }
+            scaleFactor += (mouseY - yLastMousePosition) * 0.05;
+            scaleFactor = Math.max(0.003f, scaleFactor);
+        }
         nearestX++;
         nearestZ++;
         float centreX = ((float) nearestX - furthestX) / 2f;
@@ -170,7 +180,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                             .withPrePosition(new Vector3f(6.5f, -5, 10))
                     .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
                     .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                    .withScale(new Vector3f(12f, -12, 12))
+                    .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
                     .finalize(matrixStack);
                 }
             } else if (!part.getTag().equals("")){
@@ -185,7 +195,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                         tagIndexCounter.put(i, 0);
                         index++;
                     }
-                    if (index >= tag.getAllElements().size()){
+                    if (index >= tag.getAllElements().size()) {
                         index = 0;
                     }
                     tagIndexes.put(i, index);
@@ -195,7 +205,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                                 .withPrePosition(new Vector3f(6.5f, -5, 10))
                                 .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
                                 .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                                .withScale(new Vector3f(12f, -12, 12))
+                                .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
                                 .finalize(matrixStack);
                     }
                 }
@@ -214,7 +224,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                         .withPrePosition(new Vector3f(6.5f, -5, 10))
                         .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
                         .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                        .withScale(new Vector3f(12f, -12f, 12f))
+                        .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
                         .finalize(matrixStack);
 
             }
@@ -256,4 +266,5 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
 
     }
+
 }

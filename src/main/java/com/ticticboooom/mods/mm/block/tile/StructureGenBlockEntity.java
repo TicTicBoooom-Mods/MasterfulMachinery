@@ -1,8 +1,10 @@
 package com.ticticboooom.mods.mm.block.tile;
 
 import com.ticticboooom.mods.mm.block.container.StructureGenBlockContainer;
+import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
 import com.ticticboooom.mods.mm.registration.MMSetup;
+import lombok.Getter;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -16,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
@@ -24,6 +27,11 @@ public class StructureGenBlockEntity extends UpdatableTile implements ITickableT
         super(MMSetup.STRUCTURE_TILE.get());
     }
 
+
+    @Getter
+    private ItemStackHandler handler = new ItemStackHandler(1);
+    @Getter
+    private ItemStackInventory inv = new ItemStackInventory(handler);
     private ItemStack device = ItemStack.EMPTY;
 
     @Override
@@ -55,6 +63,6 @@ public class StructureGenBlockEntity extends UpdatableTile implements ITickableT
     @Nullable
     @Override
     public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
-        return new StructureGenBlockContainer(p_createMenu_1_, this);
+        return new StructureGenBlockContainer(p_createMenu_1_, p_createMenu_2_, this);
     }
 }

@@ -12,4 +12,11 @@ public class NBTHelper {
         result.putInt("z", pos.getZ());
         return result;
     }
+
+    public static BlockPos fromCompound(CompoundNBT nbt) {
+        int x = nbt.getInt("x");
+        int y = nbt.getInt("y");
+        int z = nbt.getInt("z");
+        return new BlockPos(x, y, z);
+    }
 }

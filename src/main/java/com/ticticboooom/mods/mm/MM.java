@@ -6,9 +6,11 @@ import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
+import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
 import com.ticticboooom.mods.mm.client.screen.ControllerBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.StructureGenBlockContainerScreen;
+import com.ticticboooom.mods.mm.client.ter.StructureGenTileEntityRenderer;
 import com.ticticboooom.mods.mm.datagen.MMPackFinder;
 import com.ticticboooom.mods.mm.datagen.MemoryDataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
@@ -24,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,6 +34,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -103,6 +107,7 @@ public class MM {
         for (RegistryObject<ContainerType<ControllerBlockContainer>> container : MMLoader.CONTAINERS) {
             ScreenManager.registerFactory(container.get(), ControllerBlockContainerScreen::new);
         }
+
         for (RegistryObject<ContainerType<?>> container : MMLoader.PORT_CONTAINERS) {
             ScreenManager.registerFactory((ContainerType<PortBlockContainer>) container.get(), PortBlockContainerScreen::new);
         }
@@ -118,7 +123,10 @@ public class MM {
         for (RegistryObject<MachinePortBlock> block : MMLoader.OPORT_BLOCKS) {
             RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
+
+
         RenderTypeLookup.setRenderLayer(MMSetup.PROJECTOR_BLOCK.get(), RenderType.getTranslucent());
         ScreenManager.registerFactory(MMSetup.STRUCTURE_CONTAINER.get(), StructureGenBlockContainerScreen::new);
+        ClientRegistry.bindTileEntityRenderer(MMSetup.STRUCTURE_TILE.get(), StructureGenTileEntityRenderer::new);
     }
 }

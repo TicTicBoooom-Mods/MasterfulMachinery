@@ -340,7 +340,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             for (MachineStructureRecipeKeyModel model : models) {
                 if (!model.getBlock().equals("")) {
                     if (RLUtils.isRL(model.getBlock())) {
-                        if (!ForgeRegistries.ITEMS.containsKey(RLUtils.toRL(model.getBlock()))) {
+                        if (!ForgeRegistries.BLOCKS.containsKey(RLUtils.toRL(model.getBlock()))) {
                             throw new InvalidStructureDefinitionException("Block: " + model.getBlock() +  " is not an existing block in the game");
                         }
                     } else {

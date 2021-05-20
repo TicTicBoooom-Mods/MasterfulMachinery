@@ -11,6 +11,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class StructureGenSelectionDevice extends Item {
@@ -29,14 +30,18 @@ public class StructureGenSelectionDevice extends Item {
         }
         if (!tag.contains("pos1") && !tag.contains("pos2")) {
             tag.put("pos1", NBTHelper.toCompound(clickedPos));
+            ctx.getPlayer().sendStatusMessage(new StringTextComponent("Set Pos 1"), true);
         } else if (tag.contains("pos1") && !tag.contains("pos2")) {
             tag.put("pos2", NBTHelper.toCompound(clickedPos));
+            ctx.getPlayer().sendStatusMessage(new StringTextComponent("Set Pos 2"), true);
         } else {
             if (tag.contains("pos2")) {
                 tag.remove("pos2");
             }
             tag.put("pos1", NBTHelper.toCompound(clickedPos));
+            ctx.getPlayer().sendStatusMessage(new StringTextComponent("Set Pos 1"), true);
         }
+        iih.setTag(tag);
 
         return ActionResultType.SUCCESS;
     }
