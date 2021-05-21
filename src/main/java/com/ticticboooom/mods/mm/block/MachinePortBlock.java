@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
+import com.ticticboooom.mods.mm.model.ModelOverrideModel;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
 import hellfirepvp.astralsorcery.common.block.base.BlockStarlightRecipient;
@@ -43,13 +44,17 @@ public class MachinePortBlock extends Block implements BlockStarlightRecipient {
     @Getter
     private ResourceLocation overlay;
 
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
+    @Getter
+    private final ModelOverrideModel modelOverride;
+
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ModelOverrideModel modelOverride) {
         super(AbstractBlock.Properties.create(Material.IRON));
         this.type = type;
         this.langName = name;
         this.controllerId = controllerId;
         this.textureOverride = textureOverride;
         this.overlay = overlay;
+        this.modelOverride = modelOverride;
     }
 
     @Override

@@ -148,13 +148,10 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             return false;
         }
 
-        if (model.getProperties() != null) {
+        if (model.getProperties() == null) {
             return true;
         }
 
-        if (!blockState.hasTileEntity()) {
-            return true;
-        }
 
 
         for (Map.Entry<String, String> stringStringEntry : model.getProperties().entrySet()) {
