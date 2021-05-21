@@ -109,6 +109,10 @@ public class MachinePortBlock extends Block implements BlockStarlightRecipient {
         TileEntity tile = world.getTileEntity(blockPos);
         if (tile instanceof MachinePortBlockEntity){
             PortStorage storage = ((MachinePortBlockEntity) tile).getStorage();
+            if (!((MachinePortBlockEntity) tile).isInput()) {
+                return;
+            }
+
             if (storage instanceof StarlightPortStorage) {
                 StarlightPortStorage starlightStorage = (StarlightPortStorage) storage;
                 int rec = new Double(v).intValue();
