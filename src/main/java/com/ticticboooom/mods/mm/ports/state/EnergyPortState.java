@@ -24,8 +24,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 public class EnergyPortState extends PortState {
-
-public static final Codec<EnergyPortState> CODEC  =RecordCodecBuilder.create(x -> x.group(
+    public static final Codec<EnergyPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
                 Codec.INT.fieldOf("amount").forGetter(z -> z.amount)
             ).apply(x, EnergyPortState::new));
 

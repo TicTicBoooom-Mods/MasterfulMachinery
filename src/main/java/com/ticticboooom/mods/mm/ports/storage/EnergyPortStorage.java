@@ -20,9 +20,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 public class EnergyPortStorage extends PortStorage {
-    public static final Codec<EnergyPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
+    public static final Codec<EnergyPortStorage> CODEC = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("capacity").forGetter(z -> z.inv.getMaxEnergyStored())
-    ).apply(x, EnergyPortStorage::new));
+        ).apply(x, EnergyPortStorage::new));
 
     @Getter
     private final PortEnergyInventory inv;

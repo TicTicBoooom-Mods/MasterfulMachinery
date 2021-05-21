@@ -2,6 +2,10 @@ package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
+import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
+import hellfirepvp.astralsorcery.common.block.base.BlockStarlightRecipient;
+import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import lombok.Getter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -26,8 +30,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
-public class MachinePortBlock extends Block {
+public class MachinePortBlock extends Block implements BlockStarlightRecipient {
     private RegistryObject<TileEntityType<?>> type;
     @Getter
     private String langName;
@@ -58,6 +63,7 @@ public class MachinePortBlock extends Block {
         return type.get().create();
     }
 
+
     @Override
     public ActionResultType onBlockActivated(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
         if (!level.isRemote()) {
@@ -66,6 +72,7 @@ public class MachinePortBlock extends Block {
                 NetworkHooks.openGui(((ServerPlayerEntity) player), (MachinePortBlockEntity)blockEntity, pos);
             }
         }
+
         return ActionResultType.SUCCESS;
     }
 
@@ -73,6 +80,7 @@ public class MachinePortBlock extends Block {
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         TileEntity tile = worldIn.getTileEntity(pos);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
         if (tile instanceof MachinePortBlockEntity){
             LazyOptional<Object> lo = ((MachinePortBlockEntity) tile).getStorage().getLO();
             if (lo == null){
@@ -83,7 +91,7 @@ public class MachinePortBlock extends Block {
                 InventoryHelper.dropInventoryItems(worldIn, pos, new ItemStackInventory((ItemStackHandler) o));
             }
         }
-        super.onReplaced(state, worldIn, pos, newState, isMoving);
+        tile.remove();
     }
 
 
@@ -93,6 +101,23 @@ public class MachinePortBlock extends Block {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof MachinePortBlockEntity){
             ((MachinePortBlockEntity) tile).getStorage().neighborChanged();
+        }
+    }
+
+    @Override
+    public void receiveStarlight(World world, Random random, BlockPos blockPos, IWeakConstellation iWeakConstellation, double v) {
+        TileEntity tile = world.getTileEntity(blockPos);
+        if (tile instanceof MachinePortBlockEntity){
+            PortStorage storage = ((MachinePortBlockEntity) tile).getStorage();
+            if (!((MachinePortBlockEntity) tile).isInput()) {
+                return;
+            }
+
+            if (storage instanceof StarlightPortStorage) {
+                StarlightPortStorage starlightStorage = (StarlightPortStorage) storage;
+                int rec = new Double(v).intValue();
+                starlightStorage.getInv().receiveStarlight(rec, false);
+            }
         }
     }
 }
