@@ -22,6 +22,7 @@ import net.minecraft.client.MouseHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
@@ -34,10 +35,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MachineStructureRecipeCategory implements IRecipeCategory<MachineStructureRecipe> {
@@ -58,7 +56,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private boolean slicingActive = false;
     private Map<Integer, Integer> tagIndexes = new HashMap<>();
     private Map<Integer, Integer> tagIndexCounter = new HashMap<>();
-    private float scaleFactor = 12F;
+    private float scaleFactor = 1F;
     public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
         this.controller = controller;
@@ -102,6 +100,12 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
     @Override
     public void setRecipe(IRecipeLayout iRecipeLayout, MachineStructureRecipe machineStructureRecipe, IIngredients iIngredients) {
+
+        this.xRotation = 0;
+        this.yRotation = 0;
+        this.yLastMousePosition = 0;
+        this.xLastMousePosition = 0;
+        this.scaleFactor = 1.2f;
 
     }
 
@@ -174,8 +178,9 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             if (!part.getBlock().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getBlock());
                 Block block = ForgeRegistries.BLOCKS.getValue(resourceLocation);
-                if (block != null){
-                BlockState defaultState = block.getDefaultState();
+                if (block != null) {
+                    BlockState defaultState = block.getDefaultState();
+                    defaultState = with(defaultState, part.getProperties());
                     new GuiBlockRenderBuilder(defaultState).at(bp)
                             .withPrePosition(new Vector3f(6.5f, -5, 10))
                     .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
@@ -201,6 +206,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                     tagIndexes.put(i, index);
                     if (block != null) {
                         BlockState defaultState = block.getDefaultState();
+                        defaultState = with(defaultState, part.getProperties());
                         new GuiBlockRenderBuilder(defaultState).at(bp)
                                 .withPrePosition(new Vector3f(6.5f, -5, 10))
                                 .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
@@ -265,6 +271,27 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
 
 
+    }
+
+    private BlockState with(BlockState defaultState, Map<String, String> props) {
+        if (props == null) {
+            return defaultState;
+        }
+        for (Map.Entry<String, String> stringStringEntry : props.entrySet()) {
+            for (Property<?> property : defaultState.getProperties()) {
+                Optional<?> o = property.parseValue(stringStringEntry.getValue());
+                if (!o.isPresent()){
+                    return defaultState;
+                }
+                for (Comparable<?> allowedValue : property.getAllowedValues()) {
+                    defaultState = defaultState.cycleValue(property);
+                    if (defaultState.get(property).equals(o.get())){
+                        return defaultState;
+                    }
+                }
+            }
+        }
+        return defaultState;
     }
 
 }

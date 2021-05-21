@@ -1,6 +1,7 @@
 {
   "controllerId": "basic",
   "name": "Basic",
+
   "ports": [
     {
       "type": "masterfulmachinery:items",

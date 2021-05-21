@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
+import com.ticticboooom.mods.mm.model.ModelOverrideModel;
 import lombok.Getter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -37,14 +38,17 @@ public class MachinePortBlock extends Block {
     private String textureOverride;
     @Getter
     private ResourceLocation overlay;
+    @Getter
+    private ModelOverrideModel modelOverride;
 
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ModelOverrideModel modelOverride) {
         super(AbstractBlock.Properties.create(Material.IRON));
         this.type = type;
         this.langName = name;
         this.controllerId = controllerId;
         this.textureOverride = textureOverride;
         this.overlay = overlay;
+        this.modelOverride = modelOverride;
     }
 
     @Override

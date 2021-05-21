@@ -90,7 +90,7 @@ public class GuiBlockRenderBuilder {
 
         brd.renderBlock(blockState, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
         if (ter != null) {
-            ter.render(tile, 4.f, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY);
+            ter.render(tile, 1.f, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY);
         }
         buf.finish();
         ms.pop();

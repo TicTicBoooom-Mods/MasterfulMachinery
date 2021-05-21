@@ -10,7 +10,6 @@ import net.minecraftforge.common.util.LazyOptional;
 public class AstralStarlightPortStorage extends PortStorage {
 
 
-
     @Override
     public <T> LazyOptional<T> getLO() {
         return null;
