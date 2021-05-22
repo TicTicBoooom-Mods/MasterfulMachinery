@@ -151,6 +151,7 @@ repositories {
         name 'Curios'
         url "https://maven.theillusivec4.top/"
     }
+    maven { url 'https://maven.blamejared.com' }
 }
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
@@ -176,9 +177,10 @@ dependencies {
 
     implementation fg.deobf("curse.maven:astral-sorcery-241721:3156477")
     implementation fg.deobf("curse.maven:observerlib-316833:3162044")
-
     // runtime deps
     runtimeOnly fg.deobf("curse.maven:curios-309927:3231111")
+    compileOnly fg.deobf("vazkii.botania:Botania:1.16.5-416:api")
+    runtimeOnly fg.deobf("vazkii.botania:Botania:1.16.5-416")
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
