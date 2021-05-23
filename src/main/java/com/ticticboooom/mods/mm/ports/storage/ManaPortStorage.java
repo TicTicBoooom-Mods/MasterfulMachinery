@@ -98,6 +98,30 @@ public class ManaPortStorage extends PortStorage {
             }
         }
 
+        System.out.println(this.validPools);
+        int tiles = validPools.size();
+        if (tiles != 0) {
+            int extractableMana = inv.extractMana(Integer.MAX_VALUE, true);
+            int extractedMana = 0;
+            int filledPools = 0;
+            while (extractableMana != 0) {
+                for (IManaReceiver pool : validPools) {
+                    if (!pool.isFull()) {
+                        pool.receiveMana(1);
+                        extractableMana--;
+                        extractedMana++;
+                    }
+                    else {
+                        filledPools++;
+                    }
+                }
+                if (filledPools == validPools.size()) {
+                    break;
+                }
+            }
+            inv.extractMana(extractedMana, false);
+        }
+
         super.tick(tile);
     }
 }

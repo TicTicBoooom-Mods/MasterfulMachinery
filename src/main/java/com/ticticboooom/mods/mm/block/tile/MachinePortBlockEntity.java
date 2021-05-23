@@ -93,20 +93,9 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
 
     @Override
     public void receiveMana(int mana) {
-        if (storage instanceof ManaPortStorage) {
+        if (storage instanceof ManaPortStorage && this.isInput()) {
             ManaPortStorage s = (ManaPortStorage) storage;
-            if (this.isInput()) {
-                s.getInv().receiveMana(mana, false);
-            }
-            else {
-                int tiles = s.getValidPools().size();
-                if (tiles != 0) {
-                    int manaForEach = mana / tiles;
-                    for (IManaReceiver pool : s.getValidPools()) {
-                        pool.receiveMana(manaForEach);
-                    }
-                }
-            }
+            s.getInv().receiveMana(mana, false);
         }
     }
 
