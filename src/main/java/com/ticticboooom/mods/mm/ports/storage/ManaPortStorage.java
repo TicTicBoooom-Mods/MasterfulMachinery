@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.PortEnergyInventory;
 import com.ticticboooom.mods.mm.inventory.botania.PortManaInventory;
 import lombok.Getter;
@@ -11,15 +12,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import vazkii.botania.api.mana.IManaPool;
+import vazkii.botania.api.mana.IManaReceiver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManaPortStorage extends PortStorage {
     public static final Codec<ManaPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("capacity").forGetter(z -> z.inv.getMaxManaStored())
     ).apply(x, ManaPortStorage::new));
+    @Getter
+    private final List<IManaReceiver> validPools = new ArrayList<>();
 
     @Getter
     private final PortManaInventory inv;
@@ -66,5 +77,27 @@ public class ManaPortStorage extends PortStorage {
         }
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getManaStored() + "Mana", left + 30, top + 60, 0xfefefe);
+    }
+
+    @Override
+    public void tick(MachinePortBlockEntity tile) {
+        if (tile.getWorld().isRemote) {
+            return;
+        }
+        validPools.clear();
+        for (Direction dir : Direction.Plane.HORIZONTAL) {
+            BlockPos pos = tile.getPos().offset(dir);
+            if (tile.getWorld().isBlockLoaded(pos)) {
+                TileEntity tileAt = tile.getWorld().getTileEntity(pos);
+                if (tileAt instanceof IManaPool && !tileAt.isRemoved()) {
+                    IManaReceiver receiver = (IManaReceiver) tileAt;
+                    if (!receiver.isFull()) {
+                        validPools.add(receiver);
+                    }
+                }
+            }
+        }
+
+        super.tick(tile);
     }
 }

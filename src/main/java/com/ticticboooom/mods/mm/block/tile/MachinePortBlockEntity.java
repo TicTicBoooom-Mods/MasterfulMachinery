@@ -18,6 +18,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import vazkii.botania.api.mana.IManaBlock;
+import vazkii.botania.api.mana.IManaPool;
 import vazkii.botania.api.mana.IManaReceiver;
 
 import javax.annotation.Nonnull;
@@ -93,13 +95,24 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
     public void receiveMana(int mana) {
         if (storage instanceof ManaPortStorage) {
             ManaPortStorage s = (ManaPortStorage) storage;
-            s.getInv().receiveMana(mana, false);
+            if (this.isInput()) {
+                s.getInv().receiveMana(mana, false);
+            }
+            else {
+                int tiles = s.getValidPools().size();
+                if (tiles != 0) {
+                    int manaForEach = mana / tiles;
+                    for (IManaReceiver pool : s.getValidPools()) {
+                        pool.receiveMana(manaForEach);
+                    }
+                }
+            }
         }
     }
 
     @Override
     public boolean canReceiveManaFromBursts() {
-        return true;
+        return this.isInput();
     }
 
     @Override
