@@ -19,6 +19,8 @@ public class MMPorts {
         PORTS.put(new ResourceLocation(MM.ID, "mekanism_slurry"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_slurry"), new MekSlurryPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "pncr_pressure"),new MasterfulPortType(new ResourceLocation(MM.ID, "pncr_pressure"), new PneumaticPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "create_rotation"),new MasterfulPortType(new ResourceLocation(MM.ID, "create_rotation"), new RotationPortParser()));
+        PORTS.put(new ResourceLocation(MM.ID, "starlight"),new MasterfulPortType(new ResourceLocation(MM.ID, "starlight"), new StarlightPortParser()));
+        PORTS.put(new ResourceLocation(MM.ID, "botania_mana"),new MasterfulPortType(new ResourceLocation(MM.ID, "botania_mana"), new ManaPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "astral_starlight"),new MasterfulPortType(new ResourceLocation(MM.ID, "astral_starlight"), new StarlightPortParser()));
     }
 }
