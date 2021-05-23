@@ -32,6 +32,10 @@ public class MMJeiPlugin implements IModPlugin {
     public static final PNCPressureIngredientRenderer PRESSURE_TYPE_RENDERER = new PNCPressureIngredientRenderer();
     public static final PNCPressureIngredientHelper PRESSURE_TYPE_HELPER = new PNCPressureIngredientHelper();
 
+    public static final ManaIngredientType MANA_TYPE = new ManaIngredientType();
+    public static final ManaIngredientRenderer MANA_TYPE_RENDERER = new ManaIngredientRenderer();
+    public static final ManaIngredientHelper MANA_TYPE_HELPER = new ManaIngredientHelper();
+
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(MM.ID, "jei_main");
@@ -41,6 +45,7 @@ public class MMJeiPlugin implements IModPlugin {
     public void registerIngredients(IModIngredientRegistration registration) {
         registration.register(MMJeiPlugin.ENERGY_TYPE, ImmutableList.of(), ENERGY_TYPE_HELPER, ENERGY_TYPE_RENDERER);
         registration.register(MMJeiPlugin.PRESSURE_TYPE, ImmutableList.of(), PRESSURE_TYPE_HELPER, PRESSURE_TYPE_RENDERER);
+        registration.register(MMJeiPlugin.MANA_TYPE, ImmutableList.of(), MANA_TYPE_HELPER, MANA_TYPE_RENDERER);
     }
 
     @Override

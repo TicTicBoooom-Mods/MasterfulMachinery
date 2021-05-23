@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.EnergyStack;
+import com.ticticboooom.mods.mm.inventory.botania.PortManaInventory;
 import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.ManaPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
@@ -17,6 +18,7 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
+import vazkii.botania.api.mana.IManaReceiver;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> 
 
     @Override
     public ResourceLocation getName() {
-        return new ResourceLocation(MM.ID, "mana");
+        return new ResourceLocation(MM.ID, "botania_mana");
     }
 
     @Override
@@ -68,9 +70,9 @@ public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> 
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
-        IGuiIngredientGroup<EnergyStack> group = layout.getIngredientsGroup(MMJeiPlugin.ENERGY_TYPE);
+        IGuiIngredientGroup<PortManaInventory> group = layout.getIngredientsGroup(MMJeiPlugin.MANA_TYPE);
         group.init(typeIndex, input, x + 1, y + 1);
-        group.set(typeIndex, new EnergyStack(amount));
+        group.set(typeIndex, new PortManaInventory(0, amount));
         if (this.getChance() < 1){
             group.addTooltipCallback((s, a, b, c) -> {
                 if (s == typeIndex) {
@@ -82,6 +84,6 @@ public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> 
 
     @Override
     public IIngredientType<?> getJeiIngredientType() {
-        return MMJeiPlugin.ENERGY_TYPE;
+        return MMJeiPlugin.MANA_TYPE;
     }
 }

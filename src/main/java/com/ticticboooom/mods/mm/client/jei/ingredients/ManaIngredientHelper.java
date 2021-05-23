@@ -1,45 +1,46 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients;
 
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
+import com.ticticboooom.mods.mm.inventory.botania.PortManaInventory;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
 import javax.annotation.Nullable;
 
-public class ManaIngredientHelper implements IIngredientHelper<PressureStack> {
+public class ManaIngredientHelper implements IIngredientHelper<PortManaInventory> {
 
     @Nullable
     @Override
-    public PressureStack getMatch(Iterable<PressureStack> ingredients, PressureStack ingredientToMatch) {
+    public PortManaInventory getMatch(Iterable<PortManaInventory> ingredients, PortManaInventory ingredientToMatch) {
         return ingredientToMatch;
     }
 
     @Override
-    public String getDisplayName(PressureStack ingredient) {
+    public String getDisplayName(PortManaInventory ingredient) {
         return "Pressure";
     }
 
     @Override
-    public String getUniqueId(PressureStack ingredient) {
-        return ingredient.getAmount() + "";
+    public String getUniqueId(PortManaInventory ingredient) {
+        return ingredient.getManaStored() + "";
     }
 
     @Override
-    public String getModId(PressureStack ingredient) {
-        return "pneumaticcraft";
+    public String getModId(PortManaInventory ingredient) {
+        return "botania";
     }
 
     @Override
-    public String getResourceId(PressureStack ingredient) {
-        return "pressure";
+    public String getResourceId(PortManaInventory ingredient) {
+        return "mana";
     }
 
     @Override
-    public PressureStack copyIngredient(PressureStack ingredient) {
-        return new PressureStack(ingredient.getAmount());
+    public PortManaInventory copyIngredient(PortManaInventory ingredient) {
+        return new PortManaInventory(0, ingredient.getManaStored());
     }
 
     @Override
-    public String getErrorInfo(@Nullable PressureStack ingredient) {
+    public String getErrorInfo(@Nullable PortManaInventory ingredient) {
         return "Error";
     }
 }

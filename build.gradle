@@ -182,6 +182,8 @@ dependencies {
     compileOnly fg.deobf("vazkii.botania:Botania:1.16.5-416:api")
     runtimeOnly fg.deobf("vazkii.botania:Botania:1.16.5-416")
 
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-51")
+
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"

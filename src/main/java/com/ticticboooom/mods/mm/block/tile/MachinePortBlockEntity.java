@@ -1,6 +1,7 @@
 package com.ticticboooom.mods.mm.block.tile;
 
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
+import com.ticticboooom.mods.mm.ports.storage.ManaPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.Getter;
 import net.minecraft.block.BlockState;
@@ -17,11 +18,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import vazkii.botania.api.mana.IManaReceiver;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider {
+public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider, IManaReceiver {
 
     private ContainerType<?> container;
     @Getter
@@ -78,4 +80,34 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
         update();
     }
 
+    @Override
+    public boolean isFull() {
+        if (storage instanceof ManaPortStorage) {
+            ManaPortStorage s = (ManaPortStorage) storage;
+            return s.getInv().getManaStored() == s.getInv().getMaxManaStored();
+        }
+        return true;
+    }
+
+    @Override
+    public void receiveMana(int mana) {
+        if (storage instanceof ManaPortStorage) {
+            ManaPortStorage s = (ManaPortStorage) storage;
+            s.getInv().receiveMana(mana, false);
+        }
+    }
+
+    @Override
+    public boolean canReceiveManaFromBursts() {
+        return true;
+    }
+
+    @Override
+    public int getCurrentMana() {
+        if (storage instanceof ManaPortStorage) {
+            ManaPortStorage s = (ManaPortStorage) storage;
+            return s.getInv().getManaStored();
+        }
+        return 0;
+    }
 }
