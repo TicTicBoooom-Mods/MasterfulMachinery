@@ -153,7 +153,6 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         }
 
 
-
         for (Map.Entry<String, String> stringStringEntry : model.getProperties().entrySet()) {
             for (Map.Entry<Property<?>, Comparable<?>> propertyEntry : blockState.getValues().entrySet()) {
                 if (propertyEntry.getKey().getName().equals(stringStringEntry.getKey())) {
@@ -207,33 +206,39 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
         @Override
         public MachineStructureRecipe read(ResourceLocation rl, JsonObject obj) {
-            JsonElement controllerIdJson = obj.get("controllerId");
-            List<String> ids = new ArrayList<>();
-            if (controllerIdJson.isJsonPrimitive()) {
-                ids.add(controllerIdJson.getAsString());
-            } else {
-                for (JsonElement jsonElement : controllerIdJson.getAsJsonArray()) {
-                    ids.add(jsonElement.getAsString());
+            try {
+
+                JsonElement controllerIdJson = obj.get("controllerId");
+                List<String> ids = new ArrayList<>();
+                if (controllerIdJson.isJsonPrimitive()) {
+                    ids.add(controllerIdJson.getAsString());
+                } else {
+                    for (JsonElement jsonElement : controllerIdJson.getAsJsonArray()) {
+                        ids.add(jsonElement.getAsString());
+                    }
                 }
+                String id = obj.get("id").getAsString();
+                String name = "";
+                if (obj.has("name")) {
+                    name = obj.get("name").getAsString();
+                } else {
+                    name = id;
+                }
+                DataResult<Pair<List<List<String>>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(Codec.list(Codec.STRING))).apply(obj.getAsJsonArray("layout"));
+                List<List<String>> layout = apply.result().get().getFirst();
+
+                List<MachineStructureRecipeKeyModel> result = getResult(obj.getAsJsonObject("legend"), layout);
+
+
+                validateStructure(result, ids, id, rl);
+                return new MachineStructureRecipe(result, ids, id, rl, name);
+            } catch (InvalidStructureDefinitionException e) {
+                MM.LOG.error("InvalidStructureDefinition: " + e.getMessage());
             }
-            String id = obj.get("id").getAsString();
-            String name = "";
-            if (obj.has("name")) {
-                name = obj.get("name").getAsString();
-            } else {
-                name = id;
-            }
-            DataResult<Pair<List<List<String>>, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(Codec.list(Codec.list(Codec.STRING))).apply(obj.getAsJsonArray("layout"));
-            List<List<String>> layout = apply.result().get().getFirst();
-
-            List<MachineStructureRecipeKeyModel> result = getResult(obj.getAsJsonObject("legend"), layout);
-
-
-            validateStructure(result, ids, id, rl);
-            return new MachineStructureRecipe(result, ids, id, rl, name);
+            return null;
         }
 
-        private List<MachineStructureRecipeKeyModel> getResult(JsonObject legend, List<List<String>> layout) {
+        private List<MachineStructureRecipeKeyModel> getResult(JsonObject legend, List<List<String>> layout) throws InvalidStructureDefinitionException {
             HashMap<Character, MachineStructureRecipeLegendModel> model = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : legend.entrySet()) {
                 DataResult<Pair<MachineStructureRecipeLegendModel, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(MachineStructureRecipeLegendModel.CODEC).apply(entry.getValue());
@@ -267,8 +272,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             return result;
         }
 
-        @SneakyThrows
-        private Vector3i getControllerPos(List<List<String>> layout) {
+        private Vector3i getControllerPos(List<List<String>> layout) throws InvalidStructureDefinitionException {
             int y = 0;
             int z = 0;
             for (List<String> layer : layout) {
@@ -337,8 +341,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             return RecipeTypes.STRUCTURE.get().getRegistryType();
         }
 
-        @SneakyThrows
-        private void validateStructure(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl) {
+        private void validateStructure(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl) throws InvalidStructureDefinitionException {
             for (MachineStructureRecipeKeyModel model : models) {
                 if (!model.getBlock().equals("")) {
                     if (RLUtils.isRL(model.getBlock())) {

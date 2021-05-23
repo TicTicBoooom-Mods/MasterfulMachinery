@@ -113,11 +113,11 @@ public class MM {
         }
 
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer ->layer == RenderType.getCutout() || layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
 
         for (RegistryObject<MachinePortBlock> block : MMLoader.IPORT_BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getCutout() || layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
 
         for (RegistryObject<MachinePortBlock> block : MMLoader.OPORT_BLOCKS) {

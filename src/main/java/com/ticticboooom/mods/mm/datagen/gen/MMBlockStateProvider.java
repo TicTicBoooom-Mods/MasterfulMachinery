@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -160,7 +161,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
     }
 
     public void dynamicBlockModel(ResourceLocation loc, ResourceLocation baseModel, ResourceLocation overlayTexture) {
-        models().getBuilder(loc.toString()).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
+        models().getBuilder(loc.toString()).parent(new ModelFile.UncheckedModelFile(baseModel))
                 .texture("particle", overlayTexture)
                 .transforms()
                 .transform(ModelBuilder.Perspective.THIRDPERSON_LEFT)
@@ -175,13 +176,16 @@ public class MMBlockStateProvider extends BlockStateProvider {
                 .end()
                 .end()
                 .customLoader(MultiLayerModelBuilder::begin)
-                .submodel(RenderType.getSolid(), this.models().nested().parent(new ModelFile.UncheckedModelFile(baseModel)))
+                .submodel(RenderType.getTranslucent(), this.models().nested().parent(new ModelFile.UncheckedModelFile(baseModel)).parent(new ModelFile.UncheckedModelFile(mcLoc("block/block"))))
                 .submodel(RenderType.getTranslucent(), this.models().nested().parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
                         .texture("overlay", overlayTexture)
                         .element()
                         .from(0, 0, 0)
                         .to(16, 16, 16)
-                        .allFaces((dir, uv) -> uv.texture("#overlay"))
+                        .face(Direction.NORTH)
+                        .texture("#overlay")
+                        //.allFaces((dir, uv) -> uv.uvs(0F,0F, 16F,16F))
+                        .end()
                         .end()
                 )
                 .end();
@@ -202,7 +206,7 @@ public class MMBlockStateProvider extends BlockStateProvider {
                 .end()
                 .end()
                 .customLoader(MultiLayerModelBuilder::begin)
-                .submodel(RenderType.getSolid(), this.models().nested().parent(new ModelFile.UncheckedModelFile(baseModel)))
+                .submodel(RenderType.getTranslucent(), this.models().nested().parent(new ModelFile.UncheckedModelFile(baseModel)))
                 .submodel(RenderType.getTranslucent(), this.models().nested().parent(new ModelFile.UncheckedModelFile(mcLoc("block/block")))
                         .texture("overlay", overlayTexture)
                         .element()

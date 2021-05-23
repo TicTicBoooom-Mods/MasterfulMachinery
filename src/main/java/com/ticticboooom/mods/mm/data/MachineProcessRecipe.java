@@ -59,7 +59,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     private boolean canTake(List<PortStorage> inputPorts) {
         for (PortState input : inputs) {
-            if (!input.isConsumePerTick()){
+            if (!input.isConsumePerTick()) {
                 if (!input.validateRequirement(inputPorts)) {
                     return false;
                 }
@@ -109,7 +109,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         int index = 0;
         if (update.getTicksTaken() >= ticks) {
             for (PortState input : inputs) {
-                if (inputRolls.get(index) < input.getChance()){
+                if (inputRolls.get(index) < input.getChance()) {
                     input.processRequirement(inputPorts);
                     index++;
                 }
@@ -130,7 +130,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         index = 0;
         for (PortState input : inputs) {
             if (input.isConsumePerTick()) {
-                if (inputRolls.get(index) < input.getChance()){
+                if (inputRolls.get(index) < input.getChance()) {
                     if (!input.validateRequirement(inputPorts)) {
                         canTick = false;
                     }
@@ -165,7 +165,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
             update.setTicksTaken(update.getTicksTaken() + 1);
         }
-        update.setMsg((int)(((float)update.getTicksTaken() /(float)ticks) * 100) + "%");
+        update.setMsg((int) (((float) update.getTicksTaken() / (float) ticks) * 100) + "%");
         return update;
     }
 
@@ -206,18 +206,22 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     public static final class Serializer implements IRecipeSerializer<MachineProcessRecipe> {
 
-        @SneakyThrows
         @Override
         public MachineProcessRecipe read(ResourceLocation rl, JsonObject obj) {
-            int ticks = obj.get("ticks").getAsInt();
-            String structureId = obj.get("structureId").getAsString();
-            JsonArray inputs = obj.get("inputs").getAsJsonArray();
-            JsonArray outputs = obj.get("outputs").getAsJsonArray();
+            try {
+                int ticks = obj.get("ticks").getAsInt();
+                String structureId = obj.get("structureId").getAsString();
+                JsonArray inputs = obj.get("inputs").getAsJsonArray();
+                JsonArray outputs = obj.get("outputs").getAsJsonArray();
 
-            List<PortState> inputStates = getStates(inputs);
-            List<PortState> outputStates = getStates(outputs);
-            validateProcess(inputStates, outputStates, ticks, structureId, rl);
-            return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId, rl);
+                List<PortState> inputStates = getStates(inputs);
+                List<PortState> outputStates = getStates(outputs);
+                validateProcess(inputStates, outputStates, ticks, structureId, rl);
+                return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId, rl);
+            } catch (InvalidProcessDefinitionException e) {
+                MM.LOG.error("InvalidProcessDefinition: " + e.getMessage());
+            }
+            return null;
         }
 
         @SneakyThrows
@@ -229,7 +233,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 boolean perTick = false;
                 if (out.has("perTick")) {
                     perTick = out.get("perTick").getAsBoolean();
-                } else if (out.has("consumePerTick")){
+                } else if (out.has("consumePerTick")) {
                     perTick = out.get("consumePerTick").getAsBoolean();
                 }
 
@@ -317,8 +321,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         }
 
 
-        @SneakyThrows
-        private void validateProcess(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
+        private void validateProcess(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) throws InvalidProcessDefinitionException {
             for (PortState input : inputs) {
                 input.validateDefinition();
                 commonValidate(input);
@@ -330,15 +333,14 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
         }
 
-        @SneakyThrows
-        private void commonValidate(PortState state) {
+        private void commonValidate(PortState state) throws InvalidProcessDefinitionException {
             if (!state.supportsChances() && state.getChance() != 1) {
                 throw new InvalidProcessDefinitionException("Port Type: " + state.getName() + " does not support chanced operations (chance)");
             }
-            if (state.getChance() < 0 || state.getChance() > 1){
+            if (state.getChance() < 0 || state.getChance() > 1) {
                 throw new InvalidProcessDefinitionException("Ingredient chance must be between 0 and 1");
             }
-            if (!state.supportsPerTick() && state.isConsumePerTick()){
+            if (!state.supportsPerTick() && state.isConsumePerTick()) {
                 throw new InvalidProcessDefinitionException("Port Type: " + state.getName() + " does not support per tick operations (perTick)");
             }
         }
