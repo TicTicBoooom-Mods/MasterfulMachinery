@@ -16,6 +16,8 @@ import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyMo
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeLegendModel;
 import com.ticticboooom.mods.mm.exception.InvalidStructureDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
+import com.ticticboooom.mods.mm.nbt.NBTActionParser;
+import com.ticticboooom.mods.mm.nbt.NBTValidator;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
@@ -30,6 +32,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
@@ -55,7 +58,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     private final List<String> controllerId;
     private String id;
 
-    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl, String name)  {
+    public MachineStructureRecipe(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl, String name) {
         this.rl = rl;
         this.name = name;
         List<MachineStructureRecipeKeyModel> rotated = new ArrayList<>();
@@ -67,9 +70,9 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             BlockPos rotatedPos1 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.CLOCKWISE_180);
             BlockPos rotatedPos2 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.COUNTERCLOCKWISE_90);
 
-            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
-            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
-            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(),model.getBlock(), model.getNbt()));
+            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(), model.getBlock(), model.getProperties()));
+            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(), model.getBlock(), model.getProperties()));
+            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(), model.getBlock(), model.getProperties()));
         }
 
         this.models = new ArrayList<>();
@@ -127,7 +130,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         boolean valid = false;
         if (!model.getTag().equals("")) {
             String[] split = model.getTag().split(":");
-            if (split.length != 2){
+            if (split.length != 2) {
                 MM.LOG.fatal("too many : (colons) in structure tag: {}", model.getTag());
                 return false;
             }
@@ -137,7 +140,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 return false;
             }
             valid = tag.contains(blockState.getBlock());
-        } else if (!model.getBlock().equals("")){
+        } else if (!model.getBlock().equals("")) {
             valid = blockState.getBlock().getRegistryName().toString().equals(model.getBlock());
         }
 
@@ -145,21 +148,21 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             return false;
         }
 
-        if (model.getNbt().equals("")) {
+        if (model.getProperties() == null) {
             return true;
         }
 
-        if (!blockState.hasTileEntity()){
-            return true;
-        }
-        try {
-            CompoundNBT compoundNBT = JsonToNBT.getTagFromJson(model.getNbt());
-            TileEntity blockEntity = world.getTileEntity(pos);
 
-            return compoundNBT.equals(blockEntity.getTileData());
-        } catch (CommandSyntaxException e) {
-            e.printStackTrace();
+
+        for (Map.Entry<String, String> stringStringEntry : model.getProperties().entrySet()) {
+            for (Map.Entry<Property<?>, Comparable<?>> propertyEntry : blockState.getValues().entrySet()) {
+                if (propertyEntry.getKey().getName().equals(stringStringEntry.getKey())) {
+                    Optional<?> o = propertyEntry.getKey().parseValue(stringStringEntry.getValue());
+                    return propertyEntry.getValue().equals(o.get());
+                }
+            }
         }
+
         return false;
     }
 
@@ -202,12 +205,11 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     public static final class Serializer implements IRecipeSerializer<MachineStructureRecipe> {
 
 
-
         @Override
         public MachineStructureRecipe read(ResourceLocation rl, JsonObject obj) {
             JsonElement controllerIdJson = obj.get("controllerId");
             List<String> ids = new ArrayList<>();
-            if (controllerIdJson.isJsonPrimitive()){
+            if (controllerIdJson.isJsonPrimitive()) {
                 ids.add(controllerIdJson.getAsString());
             } else {
                 for (JsonElement jsonElement : controllerIdJson.getAsJsonArray()) {
@@ -216,7 +218,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             }
             String id = obj.get("id").getAsString();
             String name = "";
-            if (obj.has("name")){
+            if (obj.has("name")) {
                 name = obj.get("name").getAsString();
             } else {
                 name = id;
@@ -231,7 +233,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             return new MachineStructureRecipe(result, ids, id, rl, name);
         }
 
-        private List<MachineStructureRecipeKeyModel> getResult(JsonObject legend, List<List<String>> layout){
+        private List<MachineStructureRecipeKeyModel> getResult(JsonObject legend, List<List<String>> layout) {
             HashMap<Character, MachineStructureRecipeLegendModel> model = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : legend.entrySet()) {
                 DataResult<Pair<MachineStructureRecipeLegendModel, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(MachineStructureRecipeLegendModel.CODEC).apply(entry.getValue());
@@ -247,15 +249,15 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 for (String row : layer) {
                     for (int x = 0; x < row.length(); x++) {
                         char c = row.charAt(x);
-                        if (c == 'C'){
+                        if (c == 'C') {
                             continue;
                         }
-                        if (c == ' '){
+                        if (c == ' ') {
                             continue;
                         }
                         MachineStructureRecipeLegendModel machineStructureRecipeLegendModel = model.get(c);
                         BlockPos pos = new BlockPos(x, y, z).subtract(new BlockPos(controllerPos));
-                        result.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()), machineStructureRecipeLegendModel.getTag(), machineStructureRecipeLegendModel.getBlock(), machineStructureRecipeLegendModel.getNbt()));
+                        result.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()), machineStructureRecipeLegendModel.getTag(), machineStructureRecipeLegendModel.getBlock(), machineStructureRecipeLegendModel.getProperties()));
                     }
                     z++;
                 }
@@ -272,7 +274,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             for (List<String> layer : layout) {
                 for (String row : layer) {
                     for (int x = 0; x < row.length(); x++) {
-                        if (row.charAt(x) == 'C'){
+                        if (row.charAt(x) == 'C') {
                             return new Vector3i(x, y, z);
                         }
                     }
@@ -299,7 +301,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 MachineStructureObject machineStructureObject = buf.func_240628_a_(MachineStructureObject.CODEC);
                 List<MachineStructureRecipeKeyModel> models = machineStructureObject.getInner();
                 return new MachineStructureRecipe(models, controllerId, id, rl, name);
-            } catch (Exception  e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -341,14 +343,14 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 if (!model.getBlock().equals("")) {
                     if (RLUtils.isRL(model.getBlock())) {
                         if (!ForgeRegistries.BLOCKS.containsKey(RLUtils.toRL(model.getBlock()))) {
-                            throw new InvalidStructureDefinitionException("Block: " + model.getBlock() +  " is not an existing block in the game");
+                            throw new InvalidStructureDefinitionException("Block: " + model.getBlock() + " is not an existing block in the game");
                         }
                     } else {
-                        throw new InvalidStructureDefinitionException("Block: " + model.getBlock() +  " is defined but not a valid block id (ResourceLocation)");
+                        throw new InvalidStructureDefinitionException("Block: " + model.getBlock() + " is defined but not a valid block id (ResourceLocation)");
                     }
-                } else if (!model.getTag().equals("")){
+                } else if (!model.getTag().equals("")) {
                     if (!RLUtils.isRL(model.getTag())) {
-                        throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() +  " is defined but not a valid block tag id (ResourceLocation)");
+                        throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() + " is defined but not a valid block tag id (ResourceLocation)");
                     }
                 } else {
                     throw new InvalidStructureDefinitionException("YUo must define at least 1 'block' or 'tag' per port within the 'data' object");
@@ -360,7 +362,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
                     controllerIdFound = block.get().getControllerId().equals(s) || controllerIdFound;
                 }
-                if (!controllerIdFound){
+                if (!controllerIdFound) {
                     throw new InvalidStructureDefinitionException("controllerId: " + s + " does not exist");
                 }
             }

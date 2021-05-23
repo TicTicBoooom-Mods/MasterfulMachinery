@@ -1,6 +1,7 @@
 package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
+import com.ticticboooom.mods.mm.model.ModelOverrideModel;
 import lombok.Getter;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -38,8 +39,10 @@ public class ControllerBlock extends DirectionalBlock {
     private String controllerId;
     @Getter
     private String texOverride;
+    @Getter
+    private ModelOverrideModel modelOverride;
 
-    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride) {
+    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride, ModelOverrideModel modelOverride) {
         super(AbstractBlock.Properties.create(Material.IRON)
                 .harvestLevel(1)
                 .harvestTool(ToolType.PICKAXE));
@@ -47,6 +50,7 @@ public class ControllerBlock extends DirectionalBlock {
         this.controllerName = name;
         this.controllerId = id;
         this.texOverride = texOverride;
+        this.modelOverride = modelOverride;
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 

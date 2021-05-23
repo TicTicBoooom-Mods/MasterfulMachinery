@@ -98,7 +98,7 @@ public class StarlightPortState extends PortState {
 
     @Override
     public ResourceLocation getName() {
-        return new ResourceLocation(MM.ID, "starlight");
+        return new ResourceLocation(MM.ID, "astral_starlight");
     }
 
     @Override
