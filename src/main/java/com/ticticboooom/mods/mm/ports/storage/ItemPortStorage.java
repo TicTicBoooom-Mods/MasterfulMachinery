@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.InvHelper;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
@@ -79,7 +80,7 @@ public class ItemPortStorage extends PortStorage {
     }
 
     @Override
-    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile) {
+    public void setupContainer(PortBlockContainer container, PlayerInventory inv, IMachinePortTile tile) {
         int offsetX = ((162 - (columns * 18)) / 2) + 8;
         int offsetY = ((108 - (rows * 18)) / 2) + 8;
         ItemStackInventory items = InvHelper.getItems(this.inv);

@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm.ports.storage;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -18,7 +19,7 @@ public abstract class PortStorage {
     public abstract CompoundNBT save(CompoundNBT nbt);
     public abstract void load(CompoundNBT nbt);
     public abstract void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen);
-    public void setupContainer(PortBlockContainer container, PlayerInventory inv, MachinePortBlockEntity tile){
+    public void setupContainer(PortBlockContainer container, PlayerInventory inv, IMachinePortTile tile){
         int playerOffsetX = 8;
         int playerOffsetY = 141;
         for (int j = 0; j < 3; j++) {

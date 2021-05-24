@@ -1,5 +1,6 @@
 package com.ticticboooom.mods.mm.block;
 
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
 import lombok.Getter;
@@ -62,8 +63,8 @@ public class MachinePortBlock extends Block {
     public ActionResultType onBlockActivated(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
         if (!level.isRemote()) {
             TileEntity blockEntity = level.getTileEntity(pos);
-            if (blockEntity instanceof MachinePortBlockEntity) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), (MachinePortBlockEntity)blockEntity, pos);
+            if (blockEntity instanceof IMachinePortTile) {
+                NetworkHooks.openGui(((ServerPlayerEntity) player), (IMachinePortTile)blockEntity, pos);
             }
         }
 
@@ -93,8 +94,8 @@ public class MachinePortBlock extends Block {
     public void neighborChanged(BlockState p_220069_1_, World world, BlockPos pos, Block p_220069_4_, BlockPos changedPos, boolean p_220069_6_) {
         super.neighborChanged(p_220069_1_, world, pos, p_220069_4_, changedPos, p_220069_6_);
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof MachinePortBlockEntity){
-            ((MachinePortBlockEntity) tile).getStorage().neighborChanged();
+        if (tile instanceof IMachinePortTile){
+            ((IMachinePortTile) tile).getStorage().neighborChanged();
         }
     }
 }

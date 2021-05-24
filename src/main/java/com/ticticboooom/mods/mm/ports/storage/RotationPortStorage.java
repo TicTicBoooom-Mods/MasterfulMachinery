@@ -34,14 +34,23 @@ import java.util.List;
 import java.util.Map;
 
 public class RotationPortStorage extends PortStorage {
-
+    public static final Codec<RotationPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
+            Codec.INT.fieldOf("stress").forGetter(z -> z.stress)
+    ).apply(x, RotationPortStorage::new));
     @Getter
     @Setter
     private float speed;
 
+    @Getter
+    private int stress;
+
+    public RotationPortStorage(int stress) {
+
+        this.stress = stress;
+    }
+
     private HashMap<Direction, KineticTileEntity> kinetics = new HashMap<>();
     public RotationPortStorage() {
-        neighborChanged();
     }
 
     @Override
@@ -74,42 +83,5 @@ public class RotationPortStorage extends PortStorage {
 
     @Override
     public void tick(MachinePortBlockEntity tile) {
-        BlockPos blockPos = tile.getPos();
-        World level = tile.getWorld();
-        HashMap<Direction, TileEntity> tiles = new HashMap<>();
-        tiles.put(Direction.EAST, level.getTileEntity(blockPos.add(1, 0, 0)));
-        tiles.put(Direction.WEST, level.getTileEntity(blockPos.add(-1, 0, 0)));
-        tiles.put(Direction.UP, level.getTileEntity(blockPos.add(0, 1, 0)));
-        tiles.put(Direction.DOWN, level.getTileEntity(blockPos.add(0, -1, 0)));
-        tiles.put(Direction.NORTH, level.getTileEntity(blockPos.add(0, 0, 1)));
-        tiles.put(Direction.SOUTH, level.getTileEntity(blockPos.add(0, 0, -1)));
-        speed = 0;
-        if (tile.isInput()) {
-            for (Map.Entry<Direction, TileEntity> tileEntity : tiles.entrySet()) {
-                    if (tileEntity.getValue() instanceof KineticTileEntity) {
-                    KineticTileEntity te = (KineticTileEntity) tileEntity.getValue();
-                    if (Math.abs(te.getSpeed()) > speed){
-                        speed = Math.abs(te.getSpeed());
-                    }
-                }
-            }
-        } else {
-            for (Map.Entry<Direction, TileEntity> tileEntity : tiles.entrySet()) {
-                if (tileEntity.getValue() instanceof KineticTileEntity) {
-
-                        KineticTileEntity te = (KineticTileEntity) tileEntity.getValue();
-                    if (speed == 0){
-                        te.detachKinetics();
-                        te.setSpeed(0);
-                        te.setNetwork(null);
-                    } else {
-                        te.setSpeed(speed);
-                        te.setNetwork(te.getPos().toLong());
-                        te.attachKinetics();
-                    }
-                        te.notifyUpdate();
-                }
-            }
-        }
     }
 }

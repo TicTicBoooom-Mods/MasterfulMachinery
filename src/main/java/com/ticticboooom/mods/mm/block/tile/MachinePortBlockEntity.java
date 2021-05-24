@@ -25,7 +25,7 @@ import vazkii.botania.api.mana.IManaReceiver;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider {
+public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, IMachinePortTile {
 
     protected ContainerType<?> container;
     @Getter

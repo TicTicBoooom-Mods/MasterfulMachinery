@@ -69,8 +69,8 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         List<PortStorage> outputPorts = new ArrayList<>();
         for (BlockPos port : ports) {
             TileEntity blockEntity = world.getTileEntity(port);
-            if (blockEntity instanceof MachinePortBlockEntity) {
-                MachinePortBlockEntity portBE = (MachinePortBlockEntity) blockEntity;
+            if (blockEntity instanceof IMachinePortTile) {
+                IMachinePortTile portBE = (IMachinePortTile) blockEntity;
 
                 if (portBE.isInput()) {
                     inputPorts.add(portBE.getStorage());

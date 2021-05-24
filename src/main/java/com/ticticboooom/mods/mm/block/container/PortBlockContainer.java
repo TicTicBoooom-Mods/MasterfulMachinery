@@ -1,7 +1,6 @@
 package com.ticticboooom.mods.mm.block.container;
 
-import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import lombok.Getter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -18,9 +17,9 @@ public class PortBlockContainer extends Container {
 
     private final PlayerInventory inv;
     @Getter
-    private MachinePortBlockEntity tile;
+    private IMachinePortTile tile;
 
-    public PortBlockContainer(@Nullable ContainerType<?> p_i50105_1_, int windowId, PlayerInventory inv, MachinePortBlockEntity tile) {
+    public PortBlockContainer(@Nullable ContainerType<?> p_i50105_1_, int windowId, PlayerInventory inv, IMachinePortTile tile) {
         super(p_i50105_1_, windowId);
         this.inv = inv;
         tile.getStorage().setupContainer(this, inv, tile);
@@ -28,7 +27,7 @@ public class PortBlockContainer extends Container {
     }
 
     public PortBlockContainer(ContainerType<?> container, int windowId, PlayerInventory player, PacketBuffer buf) {
-        this(container, windowId, player, (MachinePortBlockEntity) player.player.world.getTileEntity(buf.readBlockPos()));
+        this(container, windowId, player, (IMachinePortTile) player.player.world.getTileEntity(buf.readBlockPos()));
     }
 
     @Override
