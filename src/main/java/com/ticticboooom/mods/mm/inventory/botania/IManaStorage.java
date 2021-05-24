@@ -1,7 +1,7 @@
 package com.ticticboooom.mods.mm.inventory.botania;
 
 public interface IManaStorage {
-    /**
+     /**
      * Adds Mana to the storage. Returns quantity of Mana that was accepted.
      *
      * @param maxReceive

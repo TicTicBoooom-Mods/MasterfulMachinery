@@ -6,7 +6,9 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
+import vazkii.botania.api.mana.IManaBlock;
 import vazkii.botania.api.mana.IManaPool;
+import vazkii.botania.api.mana.IManaSpreader;
 import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.mana.spark.ISparkEntity;
 
@@ -22,16 +24,20 @@ public class ManaMachinePortBlockEntity extends MachinePortBlockEntity implement
     public boolean isFull() {
         if (storage instanceof ManaPortStorage) {
             ManaPortStorage s = (ManaPortStorage) storage;
-            return s.getInv().getManaStored() == s.getInv().getMaxManaStored();
+            return s.getInv().getManaStored() >= s.getInv().getMaxManaStored();
         }
         return true;
     }
 
     @Override
     public void receiveMana(int mana) {
-        if (storage instanceof ManaPortStorage && this.isInput()) {
+        if (storage instanceof ManaPortStorage) {
             ManaPortStorage s = (ManaPortStorage) storage;
-            s.getInv().receiveMana(mana, false);
+            if (mana > 0) {
+                s.getInv().receiveMana(mana, false);
+            } else {
+                s.getInv().extractMana(-mana, false);
+            }
         }
     }
 

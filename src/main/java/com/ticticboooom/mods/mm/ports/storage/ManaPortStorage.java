@@ -29,8 +29,6 @@ public class ManaPortStorage extends PortStorage {
     public static final Codec<ManaPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("capacity").forGetter(z -> z.inv.getMaxManaStored())
     ).apply(x, ManaPortStorage::new));
-    @Getter
-    private final List<IManaReceiver> validPools = new ArrayList<>();
 
     @Getter
     private final PortManaInventory inv;
@@ -77,50 +75,5 @@ public class ManaPortStorage extends PortStorage {
         }
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getManaStored() + " Mana", left + 30, top + 60, 0xfefefe);
-    }
-
-    @Override
-    public void tick(MachinePortBlockEntity tile) {
-        if (tile.getWorld().isRemote) {
-            return;
-        }
-        validPools.clear();
-        for (Direction dir : Direction.Plane.HORIZONTAL) {
-            BlockPos pos = tile.getPos().offset(dir);
-            if (tile.getWorld().isBlockLoaded(pos)) {
-                TileEntity tileAt = tile.getWorld().getTileEntity(pos);
-                if (tileAt instanceof IManaPool && !tileAt.isRemoved()) {
-                    IManaReceiver receiver = (IManaReceiver) tileAt;
-                    if (!receiver.isFull()) {
-                        validPools.add(receiver);
-                    }
-                }
-            }
-        }
-
-        int tiles = validPools.size();
-        if (tiles != 0) {
-            int extractableMana = inv.extractMana(Integer.MAX_VALUE, true);
-            int extractedMana = 0;
-            int filledPools = 0;
-            while (extractableMana != 0) {
-                for (IManaReceiver pool : validPools) {
-                    if (!pool.isFull()) {
-                        pool.receiveMana(1);
-                        extractableMana--;
-                        extractedMana++;
-                    }
-                    else {
-                        filledPools++;
-                    }
-                }
-                if (filledPools == validPools.size()) {
-                    break;
-                }
-            }
-            inv.extractMana(extractedMana, false);
-        }
-
-        super.tick(tile);
     }
 }

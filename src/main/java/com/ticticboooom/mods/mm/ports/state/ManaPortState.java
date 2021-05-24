@@ -24,9 +24,9 @@ import java.util.List;
 
 public class ManaPortState extends PortState {
 
-public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
-                Codec.INT.fieldOf("amount").forGetter(z -> z.amount)
-            ).apply(x, ManaPortState::new));
+    public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
+            Codec.INT.fieldOf("amount").forGetter(z -> z.amount)
+    ).apply(x, ManaPortState::new));
 
 
     @Getter
@@ -39,21 +39,59 @@ public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> 
 
     @Override
     public void processRequirement(List<PortStorage> storage) {
-
+        int current = amount;
+        for (PortStorage portStorage : storage) {
+            if (portStorage instanceof ManaPortStorage) {
+                ManaPortStorage inv = (ManaPortStorage) portStorage;
+                current -= inv.getInv().extractMana(current, false);
+                if (current <= 0){
+                    return;
+                }
+            }
+        }
     }
 
     @Override
     public boolean validateRequirement(List<PortStorage> storage) {
+        int current = amount;
+        for (PortStorage portStorage : storage) {
+            if (portStorage instanceof ManaPortStorage) {
+                ManaPortStorage inv = (ManaPortStorage) portStorage;
+                current -= inv.getInv().extractMana(current, true);
+                if (current <= 0) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public void processResult(List<PortStorage> storage) {
-
+        int current = amount;
+        for (PortStorage portStorage : storage) {
+            if (portStorage instanceof ManaPortStorage) {
+                ManaPortStorage inv = (ManaPortStorage) portStorage;
+                current -= inv.getInv().receiveMana(current, false);
+                if (current <= 0) {
+                    return;
+                }
+            }
+        }
     }
 
     @Override
     public boolean validateResult(List<PortStorage> storage) {
+        int current = amount;
+        for (PortStorage portStorage : storage) {
+            if (portStorage instanceof ManaPortStorage) {
+                ManaPortStorage inv = (ManaPortStorage) portStorage;
+                current -= inv.getInv().receiveMana(current, true);
+                if (current <= 0) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -72,8 +110,8 @@ public static final Codec<ManaPortState> CODEC = RecordCodecBuilder.create(x -> 
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
         IGuiIngredientGroup<PortManaInventory> group = layout.getIngredientsGroup(MMJeiPlugin.MANA_TYPE);
         group.init(typeIndex, input, x + 1, y + 1);
-        group.set(typeIndex, new PortManaInventory(0, amount));
-        if (this.getChance() < 1){
+        group.set(typeIndex, new PortManaInventory(amount, 0));
+        if (this.getChance() < 1) {
             group.addTooltipCallback((s, a, b, c) -> {
                 if (s == typeIndex) {
                     c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));

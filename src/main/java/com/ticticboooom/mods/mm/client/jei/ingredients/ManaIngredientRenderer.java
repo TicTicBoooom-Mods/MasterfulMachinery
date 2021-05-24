@@ -22,7 +22,7 @@ public class ManaIngredientRenderer implements IIngredientRenderer<PortManaInven
     public List<ITextComponent> getTooltip(PortManaInventory ingredient, ITooltipFlag tooltipFlag) {
         return Lists.newArrayList(
             new StringTextComponent("Botania Mana"),
-                new StringTextComponent(ingredient.getManaStored() + "Units")
+                new StringTextComponent(ingredient.getManaStored() + " Units")
         );
     }
 }

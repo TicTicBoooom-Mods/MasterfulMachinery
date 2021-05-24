@@ -70,6 +70,6 @@ public class ManaPortParser extends PortFactory {
 
     @Override
     public RegistryObject<TileEntityType<?>> registerTileEntity(String id, DeferredRegister<TileEntityType<?>> reg, Registerable<RegistryObject<TileEntityType<?>>>tile, Registerable<RegistryObject<MachinePortBlock>> block, Registerable<RegistryObject<ContainerType<?>>> containerType, Supplier<PortStorage> portStorage, boolean isInput){
-        return reg.register(id, () -> TileEntityType.Builder.create(() -> new ManaMachinePortBlockEntity(tile.get().get(), containerType.get().get(), portStorage.get(), true), block.get().get()).build(null));
+        return reg.register(id, () -> TileEntityType.Builder.create(() -> new ManaMachinePortBlockEntity(tile.get().get(), containerType.get().get(), portStorage.get(), isInput), block.get().get()).build(null));
     }
 }

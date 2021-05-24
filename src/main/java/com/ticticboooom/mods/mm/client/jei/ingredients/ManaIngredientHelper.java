@@ -16,7 +16,7 @@ public class ManaIngredientHelper implements IIngredientHelper<PortManaInventory
 
     @Override
     public String getDisplayName(PortManaInventory ingredient) {
-        return "Pressure";
+        return "Mana";
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ManaIngredientHelper implements IIngredientHelper<PortManaInventory
 
     @Override
     public PortManaInventory copyIngredient(PortManaInventory ingredient) {
-        return new PortManaInventory(0, ingredient.getManaStored());
+        return new PortManaInventory(ingredient.getManaStored(), ingredient.getMaxManaStored());
     }
 
     @Override
