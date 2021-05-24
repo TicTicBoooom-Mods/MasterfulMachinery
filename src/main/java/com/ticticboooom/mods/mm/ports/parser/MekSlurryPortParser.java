@@ -13,16 +13,14 @@ import com.ticticboooom.mods.mm.ports.storage.MekSlurryPortStorage;
 import lombok.SneakyThrows;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.jei.MekanismJEI;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class MekSlurryPortParser implements IPortFactory {
+public class MekSlurryPortParser extends PortFactory {
 
     @Override
     public void setIngredients(IIngredients ingredients, List<?> stacks, boolean input) {

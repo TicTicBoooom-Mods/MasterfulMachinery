@@ -12,13 +12,17 @@ import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.SneakyThrows;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.block.Block;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.RegistryObject;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class EnergyPortParser implements IPortFactory {
+public class EnergyPortParser extends PortFactory {
 
 
 
@@ -49,6 +53,7 @@ public class EnergyPortParser implements IPortFactory {
     public ResourceLocation getOutputOverlay() {
         return new ResourceLocation(MM.ID, "block/base_ports/energy_output_cutout");
     }
+
 
     @Override
     public PortState createState(JsonObject obj) {

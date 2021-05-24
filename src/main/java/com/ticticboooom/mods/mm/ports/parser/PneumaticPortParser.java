@@ -8,23 +8,19 @@ import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
-import com.ticticboooom.mods.mm.ports.state.FluidPortState;
 import com.ticticboooom.mods.mm.ports.state.PneumaticPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
-import com.ticticboooom.mods.mm.ports.storage.FluidPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PneumaticPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.SneakyThrows;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class PneumaticPortParser implements IPortFactory{
+public class PneumaticPortParser extends PortFactory {
 
     @Override
     public Supplier<PortStorage> createStorage(JsonObject obj) {

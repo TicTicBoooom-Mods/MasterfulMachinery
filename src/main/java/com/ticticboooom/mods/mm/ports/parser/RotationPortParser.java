@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RotationPortParser implements IPortFactory{
+public class RotationPortParser extends PortFactory {
 
     @Override
     public Supplier<PortStorage> createStorage(JsonObject obj) {

@@ -20,7 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class FluidPortParser implements IPortFactory {
+public class FluidPortParser extends PortFactory {
 
     @Override
     public Supplier<PortStorage> createStorage(JsonObject obj) {

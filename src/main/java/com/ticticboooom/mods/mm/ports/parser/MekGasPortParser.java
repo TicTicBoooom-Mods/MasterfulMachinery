@@ -13,16 +13,14 @@ import com.ticticboooom.mods.mm.ports.storage.MekGasPortStorage;
 import lombok.SneakyThrows;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.jei.MekanismJEI;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class MekGasPortParser implements IPortFactory {
+public class MekGasPortParser extends PortFactory {
 
     @Override
     public void setIngredients(IIngredients ingredients, List<?> stacks, boolean input) {

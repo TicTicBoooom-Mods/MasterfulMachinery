@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.Gson;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
@@ -50,7 +51,7 @@ import java.io.IOException;
 public class MM {
     public static final String ID = "masterfulmachinery";
     public static final Logger LOG = LogManager.getLogger("Masterful Machinery");
-
+    public static final Gson GSON = new Gson();
 
     private DataGenerator generator;
     private static boolean hasGenerated = false;
@@ -113,11 +114,11 @@ public class MM {
         }
 
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer ->layer == RenderType.getCutout() || layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
 
         for (RegistryObject<MachinePortBlock> block : MMLoader.IPORT_BLOCKS) {
-            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getCutout() || layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
+            RenderTypeLookup.setRenderLayer(block.get(), layer -> layer == RenderType.getSolid() || layer == RenderType.getTranslucent());
         }
 
         for (RegistryObject<MachinePortBlock> block : MMLoader.OPORT_BLOCKS) {

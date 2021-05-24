@@ -76,7 +76,7 @@ public class ManaPortStorage extends PortStorage {
             amount = (float)inv.getManaStored() / inv.getMaxManaStored();
         }
         screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
-        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getManaStored() + "Mana", left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getManaStored() + " Mana", left + 30, top + 60, 0xfefefe);
     }
 
     @Override
@@ -98,7 +98,6 @@ public class ManaPortStorage extends PortStorage {
             }
         }
 
-        System.out.println(this.validPools);
         int tiles = validPools.size();
         if (tiles != 0) {
             int extractableMana = inv.extractMana(Integer.MAX_VALUE, true);

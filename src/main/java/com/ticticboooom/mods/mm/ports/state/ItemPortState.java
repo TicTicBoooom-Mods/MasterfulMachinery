@@ -7,9 +7,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
+import com.ticticboooom.mods.mm.nbt.NBTPopulate;
+import com.ticticboooom.mods.mm.nbt.NBTValidator;
+import com.ticticboooom.mods.mm.nbt.model.NBTModel;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.ItemPortStorage;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -44,11 +48,15 @@ public class ItemPortState extends PortState {
     private final int count;
     private final String item;
     private final String tag;
+    @Getter
+    @Setter
+    private NBTModel nbt;
 
     public ItemPortState(int count, String item, String tag) {
         this.count = count;
         this.item = item;
         this.tag = tag;
+        nbt = null;
     }
 
     @Override
@@ -91,7 +99,7 @@ public class ItemPortState extends PortState {
         for (PortStorage inv : storage) {
             if (inv instanceof ItemPortStorage) {
                 ItemPortStorage iinv = (ItemPortStorage) inv;
-                 for (int i = 0; i < iinv.getInv().getSlots(); i++) {
+                for (int i = 0; i < iinv.getInv().getSlots(); i++) {
                     ItemStack stackInSlot = iinv.getInv().getStackInSlot(i);
                     if (stackInSlot.isEmpty()) {
                         continue;
@@ -100,11 +108,21 @@ public class ItemPortState extends PortState {
                     if (!item.equals("")) {
                         if (stackInSlot.getItem().getRegistryName().toString().equals(item)) {
                             current -= stackInSlot.getCount();
+                            if (nbt != null) {
+                                if (!NBTValidator.isValid(stackInSlot.getTag(), nbt)) {
+                                    return false;
+                                }
+                            }
                         }
                     } else if (!tag.equals("")) {
                         ITag<Item> tag = ItemTags.getCollection().get(RLUtils.toRL(this.tag));
                         if (tag != null && tag.contains(stackInSlot.getItem())) {
                             current -= stackInSlot.getCount();
+                            if (nbt != null) {
+                                if (!NBTValidator.isValid(stackInSlot.getTag(), nbt)) {
+                                    return false;
+                                }
+                            }
                         }
                     }
                     if (current <= 0) {
@@ -131,10 +149,16 @@ public class ItemPortState extends PortState {
                             int increment = Math.min((stackInSlot.getItem().getMaxStackSize() - amount), (count - current));
                             stackInSlot.setCount(stackInSlot.getCount() + increment);
                             current += increment;
+                            if (nbt != null){
+                                stackInSlot.setTag(NBTPopulate.populate(stackInSlot.getTag(), nbt));
+                            }
                         } else if (stackInSlot.isEmpty()) {
                             Item forgeItem = ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item));
                             iinv.getInv().setStackInSlot(i, new ItemStack(forgeItem, Math.min(forgeItem.getMaxStackSize(), count - current)));
                             current += Math.min(forgeItem.getMaxStackSize(), count - current);
+                            if (nbt != null){
+                                stackInSlot.setTag(NBTPopulate.populate(stackInSlot.getTag(), nbt));
+                            }
                         }
                     }
                     if (current >= count) {
@@ -185,19 +209,19 @@ public class ItemPortState extends PortState {
     @SneakyThrows
     @Override
     public void validateDefinition() {
-        if (!item.equals("")){
-            if (!RLUtils.isRL(item)){
+        if (!item.equals("")) {
+            if (!RLUtils.isRL(item)) {
                 throw new InvalidProcessDefinitionException("Item: " + item + " is not a valid item id (ResourceLocation)");
             }
 
-            if (!ForgeRegistries.ITEMS.containsKey(RLUtils.toRL(item))){
+            if (!ForgeRegistries.ITEMS.containsKey(RLUtils.toRL(item))) {
                 throw new InvalidProcessDefinitionException("Item: " + item + " does not exist in the game's item registry");
             }
-        } else if (!tag.equals("")){
-            if (!RLUtils.isRL(tag)){
+        } else if (!tag.equals("")) {
+            if (!RLUtils.isRL(tag)) {
                 throw new InvalidProcessDefinitionException("Item Tag: " + tag + " is not a valid item tag id (ResourceLocation)");
             }
-        } else{
+        } else {
             throw new InvalidProcessDefinitionException("You must define a item id or item tag id in the items 'data' object");
         }
     }
@@ -221,7 +245,7 @@ public class ItemPortState extends PortState {
 
             List<ItemStack> stacks = new ArrayList<>();
             tag.getAllElements().forEach(z -> stacks.add(new ItemStack(z, this.count)));
-            return (List<T>)stacks;
+            return (List<T>) stacks;
         }
         return new ArrayList<>();
     }
@@ -237,7 +261,7 @@ public class ItemPortState extends PortState {
             Stream<ItemStack> itemStackStream = tag.getAllElements().stream().map(z -> new ItemStack(z.getItem(), this.count));
             layout.getItemStacks().set(typeIndex, itemStackStream.collect(Collectors.toList()));
         }
-        if (this.getChance() < 1){
+        if (this.getChance() < 1) {
             layout.getItemStacks().addTooltipCallback((s, a, b, c) -> {
                 if (s == typeIndex) {
                     c.add(new StringTextComponent("Chance: " + this.getChance() * 100 + "%"));

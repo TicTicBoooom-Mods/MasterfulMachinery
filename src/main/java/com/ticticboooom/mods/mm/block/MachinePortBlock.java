@@ -2,11 +2,6 @@ package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
-import com.ticticboooom.mods.mm.model.ModelOverrideModel;
-import com.ticticboooom.mods.mm.ports.storage.PortStorage;
-import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
-import hellfirepvp.astralsorcery.common.block.base.BlockStarlightRecipient;
-import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import lombok.Getter;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -23,7 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.RegistryObject;
@@ -31,9 +25,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
-public class MachinePortBlock extends Block implements BlockStarlightRecipient {
+public class MachinePortBlock extends Block {
     private RegistryObject<TileEntityType<?>> type;
     @Getter
     private String langName;
@@ -44,17 +37,13 @@ public class MachinePortBlock extends Block implements BlockStarlightRecipient {
     @Getter
     private ResourceLocation overlay;
 
-    @Getter
-    private final ModelOverrideModel modelOverride;
-
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ModelOverrideModel modelOverride) {
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
         super(AbstractBlock.Properties.create(Material.IRON));
         this.type = type;
         this.langName = name;
         this.controllerId = controllerId;
         this.textureOverride = textureOverride;
         this.overlay = overlay;
-        this.modelOverride = modelOverride;
     }
 
     @Override
@@ -106,23 +95,6 @@ public class MachinePortBlock extends Block implements BlockStarlightRecipient {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof MachinePortBlockEntity){
             ((MachinePortBlockEntity) tile).getStorage().neighborChanged();
-        }
-    }
-
-    @Override
-    public void receiveStarlight(World world, Random random, BlockPos blockPos, IWeakConstellation iWeakConstellation, double v) {
-        TileEntity tile = world.getTileEntity(blockPos);
-        if (tile instanceof MachinePortBlockEntity){
-            PortStorage storage = ((MachinePortBlockEntity) tile).getStorage();
-            if (!((MachinePortBlockEntity) tile).isInput()) {
-                return;
-            }
-
-            if (storage instanceof StarlightPortStorage) {
-                StarlightPortStorage starlightStorage = (StarlightPortStorage) storage;
-                int rec = new Double(v).intValue();
-                starlightStorage.getInv().receiveStarlight(rec, false);
-            }
         }
     }
 }

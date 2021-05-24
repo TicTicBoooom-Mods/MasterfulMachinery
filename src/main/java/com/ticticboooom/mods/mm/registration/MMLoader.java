@@ -4,23 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.IOHelper;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.model.ModelOverrideModel;
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -66,19 +64,13 @@ public class MMLoader {
             if (obj.has("textureOverride")) {
                 texOverride = obj.get("textureOverride").getAsString();
             }
-            ModelOverrideModel controllerModelOverride = null;
-            if (obj.has("modelOverride")){
-                DataResult<Pair<ModelOverrideModel, JsonElement>> modelOverride = JsonOps.INSTANCE.withDecoder(ModelOverrideModel.CODEC).apply(obj.get("modelOverride"));
-                controllerModelOverride = modelOverride.result().get().getFirst();
-            }
-            final ModelOverrideModel controllerModelOverrideFinal = controllerModelOverride;
             final String textureOverrideFinal = texOverride;
             {
                 Registerable<RegistryObject<TileEntityType<?>>> controllerTile = new Registerable<>();
                 Registerable<RegistryObject<ControllerBlock>> controllerBlock = new Registerable<>();
                 Registerable<RegistryObject<ContainerType<ControllerBlockContainer>>> cont = new Registerable<>();
                 cont.set(MMSetup.CONTAINER_REG.register(controllerId + "_controller", () -> IForgeContainerType.create((i, o, u) -> new ControllerBlockContainer(cont.get().get(), i, o, u))));
-                controllerBlock.set(MMSetup.BLOCKS_REG.register(controllerId + "_controller", () -> new ControllerBlock(controllerTile.get(), controllerName, controllerId, textureOverrideFinal, controllerModelOverrideFinal)));
+                controllerBlock.set(MMSetup.BLOCKS_REG.register(controllerId + "_controller", () -> new ControllerBlock(controllerTile.get(), controllerName, controllerId, textureOverrideFinal)));
                 controllerTile.set(MMSetup.TILES_REG.register(controllerId + "_controller", () -> TileEntityType.Builder.create(() -> new ControllerBlockEntity(controllerTile.get(), cont.get(), controllerId), controllerBlock.get().get()).build(null)));
                 MMSetup.ITEMS_REG.register(controllerId + "_controller", () -> new BlockItem(controllerBlock.get().get(), new Item.Properties().group(MASTERFUL_ITEM_GROUP)));
                 BLOCKS.add(controllerBlock.get());
@@ -97,17 +89,13 @@ public class MMLoader {
                 } else {
                     portTexOverride = textureOverrideFinal;
                 }
-                ModelOverrideModel portModelOverride;
-                if (portObj.has("modelOverride")){
-                    DataResult<Pair<ModelOverrideModel, JsonElement>> modelOverride = JsonOps.INSTANCE.withDecoder(ModelOverrideModel.CODEC).apply(obj.get("modelOverride"));
-                    portModelOverride = modelOverride.result().get().getFirst();
-                } else {
-                    portModelOverride = controllerModelOverrideFinal;
-                }
-                final ModelOverrideModel portModelOverrideFinal = portModelOverride;
                 final String portTextureOverrideFinal = portTexOverride;
                 ResourceLocation resourceLocation = RLUtils.toRL(type);
                 MasterfulPortType value = MMPorts.PORTS.get(resourceLocation);
+                if (value == null){
+                    MM.LOG.warn("port type not present: " + resourceLocation.toString());
+                    continue;
+                }
                 Supplier<PortStorage> data = value.getParser().createStorage(portObj.get("data").getAsJsonObject());
 
                 {
@@ -115,8 +103,8 @@ public class MMLoader {
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
                     Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
                     cont.set(MMSetup.CONTAINER_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
-                    block.set(MMSetup.BLOCKS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> new MachinePortBlock(tile.get(), name, controllerId, portTextureOverrideFinal, value.getParser().getInputOverlay(), portModelOverrideFinal)));
-                    tile.set(MMSetup.TILES_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> TileEntityType.Builder.create(() -> new MachinePortBlockEntity(tile.get().get(),cont.get().get(), data.get(), true), block.get().get()).build(null)));
+                    block.set(value.getParser().registerBlock(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", MMSetup.BLOCKS_REG, tile, name, controllerId, portTextureOverrideFinal, value.getParser().getInputOverlay()));
+                    tile.set(value.getParser().registerTileEntity(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", MMSetup.TILES_REG, tile, block, cont, data, true));
                     MMSetup.ITEMS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> new BlockItem(block.get().get(), new Item.Properties().group(MASTERFUL_ITEM_GROUP)));
                     PORT_CONTAINERS.add(cont.get());
                     IPORT_BLOCKS.add(block.get());
@@ -127,8 +115,8 @@ public class MMLoader {
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
                     Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
                     cont.set(MMSetup.CONTAINER_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
-                    block.set(MMSetup.BLOCKS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> new MachinePortBlock(tile.get(), name, controllerId, portTextureOverrideFinal, value.getParser().getOutputOverlay(), portModelOverrideFinal)));
-                    tile.set(MMSetup.TILES_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> TileEntityType.Builder.create(() -> new MachinePortBlockEntity(tile.get().get(), cont.get().get(), data.get(), false), block.get().get()).build(null)));
+                    block.set(value.getParser().registerBlock(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", MMSetup.BLOCKS_REG, tile, name, controllerId, portTextureOverrideFinal, value.getParser().getOutputOverlay()));
+                    tile.set(value.getParser().registerTileEntity(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", MMSetup.TILES_REG, tile, block, cont, data, false));
                     MMSetup.ITEMS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> new BlockItem(block.get().get(), new Item.Properties().group(MASTERFUL_ITEM_GROUP)));
                     PORT_CONTAINERS.add(cont.get());
                     OPORT_BLOCKS.add(block.get());

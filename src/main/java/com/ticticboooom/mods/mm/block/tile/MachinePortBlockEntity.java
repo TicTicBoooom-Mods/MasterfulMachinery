@@ -25,13 +25,13 @@ import vazkii.botania.api.mana.IManaReceiver;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider, IManaReceiver {
+public class MachinePortBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider {
 
-    private ContainerType<?> container;
+    protected ContainerType<?> container;
     @Getter
-    private PortStorage storage;
+    protected PortStorage storage;
     @Getter
-    private boolean input;
+    protected boolean input;
 
 
     public MachinePortBlockEntity(TileEntityType<?> p_i48289_1_, ContainerType<?> container, PortStorage storage, boolean input) {
@@ -80,36 +80,5 @@ public class MachinePortBlockEntity extends UpdatableTile implements ITickableTi
         }
         this.getStorage().tick(this);
         update();
-    }
-
-    @Override
-    public boolean isFull() {
-        if (storage instanceof ManaPortStorage) {
-            ManaPortStorage s = (ManaPortStorage) storage;
-            return s.getInv().getManaStored() == s.getInv().getMaxManaStored();
-        }
-        return true;
-    }
-
-    @Override
-    public void receiveMana(int mana) {
-        if (storage instanceof ManaPortStorage && this.isInput()) {
-            ManaPortStorage s = (ManaPortStorage) storage;
-            s.getInv().receiveMana(mana, false);
-        }
-    }
-
-    @Override
-    public boolean canReceiveManaFromBursts() {
-        return this.isInput();
-    }
-
-    @Override
-    public int getCurrentMana() {
-        if (storage instanceof ManaPortStorage) {
-            ManaPortStorage s = (ManaPortStorage) storage;
-            return s.getInv().getManaStored();
-        }
-        return 0;
     }
 }
