@@ -62,7 +62,7 @@ public class RotationMachinePortBlockEntity extends KineticTileEntity implements
         if (storage instanceof RotationPortStorage) {
             RotationPortStorage storage = (RotationPortStorage) this.storage;
             if (input) {
-                storage.setSpeed(getSpeed());
+                storage.setSpeed(Math.abs(getSpeed()));
             }
         }
         if (!world.isRemote()) {

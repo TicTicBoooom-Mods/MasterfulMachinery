@@ -33,7 +33,7 @@ public abstract class PortStorage {
         }
     };
 
-    public void tick(MachinePortBlockEntity tile) {
+    public void tick(IMachinePortTile tile) {
 
     }
 

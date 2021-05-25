@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import lombok.Getter;
 import me.desht.pneumaticcraft.api.PNCCapabilities;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -88,8 +90,8 @@ public class PneumaticPortStorage extends PortStorage {
     }
 
     @Override
-    public void tick(MachinePortBlockEntity tile) {
-        this.inv.tick(tile);
+    public void tick(IMachinePortTile tile) {
+        this.inv.tick((TileEntity) tile);
     }
 
     @Override

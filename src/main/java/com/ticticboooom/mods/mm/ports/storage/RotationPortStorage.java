@@ -8,6 +8,7 @@ import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.KineticNetwork;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -82,6 +83,7 @@ public class RotationPortStorage extends PortStorage {
     }
 
     @Override
-    public void tick(MachinePortBlockEntity tile) {
+    public void tick(IMachinePortTile tile) {
+        this.speed = 0;
     }
 }

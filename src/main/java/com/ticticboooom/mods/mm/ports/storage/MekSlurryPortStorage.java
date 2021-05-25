@@ -10,6 +10,7 @@ import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.inventory.mek.PortMekSlurryInventory;
 import lombok.Getter;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.client.Minecraft;

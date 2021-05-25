@@ -54,26 +54,29 @@ public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEnti
 
     @Override
     public void tick() {
+        this.reActivateSource = true;
         super.tick();
-        if (storage instanceof RotationPortStorage) {
-            RotationPortStorage stor = (RotationPortStorage) this.storage;
-            float speed = stor.getSpeed();
-            if (speed != this.speed) {
-                if (!hasSource()) {
-                    effects.queueRotationIndicators();
-                }
-                applyNewSpeed(this.speed, speed);
-            }
-            if (hasNetwork() && speed != 0) {
-                KineticNetwork network = getOrCreateNetwork();
-                notifyStressCapacityChange(calculateAddedStressCapacity());
-                getOrCreateNetwork().updateCapacityFor(this, calculateStressApplied());
-                network.updateStress();
-            }
-
-            onSpeedChanged(this.speed);
-            sendData();
-        }
+        this.storage.tick(this);
+//        if (storage instanceof RotationPortStorage) {
+//            RotationPortStorage stor = (RotationPortStorage) this.storage;
+//            float prev = this.speed;
+//            float speed = stor.getSpeed();
+//            if (speed != prev) {
+//                if (!hasSource()) {
+//                    effects.queueRotationIndicators();
+//                }
+//                applyNewSpeed(prev, speed);
+//            }
+//            if (hasNetwork() && speed != 0) {
+//                KineticNetwork network = getOrCreateNetwork();
+//                notifyStressCapacityChange(calculateAddedStressCapacity());
+//                getOrCreateNetwork().updateCapacityFor(this, calculateStressApplied());
+//                network.updateStress();
+//            }
+//
+//            onSpeedChanged(prev);
+//            sendData();
+//        }
 
         if (!world.isRemote()) {
             PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(pos, write(new CompoundNBT())));
