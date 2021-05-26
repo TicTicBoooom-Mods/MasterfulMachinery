@@ -64,7 +64,7 @@ public class StarlightPortState extends PortState {
 
     @Override
     public void processResult(List<PortStorage> storage) {
-        /*
+
         int current = amount;
         for (PortStorage inv : storage) {
             if (inv instanceof StarlightPortStorage) {
@@ -75,12 +75,10 @@ public class StarlightPortState extends PortState {
                 }
             }
         }
-        */
     }
 
     @Override
     public boolean validateResult(List<PortStorage> storage) {
-        /*
         int current = amount;
         for (PortStorage inv : storage) {
             if (inv instanceof StarlightPortStorage) {
@@ -91,9 +89,7 @@ public class StarlightPortState extends PortState {
                 }
             }
         }
-        */
-        return true;
-        // CHANGE TO FALSE
+        return false;
     }
 
     @Override
