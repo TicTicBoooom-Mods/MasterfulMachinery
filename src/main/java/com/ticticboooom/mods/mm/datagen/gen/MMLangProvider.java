@@ -17,6 +17,9 @@ public class MMLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
+            if (!block.isPresent()){
+                return;
+            }
             this.add(block.get(), block.get().getControllerName() + " Controller");
             this.add("container.masterfulmachinery." + block.get().getControllerId() + "_controller.name", block.get().getControllerName() + " Controller");
             for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {

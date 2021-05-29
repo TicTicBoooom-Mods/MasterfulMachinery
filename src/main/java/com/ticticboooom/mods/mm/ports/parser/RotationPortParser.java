@@ -51,12 +51,12 @@ public class RotationPortParser extends PortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/create_rotation_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/create_rotation_input_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/create_rotation_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/create_rotation_output_cutout");
     }
 
     @Override

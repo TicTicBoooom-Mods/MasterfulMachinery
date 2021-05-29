@@ -59,11 +59,11 @@ public class MekGasPortParser extends PortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_gas_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_gas_input_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_gas_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_gas_output_cutout");
     }
 }

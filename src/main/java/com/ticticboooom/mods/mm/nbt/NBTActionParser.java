@@ -46,6 +46,10 @@ public class NBTActionParser {
     }
 
     public static void write(PacketBuffer buf, NBTModel model) {
+        if (model == null) {
+            buf.writeInt(0);
+            return;
+        }
         buf.writeInt(model.getActions().size());
         for (NBTActionModel action : model.getActions()) {
             buf.writeString(action.getAction());

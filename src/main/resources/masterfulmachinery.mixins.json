@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.ticticboooom.mods.mm.core.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "masterfulmachinery.refmap.json",
+  "mixins": [
+    "ResourceLoaderMixin"
+  ],
+  "injectors": {
+    "maxShiftBy": 3,
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

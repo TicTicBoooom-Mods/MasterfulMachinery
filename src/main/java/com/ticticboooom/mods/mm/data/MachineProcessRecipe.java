@@ -53,17 +53,23 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         this.rl = rl;
     }
 
-    public boolean matches(List<PortStorage> inputPorts, String structureId) {
-        return structureId.equals(this.structureId) && canTake(inputPorts);
+    public boolean matches(List<PortStorage> inputPorts, String structureId, ProcessUpdate update) {
+        return structureId.equals(this.structureId) && canTake(inputPorts, update.getTakenIndices());
     }
 
-    private boolean canTake(List<PortStorage> inputPorts) {
+    private boolean canTake(List<PortStorage> inputPorts, List<Integer> takenIndices) {
+        int i = -1;
         for (PortState input : inputs) {
+            i++;
+            if (takenIndices.contains(i)) {
+                continue;
+            }
             if (!input.isConsumePerTick()) {
                 if (!input.validateRequirement(inputPorts)) {
                     return false;
                 }
             }
+
         }
         return true;
     }
@@ -98,7 +104,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
     public ProcessUpdate process(List<PortStorage> inputPorts, List<PortStorage> outputPorts, ProcessUpdate update) {
         resetChances();
-        boolean canTake = canTake(inputPorts);
+        boolean canTake = canTake(inputPorts, update.getTakenIndices());
         boolean canPut = canPut(outputPorts);
 
         if (!canTake || !canPut) {
@@ -106,9 +112,24 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             return update;
         }
 
+        int takenIndex = 0;
+        if (update.getTicksTaken() <= 0) {
+            for (PortState input : inputs) {
+                if (input.isInstantConsume() && input.validateRequirement(inputPorts)) {
+                    update.getTakenIndices().add(takenIndex);
+                    input.processRequirement(inputPorts);
+                }
+                takenIndex++;
+            }
+        }
+
         int index = 0;
         if (update.getTicksTaken() >= ticks) {
+            update.getTakenIndices().clear();
             for (PortState input : inputs) {
+                if (input.isConsumePerTick() || input.isInstantConsume()) {
+                    continue;
+                }
                 if (inputRolls.get(index) < input.getChance()) {
                     input.processRequirement(inputPorts);
                     index++;
@@ -116,16 +137,23 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
             index = 0;
             for (PortState output : outputs) {
+                if (output.isConsumePerTick()) {
+                    continue;
+                }
                 if (outputRolls.get(index) < output.getChance()) {
                     output.processResult(outputPorts);
                 }
             }
             update.setMsg("");
             update.setTicksTaken(0);
+            update.setTakenIndices(new ArrayList<>());
             return update;
         }
 
         boolean canTick = true;
+
+
+
 
         index = 0;
         for (PortState input : inputs) {
@@ -247,10 +275,16 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                     chance = out.get("chance").getAsDouble();
                 }
 
+                boolean consumeInstantly = false;
+                if (out.has("consumeInstantly")) {
+                    consumeInstantly = out.get("consumeInstantly").getAsBoolean();
+                }
+
                 MasterfulPortType value = MMPorts.PORTS.get(typeRl);
                 PortState data = value.getParser().createState(out.get("data").getAsJsonObject());
                 data.setConsumePerTick(perTick);
                 data.setChance(chance);
+                data.setInstantConsume(consumeInstantly);
                 ioStates.add(data);
             }
             return ioStates;

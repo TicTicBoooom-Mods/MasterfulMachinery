@@ -48,12 +48,12 @@ public class ManaPortParser extends PortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/botania_mana_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/botania_mana_input_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/botania_mana_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/botania_mana_output_cutout");
     }
 
     @Override

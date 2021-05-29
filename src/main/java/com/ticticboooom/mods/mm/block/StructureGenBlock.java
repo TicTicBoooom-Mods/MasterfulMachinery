@@ -3,9 +3,7 @@ package com.ticticboooom.mods.mm.block;
 import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
 import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
 import com.ticticboooom.mods.mm.registration.MMSetup;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -24,6 +22,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -31,7 +30,8 @@ import java.util.stream.Stream;
 
 public class StructureGenBlock extends Block {
     public StructureGenBlock() {
-        super(Properties.create(Material.IRON));
+        super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
+                .harvestTool(ToolType.PICKAXE));
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 

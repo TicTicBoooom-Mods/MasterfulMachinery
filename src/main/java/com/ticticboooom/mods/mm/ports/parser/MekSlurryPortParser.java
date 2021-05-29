@@ -59,11 +59,11 @@ public class MekSlurryPortParser extends PortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_slurry_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_slurry_input_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_slurry_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_slurry_output_cutout");
     }
 }

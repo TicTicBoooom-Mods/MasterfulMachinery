@@ -41,8 +41,7 @@ public class ControllerBlock extends DirectionalBlock {
     private String texOverride;
 
     public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride) {
-        super(AbstractBlock.Properties.create(Material.IRON)
-                .harvestLevel(1)
+        super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE));
         this.type = type;
         this.controllerName = name;

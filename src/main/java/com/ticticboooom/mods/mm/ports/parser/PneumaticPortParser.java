@@ -46,12 +46,12 @@ public class PneumaticPortParser extends PortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/pncr_pressure_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/pncr_pressure_input_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/pncr_pressure_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/pncr_pressure_output_cutout");
     }
 
     @Override

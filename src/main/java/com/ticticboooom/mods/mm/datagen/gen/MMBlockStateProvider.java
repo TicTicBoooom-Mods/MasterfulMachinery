@@ -33,6 +33,9 @@ public class MMBlockStateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         for (RegistryObject<ControllerBlock> controller : MMLoader.BLOCKS) {
+            if (!controller.isPresent()){
+                return;
+            }
             dynamicBlockNorthOverlay(controller.getId(), controller.get().getTexOverride() != null ? RLUtils.toRL(controller.get().getTexOverride()) : BASE_TEXTURE, CONTROLLER_TEXTURE);
             VariantBlockStateBuilder variantBuilder = getVariantBuilder(controller.get());
             variantBuilder.partialState().with(DirectionalBlock.FACING, Direction.NORTH).modelForState().modelFile(new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + controller.getId().getPath()))).rotationY(0).addModel();

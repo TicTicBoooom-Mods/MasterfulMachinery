@@ -1,9 +1,7 @@
 package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.registration.MMSetup;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
@@ -16,13 +14,15 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 public class ProjectorBlock extends Block {
     public ProjectorBlock() {
-        super(Properties.create(Material.IRON));
+        super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
+                .harvestTool(ToolType.PICKAXE));
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 

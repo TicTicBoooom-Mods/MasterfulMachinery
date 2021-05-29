@@ -49,12 +49,12 @@ public class StarlightPortParser extends PortFactory {
 
     @Override
     public ResourceLocation getInputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/starlight_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/astral_starlight_input_cutout");
     }
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/starlight_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/astral_starlight_output_cutout");
     }
 
     @Override

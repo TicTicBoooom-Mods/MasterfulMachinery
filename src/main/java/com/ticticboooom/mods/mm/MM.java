@@ -18,6 +18,7 @@ import com.ticticboooom.mods.mm.datagen.PackType;
 import com.ticticboooom.mods.mm.datagen.gen.MMBlockStateProvider;
 import com.ticticboooom.mods.mm.datagen.gen.MMItemModelProvider;
 import com.ticticboooom.mods.mm.datagen.gen.MMLangProvider;
+import com.ticticboooom.mods.mm.datagen.gen.MMLootTableProvider;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
@@ -30,10 +31,12 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.resources.ResourcePackList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -80,6 +83,7 @@ public class MM {
     private void registerDataGen() {
         generator = MemoryDataGeneratorFactory.createMemoryDataGenerator();
         ExistingFileHelper existingFileHelper = new ExistingFileHelper(ImmutableList.of(), ImmutableSet.of(), false);
+        generator.addProvider(new MMLootTableProvider(generator));
 
         if (FMLEnvironment.dist != Dist.DEDICATED_SERVER){
             generator.addProvider(new MMBlockStateProvider(generator, existingFileHelper));
@@ -129,5 +133,12 @@ public class MM {
         RenderTypeLookup.setRenderLayer(MMSetup.PROJECTOR_BLOCK.get(), RenderType.getTranslucent());
         ScreenManager.registerFactory(MMSetup.STRUCTURE_CONTAINER.get(), StructureGenBlockContainerScreen::new);
         ClientRegistry.bindTileEntityRenderer(MMSetup.STRUCTURE_TILE.get(), StructureGenTileEntityRenderer::new);
+    }
+
+    public static void injectDatapackFinder (ResourcePackList resourcePacks) {
+        if (DistExecutor.unsafeRunForDist( () -> () -> resourcePacks != Minecraft.getInstance().getResourcePackList(), () -> () -> true)) {
+            resourcePacks.addPackFinder(new MMPackFinder(PackType.RESOURCE));
+            MM.LOG.info("Injecting data pack finder.");
+        }
     }
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,4 +15,5 @@ public class ProcessUpdate {
     private String msg;
     private String id;
     private String sid;
+    private List<Integer> takenIndices;
 }

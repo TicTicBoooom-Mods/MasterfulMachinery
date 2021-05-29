@@ -23,6 +23,9 @@ public class MMItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         for (RegistryObject<ControllerBlock> controller : MMLoader.BLOCKS) {
+            if (!controller.isPresent()){
+                return;
+            }
             this.getBuilder(controller.getId().toString()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(controller.getId().getNamespace(), "block/" + controller.getId().getPath())));
         }
         for (RegistryObject<MachinePortBlock> port : MMLoader.OPORT_BLOCKS) {

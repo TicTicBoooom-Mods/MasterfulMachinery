@@ -36,6 +36,10 @@ public class MMJeiPlugin implements IModPlugin {
     public static final ManaIngredientRenderer MANA_TYPE_RENDERER = new ManaIngredientRenderer();
     public static final ManaIngredientHelper MANA_TYPE_HELPER = new ManaIngredientHelper();
 
+    public static final StarlightIngredientType STAR_TYPE = new StarlightIngredientType();
+    public static final StarlightIngredientRenderer STAR_TYPE_RENDERER = new StarlightIngredientRenderer();
+    public static final StarlightIngredientHelper STAR_TYPE_HELPER = new StarlightIngredientHelper();
+
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(MM.ID, "jei_main");
@@ -46,11 +50,15 @@ public class MMJeiPlugin implements IModPlugin {
         registration.register(MMJeiPlugin.ENERGY_TYPE, ImmutableList.of(), ENERGY_TYPE_HELPER, ENERGY_TYPE_RENDERER);
         registration.register(MMJeiPlugin.PRESSURE_TYPE, ImmutableList.of(), PRESSURE_TYPE_HELPER, PRESSURE_TYPE_RENDERER);
         registration.register(MMJeiPlugin.MANA_TYPE, ImmutableList.of(), MANA_TYPE_HELPER, MANA_TYPE_RENDERER);
+        registration.register(MMJeiPlugin.STAR_TYPE, ImmutableList.of(), STAR_TYPE_HELPER, STAR_TYPE_RENDERER);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ENERGY_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
+        PRESSURE_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
+        MANA_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
+        STAR_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
         List<MachineStructureRecipe> structureRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
             registration.addRecipes(structureRecipes.stream().filter(x -> x.getControllerId().contains(block.get().getControllerId())).collect(Collectors.toList()), new ResourceLocation(MM.ID, "machine_structure_" + block.get().getControllerId()));

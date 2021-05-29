@@ -33,7 +33,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     private RegistryObject<ContainerType<ControllerBlockContainer>> container;
     private String controllerId;
     @Getter
-    private ProcessUpdate update = new ProcessUpdate(0, "", "", "");
+    private ProcessUpdate update = new ProcessUpdate(0, "", "", "", new ArrayList<>());
 
     public ControllerBlockEntity(RegistryObject<TileEntityType<?>> type, RegistryObject<ContainerType<ControllerBlockContainer>> container, String controllerId) {
         super(type.get());
@@ -87,7 +87,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         List<MachineProcessRecipe> processRecipes = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_PROCESS);
         boolean processed = false;
         for (MachineProcessRecipe recipe : processRecipes) {
-            if (recipe.matches(inputPorts, structure.getStructureId())) {
+            if (recipe.matches(inputPorts, structure.getStructureId(), update)) {
                 if (!update.getId().equals(recipe.getId().toString())){
                     update.setTicksTaken(0);
                 }

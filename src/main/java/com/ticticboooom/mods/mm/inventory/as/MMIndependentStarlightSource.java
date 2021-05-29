@@ -31,6 +31,9 @@ public class MMIndependentStarlightSource implements IIndependentStarlightSource
 
     @Override
     public float produceStarlightTick(ServerWorld serverWorld, BlockPos blockPos) {
+        if (storage == null){
+            return 0;
+        }
         return storage.getInv().extractStarlight(Integer.MAX_VALUE, false);
     }
 

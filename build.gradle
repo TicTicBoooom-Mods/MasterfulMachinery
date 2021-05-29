@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
@@ -19,9 +19,10 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
-version = '1.16.5-0.1.43-B' + getVersionNumber()
-group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = '1.16.5-0.1.47-B' + getVersionNumber()
+group = 'com.ticticboooom.mods.mm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'MasterfulMachinery'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
@@ -45,7 +46,7 @@ minecraft {
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20210309-1.16.5'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
@@ -53,6 +54,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg '-mixin.config=masterfulmachinery.mixins.json'
 
             // Recommended logging data for a userdev environment
             // The markers can be changed as needed. 
@@ -76,7 +78,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
+            arg '-mixin.config=masterfulmachinery.mixins.json'
             // Recommended logging data for a userdev environment
             // The markers can be changed as needed. 
             // "SCAN": For mods scan.
@@ -174,6 +176,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.23'
 
+    compileOnly 'com.google.code.gson:gson:2.8.7'
+    implementation 'org.spongepowered:mixin:0.8-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
     shade 'com.github.marschall:memoryfilesystem:2.1.0'
 
     implementation fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
@@ -225,13 +230,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "MixinConfigs"            : "masterfulmachinery.mixins.json",
+                "Specification-Title"     : "masterfulmachinery",
+                "Specification-Vendor"    : "ticticboooom",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "TicTicBoooom",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
@@ -265,7 +271,7 @@ reobf {
 def getVersionNumber() {
     def vFile = file('version.properties')
     def Integer buildNumber = 0
-    if (vFile.canRead()){
+    if (vFile.canRead()) {
         def Properties versionProps = new Properties();
 
         versionProps.load(new FileInputStream(vFile))
@@ -277,4 +283,20 @@ def getVersionNumber() {
         versionProps.store(vFile.newWriter(), null)
     }
     return buildNumber.toString()
+}
+
+mixin {
+    add sourceSets.main, "masterfulmachinery.refmap.json"
+}
+
+artifacts {
+    archives shadowJar
+    shadow shadowJar
+}
+
+reobf {
+    shadowJar {
+        dependsOn createMcpToSrg
+        mappings = createMcpToSrg.outputs.files.singleFile
+    }
 }

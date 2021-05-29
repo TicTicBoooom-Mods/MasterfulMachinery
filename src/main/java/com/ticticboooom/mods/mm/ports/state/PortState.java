@@ -21,6 +21,10 @@ public abstract class PortState {
     @Getter
     @Setter
     private double chance = 0;
+
+    @Getter
+    @Setter
+    private boolean instantConsume = false;
     public abstract void processRequirement(List<PortStorage> storage);
     public abstract boolean validateRequirement(List<PortStorage> storage);
     public abstract void processResult(List<PortStorage> storage);

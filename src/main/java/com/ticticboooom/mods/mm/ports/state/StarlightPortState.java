@@ -5,6 +5,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.StarlightStack;
 import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
@@ -12,6 +14,7 @@ import hellfirepvp.astralsorcery.common.block.base.BlockStarlightRecipient;
 import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.util.ResourceLocation;
@@ -99,7 +102,6 @@ public class StarlightPortState extends PortState {
 
     @Override
     public IIngredientType<?> getJeiIngredientType() {
-        // Am guessing is placeholder?
         return MMJeiPlugin.PRESSURE_TYPE;
     }
 
@@ -110,7 +112,9 @@ public class StarlightPortState extends PortState {
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
-
+        IGuiIngredientGroup<StarlightStack> group = layout.getIngredientsGroup(MMJeiPlugin.STAR_TYPE);
+        group.init(typeIndex, input, x + 1, y+1);
+        group.set(typeIndex, new StarlightStack(amount));
     }
 
     @Override
