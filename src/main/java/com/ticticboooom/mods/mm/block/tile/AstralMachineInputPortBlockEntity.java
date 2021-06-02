@@ -1,23 +1,20 @@
 package com.ticticboooom.mods.mm.block.tile;
 
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
-import com.ticticboooom.mods.mm.inventory.as.MMIndependentStarlightSource;
+import com.ticticboooom.mods.mm.inventory.as.MMSimpleTransmissionReceiver;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.network.packets.TileClientUpdatePacket;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import hellfirepvp.astralsorcery.common.constellation.ConstellationTile;
 import hellfirepvp.astralsorcery.common.constellation.IMinorConstellation;
 import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
-import hellfirepvp.astralsorcery.common.starlight.IIndependentStarlightSource;
-import hellfirepvp.astralsorcery.common.starlight.transmission.base.SimpleTransmissionSourceNode;
-import hellfirepvp.astralsorcery.common.tile.base.network.TileSourceBase;
+import hellfirepvp.astralsorcery.common.tile.base.network.TileReceiverBase;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -27,11 +24,12 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class AstralMachinePortBlockEntity extends TileSourceBase<SimpleTransmissionSourceNode> implements IMachinePortTile, ConstellationTile {
-    public AstralMachinePortBlockEntity(TileEntityType<?> tileEntityTypeIn, ContainerType<?> cont, PortStorage storage) {
+public class AstralMachineInputPortBlockEntity extends TileReceiverBase<MMSimpleTransmissionReceiver> implements IMachinePortTile {
+    public AstralMachineInputPortBlockEntity(TileEntityType<?> tileEntityTypeIn, ContainerType<?> cont, PortStorage storage) {
         super(tileEntityTypeIn);
         this.cont = cont;
         this.storage = storage;
+        markForUpdate();
     }
 
     @Override
@@ -44,21 +42,6 @@ public class AstralMachinePortBlockEntity extends TileSourceBase<SimpleTransmiss
 
     private ContainerType<?> cont;
     PortStorage storage;
-    IWeakConstellation constellationType = null;
-    IMinorConstellation traitConstellationType = null;
-
-    @Nonnull
-    @Override
-    public IIndependentStarlightSource provideNewSourceNode() {
-        return new MMIndependentStarlightSource();
-    }
-
-    @Nonnull
-    @Override
-    public SimpleTransmissionSourceNode provideSourceNode(BlockPos blockPos) {
-        return new SimpleTransmissionSourceNode(blockPos);
-    }
-
 
     @Override
     public void writeCustomNBT(CompoundNBT nbt) {
@@ -94,41 +77,6 @@ public class AstralMachinePortBlockEntity extends TileSourceBase<SimpleTransmiss
     }
 
     @Override
-    public IWeakConstellation getAttunedConstellation() {
-        return constellationType;
-    }
-
-    @Override
-    public boolean setAttunedConstellation(IWeakConstellation cst) {
-        if (cst != this.constellationType) {
-            markForUpdate();
-        }
-        constellationType = cst;
-        return true;
-    }
-
-    @Override
-    public IMinorConstellation getTraitConstellation() {
-        return traitConstellationType;
-    }
-
-    @Override
-    public boolean setTraitConstellation(IMinorConstellation tst) {
-        if (tst != this.traitConstellationType) {
-            markForUpdate();
-        }
-        traitConstellationType = tst;
-        return true;
-    }
-
-    @Override
-    public boolean tryUnlink(PlayerEntity player, BlockPos other) {
-        boolean i = super.tryUnlink(player, other);
-        markForUpdate();
-        return i;
-    }
-
-    @Override
     public void onBreak() {
         super.onBreak();
     }
@@ -136,5 +84,11 @@ public class AstralMachinePortBlockEntity extends TileSourceBase<SimpleTransmiss
     @Override
     protected void invalidateCaps() {
         this.onBreak();
+    }
+
+    @Nonnull
+    @Override
+    public MMSimpleTransmissionReceiver provideEndpoint(BlockPos blockPos) {
+        return new MMSimpleTransmissionReceiver(blockPos);
     }
 }

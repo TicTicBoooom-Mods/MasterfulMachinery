@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.block.AstralMachinePortBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.block.RotationMachinePortBlock;
 import com.ticticboooom.mods.mm.block.tile.RotationGenMachinePortBlockEntity;
