@@ -69,6 +69,10 @@ public class StructureHelper {
                     BlockState state = world.getBlockState(new BlockPos(xi, yi, zi));
                     ResourceLocation registryName = state.getBlock().getRegistryName();
 
+                    if (index == 'C'){
+                        index++;
+                    }
+
                     if (state.isAir()) {
                         row.append(" ");
                         continue;

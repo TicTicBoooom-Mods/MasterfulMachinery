@@ -44,7 +44,7 @@ public class MMPackFinder implements IPackFinder {
 
 	@Override
 	public void findPacks(Consumer<ResourcePackInfo> infoConsumer, ResourcePackInfo.IFactory infoFactory) {
-		Path rootPath = MemoryDataGeneratorFactory.ROOT_PATH;
+		Path rootPath = DataGeneratorFactory.ROOT_PATH;
 
 		ResourcePackInfo pack = ResourcePackInfo.createResourcePack("mm_" + type.getSuffix(), true,
 				() -> new InMemoryPack(rootPath), infoFactory, ResourcePackInfo.Priority.BOTTOM, IPackNameDecorator.PLAIN);

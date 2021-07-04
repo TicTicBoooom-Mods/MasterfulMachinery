@@ -5,7 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
+import com.ticticboooom.mods.mm.client.jei.MMJeiPlugin;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.ports.storage.PneumaticPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
@@ -15,7 +15,6 @@ import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.system.CallbackI;
 
 import java.util.List;
 

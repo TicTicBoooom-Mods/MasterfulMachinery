@@ -33,18 +33,20 @@ public class GuiBlockRenderBuilder {
     private Vector3f prePosition = new Vector3f();
     private TileEntityRenderer<TileEntity> ter = null;
     private TileEntity tile;
-    private static final IBlockReader reader = new AirBlockReader();
 
     public GuiBlockRenderBuilder(BlockState blockState) {
         this.blockState = blockState;
         position = new BlockPos(0, 0, 0);
         try {
 
-            tile = blockState.createTileEntity(reader);
+            AirBlockReader airBlockReader = new AirBlockReader(blockState);
+            tile = blockState.createTileEntity(airBlockReader);
+            airBlockReader.setTile(tile);
             if (tile != null) {
                 ter = TileEntityRendererDispatcher.instance.getRenderer(tile);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     public GuiBlockRenderBuilder at(BlockPos position) {
@@ -93,12 +95,15 @@ public class GuiBlockRenderBuilder {
         transformMatrix(ms);
 
         brd.renderBlock(blockState, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+        ms.push();
         try {
             if (ter != null) {
                 ter.render(tile, 1.f, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         buf.finish();
+        ms.pop();
         ms.pop();
         cleanupRender();
     }
@@ -111,5 +116,8 @@ public class GuiBlockRenderBuilder {
         }
         ms.scale(scale.getX(), -scale.getY(), scale.getZ());
         ms.translate(position.getX(), position.getY(), position.getZ());
+        if (tile != null) {
+            tile.setPos(new BlockPos(0, 0, 0));
+        }
     }
 }

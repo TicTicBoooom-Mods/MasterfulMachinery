@@ -6,7 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
+import com.ticticboooom.mods.mm.client.jei.MMJeiPlugin;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.ports.state.PneumaticPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;

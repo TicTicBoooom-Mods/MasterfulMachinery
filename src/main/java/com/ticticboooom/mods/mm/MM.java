@@ -7,13 +7,12 @@ import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
-import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
 import com.ticticboooom.mods.mm.client.screen.ControllerBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.StructureGenBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.ter.StructureGenTileEntityRenderer;
 import com.ticticboooom.mods.mm.datagen.MMPackFinder;
-import com.ticticboooom.mods.mm.datagen.MemoryDataGeneratorFactory;
+import com.ticticboooom.mods.mm.datagen.DataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
 import com.ticticboooom.mods.mm.datagen.gen.MMBlockStateProvider;
 import com.ticticboooom.mods.mm.datagen.gen.MMItemModelProvider;
@@ -28,7 +27,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.resources.ResourcePackList;
@@ -40,7 +38,6 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -64,7 +61,7 @@ public class MM {
         instance = this;
         MMPorts.init();
         MMLoader.load();
-        MemoryDataGeneratorFactory.init();
+        DataGeneratorFactory.init();
         PacketHandler.init();
         registerDataGen();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -81,7 +78,7 @@ public class MM {
     }
 
     private void registerDataGen() {
-        generator = MemoryDataGeneratorFactory.createMemoryDataGenerator();
+        generator = DataGeneratorFactory.createMemoryDataGenerator();
         ExistingFileHelper existingFileHelper = new ExistingFileHelper(ImmutableList.of(), ImmutableSet.of(), false);
         generator.addProvider(new MMLootTableProvider(generator));
 

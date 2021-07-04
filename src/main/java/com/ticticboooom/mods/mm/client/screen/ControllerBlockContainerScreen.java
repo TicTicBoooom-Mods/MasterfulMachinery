@@ -21,14 +21,14 @@ public class ControllerBlockContainerScreen extends ContainerScreen<ControllerBl
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float p_230430_4_) {
-
         super.render(stack, mouseX, mouseY, p_230430_4_);
+        this.renderHoveredTooltip(stack, mouseX, mouseY);
     }
 
 
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack stack, int x0, int y0) {
-        this.minecraft.fontRenderer.func_238418_a_(container.getTile().getDisplayName(), 10, -10,   176, 0xfefefe);
+        this.minecraft.fontRenderer.func_238418_a_(container.getTile().getDisplayName(), 10, -10, 176, 0xfefefe);
         drawString(stack, this.minecraft.fontRenderer, "Inventory", 7, 110, 0xfefefe);
         int y = 50;
         for (String s : container.getTile().getUpdate().getMsg().split("\n")) {

@@ -24,27 +24,21 @@
 
 package com.ticticboooom.mods.mm.datagen;
 
-import com.github.marschall.memoryfilesystem.MemoryFileSystemBuilder;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.data.DataGenerator;
+import net.minecraftforge.fml.loading.FMLPaths;
 
-import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Path;
-public class MemoryDataGeneratorFactory {
 
-  public static Path ROOT_PATH;
+public class DataGeneratorFactory {
 
-  public static void init() {
-    try {
-      FileSystem fs = MemoryFileSystemBuilder.newEmpty().addRoot("/").setCurrentWorkingDirectory("/mm").setCaseSensitive(true).build();
-      ROOT_PATH = fs.getPath("/mm");
-    } catch (IOException e) {
-      e.printStackTrace();
+    public static Path ROOT_PATH;
+
+    public static void init() {
+        ROOT_PATH = FMLPaths.CONFIGDIR.get().resolve("masterful_machinery/packs");
     }
-  }
 
-  public static DataGenerator createMemoryDataGenerator() {
-    return new DataGenerator(ROOT_PATH, ImmutableList.of());
-  }
+    public static DataGenerator createMemoryDataGenerator() {
+        return new DataGenerator(ROOT_PATH, ImmutableList.of());
+    }
 }

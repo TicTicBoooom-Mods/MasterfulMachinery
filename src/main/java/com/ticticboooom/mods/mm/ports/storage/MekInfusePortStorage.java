@@ -46,7 +46,7 @@ public class MekInfusePortStorage extends PortStorage {
 
     @Override
     public <T> boolean validate(Capability<T> cap) {
-        return cap == Capabilities.SLURRY_HANDLER_CAPABILITY;
+        return cap == Capabilities.INFUSION_HANDLER_CAPABILITY;
     }
 
     @Override

@@ -86,7 +86,7 @@ public class MekInfusePortState extends PortState {
             if (st instanceof MekInfusePortStorage) {
                 MekInfusePortStorage gasStorage = (MekInfusePortStorage) st;
                 InfusionStack extract = gasStorage.getInv().insertChemical(new InfusionStack(Objects.requireNonNull(MekanismAPI.infuseTypeRegistry().getValue(RLUtils.toRL(infuse))), current), Action.EXECUTE);
-                current -= extract.getAmount();
+                current -= current - extract.getAmount();
                 if (current <= 0) {
                     return;
                 }
@@ -101,7 +101,7 @@ public class MekInfusePortState extends PortState {
             if (st instanceof MekInfusePortStorage) {
                 MekInfusePortStorage gasStorage = (MekInfusePortStorage) st;
                 InfusionStack extract = gasStorage.getInv().insertChemical(new InfusionStack(Objects.requireNonNull(MekanismAPI.infuseTypeRegistry().getValue(RLUtils.toRL(infuse))), current), Action.SIMULATE);
-                current -= extract.getAmount();
+                current -= current - extract.getAmount();
                 if (current <= 0) {
                     return true;
                 }
@@ -119,15 +119,15 @@ public class MekInfusePortState extends PortState {
     @Override
     public void validateDefinition() {
         if (!RLUtils.isRL(infuse)){
-            throw new InvalidProcessDefinitionException("Slurry: " + infuse + " is not a valid slurry id (ResourceLocation)");
+            throw new InvalidProcessDefinitionException("Infuse Type: " + infuse + " is not a valid infuse type id (ResourceLocation)");
         }
 
-        if (!MekanismAPI.slurryRegistry().containsKey(RLUtils.toRL(infuse))){
-            throw new InvalidProcessDefinitionException("Slurry: " + infuse + " does not exist in the mekansim slurry registry");
+        if (!MekanismAPI.infuseTypeRegistry().containsKey(RLUtils.toRL(infuse))){
+            throw new InvalidProcessDefinitionException("Infuse Type: " + infuse + " does not exist in the mekansim infuse type registry");
         }
     }
 
-    private final ChemicalStackRenderer<SlurryStack> renderer;
+    private final ChemicalStackRenderer<InfusionStack> renderer;
     @Override
     public void render(MatrixStack ms, int x, int y, int mouseX, int mouseY, IJeiHelpers helpers) {
         IDrawableStatic drawable = helpers.getGuiHelper().getSlotDrawable();
@@ -136,9 +136,9 @@ public class MekInfusePortState extends PortState {
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
-        IGuiIngredientGroup<SlurryStack> gasGroup = layout.getIngredientsGroup(MekanismJEI.TYPE_SLURRY);
+        IGuiIngredientGroup<InfusionStack> gasGroup = layout.getIngredientsGroup(MekanismJEI.TYPE_INFUSION);
         gasGroup.init(typeIndex, input, renderer, x + 1,  y + 1, 16, 16, 0, 0);
-        gasGroup.set(typeIndex, new SlurryStack(MekanismAPI.slurryRegistry().getValue(RLUtils.toRL(infuse)), amount));
+        gasGroup.set(typeIndex, new InfusionStack(MekanismAPI.infuseTypeRegistry().getValue(RLUtils.toRL(infuse)), amount));
         if (this.getChance() < 1) {
             gasGroup.addTooltipCallback((s, a, b, c) -> {
                 if (s == typeIndex) {
@@ -155,6 +155,6 @@ public class MekInfusePortState extends PortState {
 
     @Override
     public IIngredientType<?> getJeiIngredientType() {
-        return MekanismJEI.TYPE_SLURRY;
+        return MekanismJEI.TYPE_INFUSION;
     }
 }

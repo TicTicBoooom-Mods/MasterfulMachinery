@@ -13,6 +13,7 @@ import com.ticticboooom.mods.mm.ports.storage.MekInfusePortStorage;
 import com.ticticboooom.mods.mm.ports.storage.MekSlurryPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.SneakyThrows;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.jei.MekanismJEI;
 import mezz.jei.api.ingredients.IIngredients;
@@ -27,9 +28,9 @@ public class MekInfusePortParser extends PortFactory {
     @Override
     public void setIngredients(IIngredients ingredients, List<?> stacks, boolean input) {
         if (input) {
-            ingredients.setInputs(MekanismJEI.TYPE_SLURRY, (List<SlurryStack>)stacks);
+            ingredients.setInputs(MekanismJEI.TYPE_INFUSION, (List<InfusionStack>)stacks);
         } else {
-            ingredients.setOutputs(MekanismJEI.TYPE_SLURRY, (List<SlurryStack>)stacks);
+            ingredients.setOutputs(MekanismJEI.TYPE_INFUSION, (List<InfusionStack>)stacks);
         }
     }
 

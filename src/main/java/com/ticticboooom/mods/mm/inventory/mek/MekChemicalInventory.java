@@ -66,7 +66,7 @@ public class MekChemicalInventory<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
             if (this.stack.getAmount() + stack.getAmount() > capacity) {
                 return factory.apply(stack.getType(), (this.stack.getAmount() + stack.getAmount() - capacity));
             } else {
-                return empty;
+                return this.empty;
             }
         }
 
@@ -84,7 +84,7 @@ public class MekChemicalInventory<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
             } else {
                 this.stack.setAmount(this.stack.getAmount() + stack.getAmount());
             }
-            return empty;
+            return this.empty;
         }
     }
 
@@ -92,7 +92,7 @@ public class MekChemicalInventory<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
     public STACK extractChemical(int i, long l, Action action) {
         if (action.simulate()) {
             if (stack.getAmount() - l < 0) {
-                return factory.apply(stack.getType(), l - (l + stack.getAmount()));
+                return factory.apply(stack.getType(), l - (l - stack.getAmount()));
             } else {
                 return factory.apply(stack.getType(), l);
             }
@@ -101,7 +101,7 @@ public class MekChemicalInventory<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
         if (stack.getAmount() - l < 0) {
             long preAmount = stack.getAmount();
             this.stack = empty;
-            return factory.apply(stack.getType(),l - (preAmount - l));
+            return factory.apply(stack.getType(),l - (l - preAmount));
         } else {
             stack.setAmount(stack.getAmount() - l);
             return factory.apply(stack.getType(), l);

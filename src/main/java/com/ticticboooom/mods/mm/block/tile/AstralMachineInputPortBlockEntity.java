@@ -62,7 +62,7 @@ public class AstralMachineInputPortBlockEntity extends TileReceiverBase<MMSimple
 
     @Override
     public boolean isInput() {
-        return false;
+        return true;
     }
 
     @Override

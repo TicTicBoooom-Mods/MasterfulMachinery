@@ -9,15 +9,26 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nullable;
 
 public class AirBlockReader implements IBlockReader {
+    private TileEntity tile;
+    private BlockState state;
+
+    public AirBlockReader(BlockState state) {
+        this.state = state;
+    }
+
+    public void setTile(TileEntity t){
+        tile = t;
+    }
+
     @Nullable
     @Override
     public TileEntity getTileEntity(BlockPos pos) {
-        return null;
+        return tile;
     }
 
     @Override
     public BlockState getBlockState(BlockPos pos) {
-        return null;
+        return state;
     }
 
     @Override

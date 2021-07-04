@@ -24,6 +24,7 @@ public class StructureGenBlockContainerScreen extends ContainerScreen<StructureG
     @Override
     public void render(MatrixStack ms, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
         super.render(ms, p_230430_2_, p_230430_3_, p_230430_4_);
+        this.renderHoveredTooltip(ms, p_230430_2_, p_230430_3_);
     }
 
     @Override

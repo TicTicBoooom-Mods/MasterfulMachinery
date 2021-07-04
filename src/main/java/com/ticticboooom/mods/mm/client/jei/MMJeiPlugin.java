@@ -1,8 +1,10 @@
-package com.ticticboooom.mods.mm.client.jei.category;
+package com.ticticboooom.mods.mm.client.jei;
 
 import com.google.common.collect.ImmutableList;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
+import com.ticticboooom.mods.mm.client.jei.category.MachineProcessRecipeCategory;
+import com.ticticboooom.mods.mm.client.jei.category.MachineStructureRecipeCategory;
 import com.ticticboooom.mods.mm.client.jei.ingredients.*;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
@@ -14,13 +16,11 @@ import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @JeiPlugin
 public class MMJeiPlugin implements IModPlugin {

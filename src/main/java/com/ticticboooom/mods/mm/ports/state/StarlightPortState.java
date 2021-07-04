@@ -4,26 +4,19 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.client.jei.category.MMJeiPlugin;
-import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
+import com.ticticboooom.mods.mm.client.jei.MMJeiPlugin;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.StarlightStack;
 import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
-import com.ticticboooom.mods.mm.ports.storage.StarlightPortStorage;
-import hellfirepvp.astralsorcery.common.block.base.BlockStarlightRecipient;
-import hellfirepvp.astralsorcery.common.constellation.IWeakConstellation;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class StarlightPortState extends PortState {
     public static final Codec<StarlightPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
