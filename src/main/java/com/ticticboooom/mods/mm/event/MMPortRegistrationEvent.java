@@ -1,4 +1,4 @@
-package com.ticticboooom.mods.mm.core;
+package com.ticticboooom.mods.mm.event;
 
 import com.ticticboooom.mods.mm.ports.MasterfulPortType;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import net.minecraftforge.fml.event.lifecycle.IModBusEvent;
 
 import java.util.Map;
 
-public class MMPortRegistrationEvent extends Event {
+public class MMPortRegistrationEvent extends Event implements IModBusEvent {
     @Getter
     private Map<ResourceLocation, MasterfulPortType> portsMap;
 

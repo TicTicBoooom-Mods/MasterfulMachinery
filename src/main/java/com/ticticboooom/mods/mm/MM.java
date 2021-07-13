@@ -11,6 +11,8 @@ import com.ticticboooom.mods.mm.client.screen.ControllerBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.StructureGenBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.ter.StructureGenTileEntityRenderer;
+import com.ticticboooom.mods.mm.event.MMPortEventHandler;
+import com.ticticboooom.mods.mm.event.MMPortRegistrationEvent;
 import com.ticticboooom.mods.mm.datagen.MMPackFinder;
 import com.ticticboooom.mods.mm.datagen.DataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
@@ -59,8 +61,6 @@ public class MM {
 
     public MM() {
         instance = this;
-        MMPorts.init();
-        MMLoader.load();
         DataGeneratorFactory.init();
         PacketHandler.init();
         registerDataGen();
@@ -72,13 +72,13 @@ public class MM {
         RecipeTypes.RECIPE_SERIALIZERS.register(bus);
         bus.addListener(this::clientEvents);
         try {
-
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            Minecraft.getInstance().getResourcePackList().addPackFinder(new MMPackFinder(PackType.RESOURCE));
+            if (FMLEnvironment.dist == Dist.CLIENT) {
+                Minecraft.getInstance().getResourcePackList().addPackFinder(new MMPackFinder(PackType.RESOURCE));
+            }
+        } catch (Exception ignored) {
         }
-        } catch(Exception ignored){
 
-        }
+
         MinecraftForge.EVENT_BUS.addListener(this::onServerStart);
     }
 
@@ -87,15 +87,17 @@ public class MM {
         ExistingFileHelper existingFileHelper = new ExistingFileHelper(ImmutableList.of(), ImmutableSet.of(), false);
         generator.addProvider(new MMLootTableProvider(generator));
 
-        if (FMLEnvironment.dist != Dist.DEDICATED_SERVER){
+        if (FMLEnvironment.dist != Dist.DEDICATED_SERVER) {
             generator.addProvider(new MMBlockStateProvider(generator, existingFileHelper));
             generator.addProvider(new MMItemModelProvider(generator, existingFileHelper));
             generator.addProvider(new MMLangProvider(generator));
         }
     }
 
+
+
     public static void generate() {
-        if(!hasGenerated) {
+        if (!hasGenerated) {
             try {
                 instance.generator.run();
             } catch (IOException e) {
@@ -105,9 +107,11 @@ public class MM {
         }
     }
 
+
     public void onServerStart(final FMLServerAboutToStartEvent event) {
         event.getServer().getResourcePacks().addPackFinder(new MMPackFinder(PackType.DATA));
     }
+
 
     private void clientEvents(final FMLClientSetupEvent event) {
 
@@ -137,8 +141,8 @@ public class MM {
         ClientRegistry.bindTileEntityRenderer(MMSetup.STRUCTURE_TILE.get(), StructureGenTileEntityRenderer::new);
     }
 
-    public static void injectDatapackFinder (ResourcePackList resourcePacks) {
-        if (DistExecutor.unsafeRunForDist( () -> () -> resourcePacks != Minecraft.getInstance().getResourcePackList(), () -> () -> true)) {
+    public static void injectDatapackFinder(ResourcePackList resourcePacks) {
+        if (DistExecutor.unsafeRunForDist(() -> () -> resourcePacks != Minecraft.getInstance().getResourcePackList(), () -> () -> true)) {
             resourcePacks.addPackFinder(new MMPackFinder(PackType.RESOURCE));
             MM.LOG.info("Injecting data pack finder.");
         }
