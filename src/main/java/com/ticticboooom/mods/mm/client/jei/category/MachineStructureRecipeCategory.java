@@ -194,7 +194,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 if (tag != null){
                     Integer index = tagIndexes.get(i);
 
-                    Block block = tag.getAllElements().get(index);
+                    Block block = tag.getAllElements().get((int) Math.floor(index / 30.0));
                     tagIndexCounter.put(i, tagIndexCounter.get(i) + 1);
                     if (tagIndexCounter.get(i) > 30){
                         tagIndexCounter.put(i, 0);
@@ -203,6 +203,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                     if (index >= tag.getAllElements().size()) {
                         index = 0;
                     }
+
                     tagIndexes.put(i, index);
                     if (block != null) {
                         BlockState defaultState = block.getDefaultState();

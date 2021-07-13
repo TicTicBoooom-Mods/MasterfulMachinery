@@ -59,7 +59,7 @@ public class StructureHelper {
         Map<Character, ResourceLocation> legend = new HashMap<>();
         Map<ResourceLocation, Character> legendLookup = new HashMap<>();
 
-        char index = 33;
+        char index = 41;
 
         for (int yi = minPos.getY(); yi <= maxPos.getY(); yi++) {
             ArrayList<String> strings = new ArrayList<>();

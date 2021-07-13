@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.ticticboooom.mods.mm.datagen.gen;
+package com.ticticboooom.mods.mm.datagen.gen.runtime;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

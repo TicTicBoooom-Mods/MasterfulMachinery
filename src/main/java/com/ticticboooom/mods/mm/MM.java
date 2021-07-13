@@ -14,10 +14,10 @@ import com.ticticboooom.mods.mm.client.ter.StructureGenTileEntityRenderer;
 import com.ticticboooom.mods.mm.datagen.MMPackFinder;
 import com.ticticboooom.mods.mm.datagen.DataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
-import com.ticticboooom.mods.mm.datagen.gen.MMBlockStateProvider;
-import com.ticticboooom.mods.mm.datagen.gen.MMItemModelProvider;
-import com.ticticboooom.mods.mm.datagen.gen.MMLangProvider;
-import com.ticticboooom.mods.mm.datagen.gen.MMLootTableProvider;
+import com.ticticboooom.mods.mm.datagen.gen.runtime.MMBlockStateProvider;
+import com.ticticboooom.mods.mm.datagen.gen.runtime.MMItemModelProvider;
+import com.ticticboooom.mods.mm.datagen.gen.runtime.MMLangProvider;
+import com.ticticboooom.mods.mm.datagen.gen.runtime.MMLootTableProvider;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
@@ -71,8 +71,13 @@ public class MM {
         MMSetup.CONTAINER_REG.register(bus);
         RecipeTypes.RECIPE_SERIALIZERS.register(bus);
         bus.addListener(this::clientEvents);
+        try {
+
         if (FMLEnvironment.dist == Dist.CLIENT) {
             Minecraft.getInstance().getResourcePackList().addPackFinder(new MMPackFinder(PackType.RESOURCE));
+        }
+        } catch(Exception ignored){
+
         }
         MinecraftForge.EVENT_BUS.addListener(this::onServerStart);
     }

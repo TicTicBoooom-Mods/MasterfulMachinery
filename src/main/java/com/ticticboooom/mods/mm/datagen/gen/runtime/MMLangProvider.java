@@ -1,4 +1,4 @@
-package com.ticticboooom.mods.mm.datagen.gen;
+package com.ticticboooom.mods.mm.datagen.gen.runtime;
 
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
