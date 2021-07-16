@@ -11,8 +11,6 @@ import com.ticticboooom.mods.mm.client.screen.ControllerBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.screen.StructureGenBlockContainerScreen;
 import com.ticticboooom.mods.mm.client.ter.StructureGenTileEntityRenderer;
-import com.ticticboooom.mods.mm.event.MMPortEventHandler;
-import com.ticticboooom.mods.mm.event.MMPortRegistrationEvent;
 import com.ticticboooom.mods.mm.datagen.MMPackFinder;
 import com.ticticboooom.mods.mm.datagen.DataGeneratorFactory;
 import com.ticticboooom.mods.mm.datagen.PackType;
@@ -25,6 +23,7 @@ import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
+import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
@@ -37,6 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -59,8 +59,10 @@ public class MM {
     private static boolean hasGenerated = false;
     private static MM instance;
 
+    @SneakyThrows
     public MM() {
         instance = this;
+        MMPorts.init();
         DataGeneratorFactory.init();
         PacketHandler.init();
         registerDataGen();
@@ -99,6 +101,9 @@ public class MM {
     public static void generate() {
         if (!hasGenerated) {
             try {
+                if (!ModLoader.isLoadingStateValid()){
+                    return;
+                }
                 instance.generator.run();
             } catch (IOException e) {
                 e.printStackTrace();
