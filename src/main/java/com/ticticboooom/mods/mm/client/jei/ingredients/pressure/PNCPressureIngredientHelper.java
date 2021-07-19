@@ -1,4 +1,4 @@
-package com.ticticboooom.mods.mm.client.jei.ingredients;
+package com.ticticboooom.mods.mm.client.jei.ingredients.pressure;
 
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;

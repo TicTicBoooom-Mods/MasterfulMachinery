@@ -5,10 +5,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.MMJeiPlugin;
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
+import com.ticticboooom.mods.mm.client.jei.ingredients.model.RotationStack;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.RotationPortStorage;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.util.ResourceLocation;
@@ -78,7 +81,9 @@ public class RotationPortState extends PortState {
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
-
+        IGuiIngredientGroup<RotationStack> group = layout.getIngredientsGroup(MMJeiPlugin.ROT_TYPE);
+        group.init(typeIndex, input, x+ 1, y +1);
+        group.set(typeIndex, new RotationStack(speed));
     }
 
     @Override

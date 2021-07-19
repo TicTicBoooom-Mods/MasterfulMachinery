@@ -1,4 +1,4 @@
-package com.ticticboooom.mods.mm.client.jei.ingredients;
+package com.ticticboooom.mods.mm.client.jei.ingredients.energy;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

@@ -19,8 +19,9 @@ import net.minecraftforge.fml.RegistryObject;
 import java.util.Random;
 
 public class RotationMachinePortBlock extends MachinePortBlock implements IRotate {
-    public RotationMachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
-        super(type, name, controllerId, textureOverride, overlay);
+
+    public RotationMachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ResourceLocation portTypeId) {
+        super(type, name, controllerId, textureOverride, overlay, portTypeId);
     }
 
     @Override

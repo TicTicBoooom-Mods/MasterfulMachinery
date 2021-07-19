@@ -57,6 +57,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private Map<Integer, Integer> tagIndexes = new HashMap<>();
     private Map<Integer, Integer> tagIndexCounter = new HashMap<>();
     private float scaleFactor = 1F;
+
     public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
         this.controller = controller;
@@ -87,7 +88,9 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         return helpers.getGuiHelper().createDrawableIngredient(new ItemStack(MMSetup.BLUEPRINT.get(), 1));
     }
 
-    private IDrawable getButton() {return helpers.getGuiHelper().createDrawable(slotRl, 0, 44, 18, 18);}
+    private IDrawable getButton() {
+        return helpers.getGuiHelper().createDrawable(slotRl, 0, 44, 18, 18);
+    }
 
     @Override
     public void setIngredients(MachineStructureRecipe machineStructureRecipe, IIngredients iIngredients) {
@@ -148,8 +151,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             topY = Math.max(part.getPos().getY(), topY);
             bottomY = Math.min(part.getPos().getY(), bottomY);
         }
-        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != 0){
-            if (scrollLastPos == 0){
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != 0) {
+            if (scrollLastPos == 0) {
                 scrollLastPos = (int) mouseY;
             }
             scaleFactor += (mouseY - yLastMousePosition) * 0.05;
@@ -183,24 +186,20 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                     defaultState = with(defaultState, part.getProperties());
                     new GuiBlockRenderBuilder(defaultState).at(bp)
                             .withPrePosition(new Vector3f(6.5f, -5, 10))
-                    .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                    .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                    .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                    .finalize(matrixStack);
+                            .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                            .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                            .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
+                            .finalize(matrixStack);
                 }
-            } else if (!part.getTag().equals("")){
+            } else if (!part.getTag().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getTag());
                 ITag<Block> tag = BlockTags.getCollection().getTagByID(resourceLocation);
-                if (tag != null){
+                if (tag != null) {
                     Integer index = tagIndexes.get(i);
 
-                    Block block = tag.getAllElements().get((int) Math.floor(index / 30.0));
-                    tagIndexCounter.put(i, tagIndexCounter.get(i) + 1);
-                    if (tagIndexCounter.get(i) > 30){
-                        tagIndexCounter.put(i, 0);
-                        index++;
-                    }
-                    if (index >= tag.getAllElements().size()) {
+                    Block block = tag.getAllElements().get((int) Math.floor(index / 50.0));
+                    index++;
+                    if (index >= (tag.getAllElements().size()) * 50) {
                         index = 0;
                     }
 
@@ -261,10 +260,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             bottomY = Math.min(part.getPos().getY(), bottomY);
         }
 
-        if (!slicingActive){
+        if (!slicingActive) {
             slicingActive = true;
             sliceY = bottomY;
-        } else if (sliceY == topY){
+        } else if (sliceY == topY) {
             slicingActive = false;
             sliceY = 0;
         } else {
@@ -281,12 +280,12 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         for (Map.Entry<String, String> stringStringEntry : props.entrySet()) {
             for (Property<?> property : defaultState.getProperties()) {
                 Optional<?> o = property.parseValue(stringStringEntry.getValue());
-                if (!o.isPresent()){
+                if (!o.isPresent()) {
                     return defaultState;
                 }
                 for (Comparable<?> allowedValue : property.getAllowedValues()) {
                     defaultState = defaultState.cycleValue(property);
-                    if (defaultState.get(property).equals(o.get())){
+                    if (defaultState.get(property).equals(o.get())) {
                         return defaultState;
                     }
                 }

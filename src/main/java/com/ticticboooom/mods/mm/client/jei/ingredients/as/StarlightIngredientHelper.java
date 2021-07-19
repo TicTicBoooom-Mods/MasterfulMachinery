@@ -1,4 +1,4 @@
-package com.ticticboooom.mods.mm.client.jei.ingredients;
+package com.ticticboooom.mods.mm.client.jei.ingredients.as;
 
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.StarlightStack;

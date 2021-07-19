@@ -39,8 +39,10 @@ public class MachinePortBlock extends Block {
     private String textureOverride;
     @Getter
     private ResourceLocation overlay;
+    @Getter
+    private ResourceLocation portTypeId;
 
-    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
+    public MachinePortBlock(RegistryObject<TileEntityType<?>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ResourceLocation portTypeId) {
         super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE));
         this.type = type;
@@ -48,6 +50,7 @@ public class MachinePortBlock extends Block {
         this.controllerId = controllerId;
         this.textureOverride = textureOverride;
         this.overlay = overlay;
+        this.portTypeId = portTypeId;
     }
 
     @Override

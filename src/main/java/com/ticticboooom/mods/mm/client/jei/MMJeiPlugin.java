@@ -5,7 +5,21 @@ import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.client.jei.category.MachineProcessRecipeCategory;
 import com.ticticboooom.mods.mm.client.jei.category.MachineStructureRecipeCategory;
-import com.ticticboooom.mods.mm.client.jei.ingredients.*;
+import com.ticticboooom.mods.mm.client.jei.ingredients.as.StarlightIngredientHelper;
+import com.ticticboooom.mods.mm.client.jei.ingredients.as.StarlightIngredientRenderer;
+import com.ticticboooom.mods.mm.client.jei.ingredients.as.StarlightIngredientType;
+import com.ticticboooom.mods.mm.client.jei.ingredients.energy.EnergyIngredientHelper;
+import com.ticticboooom.mods.mm.client.jei.ingredients.energy.EnergyIngredientRenderer;
+import com.ticticboooom.mods.mm.client.jei.ingredients.energy.EnergyIngredientType;
+import com.ticticboooom.mods.mm.client.jei.ingredients.mana.ManaIngredientHelper;
+import com.ticticboooom.mods.mm.client.jei.ingredients.mana.ManaIngredientRenderer;
+import com.ticticboooom.mods.mm.client.jei.ingredients.mana.ManaIngredientType;
+import com.ticticboooom.mods.mm.client.jei.ingredients.pressure.PNCPressureIngredientHelper;
+import com.ticticboooom.mods.mm.client.jei.ingredients.pressure.PNCPressureIngredientRenderer;
+import com.ticticboooom.mods.mm.client.jei.ingredients.pressure.PNCPressureIngredientType;
+import com.ticticboooom.mods.mm.client.jei.ingredients.rotation.RotationIngredientHelper;
+import com.ticticboooom.mods.mm.client.jei.ingredients.rotation.RotationIngredientRenderer;
+import com.ticticboooom.mods.mm.client.jei.ingredients.rotation.RotationIngredientType;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
 import com.ticticboooom.mods.mm.registration.MMLoader;
@@ -40,6 +54,10 @@ public class MMJeiPlugin implements IModPlugin {
     public static final StarlightIngredientRenderer STAR_TYPE_RENDERER = new StarlightIngredientRenderer();
     public static final StarlightIngredientHelper STAR_TYPE_HELPER = new StarlightIngredientHelper();
 
+    public static final RotationIngredientType ROT_TYPE = new RotationIngredientType();
+    public static final RotationIngredientRenderer ROT_RENDERER = new RotationIngredientRenderer();
+    public static final RotationIngredientHelper ROT_HELPER = new RotationIngredientHelper();
+
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(MM.ID, "jei_main");
@@ -51,6 +69,7 @@ public class MMJeiPlugin implements IModPlugin {
         registration.register(MMJeiPlugin.PRESSURE_TYPE, ImmutableList.of(), PRESSURE_TYPE_HELPER, PRESSURE_TYPE_RENDERER);
         registration.register(MMJeiPlugin.MANA_TYPE, ImmutableList.of(), MANA_TYPE_HELPER, MANA_TYPE_RENDERER);
         registration.register(MMJeiPlugin.STAR_TYPE, ImmutableList.of(), STAR_TYPE_HELPER, STAR_TYPE_RENDERER);
+        registration.register(MMJeiPlugin.ROT_TYPE, ImmutableList.of(), ROT_HELPER, ROT_RENDERER);
     }
 
     @Override
@@ -59,6 +78,7 @@ public class MMJeiPlugin implements IModPlugin {
         PRESSURE_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
         MANA_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
         STAR_TYPE_RENDERER.setHelpers(registration.getJeiHelpers());
+        ROT_RENDERER.setHelpers(registration.getJeiHelpers());
         List<MachineStructureRecipe> structureRecipes = Minecraft.getInstance().world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         for (RegistryObject<ControllerBlock> block : MMLoader.BLOCKS) {
             registration.addRecipes(structureRecipes.stream().filter(x -> x.getControllerId().contains(block.get().getControllerId())).collect(Collectors.toList()), new ResourceLocation(MM.ID, "machine_structure_" + block.get().getControllerId()));

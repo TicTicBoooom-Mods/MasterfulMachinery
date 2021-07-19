@@ -1,4 +1,4 @@
-package com.ticticboooom.mods.mm.client.jei.ingredients;
+package com.ticticboooom.mods.mm.client.jei.ingredients.energy;
 
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.EnergyStack;
 import mezz.jei.api.ingredients.IIngredientType;

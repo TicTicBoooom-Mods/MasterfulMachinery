@@ -4,8 +4,9 @@ import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.model.ModelOverrideModel;
+import com.ticticboooom.mods.mm.ports.MasterfulPortType;
 import com.ticticboooom.mods.mm.registration.MMLoader;
+import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import net.minecraft.block.Block;
 import net.minecraft.block.DirectionalBlock;
@@ -14,8 +15,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.ForgeRenderTypes;
-import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelBuilder;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.RegistryObject;
@@ -26,14 +29,13 @@ public class MMBlockStateProvider extends BlockStateProvider {
     public MMBlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
         super(gen, MM.ID, exFileHelper);
     }
-
-    private static final ResourceLocation BASE_TEXTURE = new ResourceLocation(MM.ID, "block/base_block");
+    public static final ResourceLocation BASE_TEXTURE = new ResourceLocation(MM.ID, "block/base_block");
     private static final ResourceLocation CONTROLLER_TEXTURE = new ResourceLocation(MM.ID, "block/controller_cutout");
 
     @Override
     protected void registerStatesAndModels() {
         for (RegistryObject<ControllerBlock> controller : MMLoader.BLOCKS) {
-            if (!controller.isPresent()){
+            if (!controller.isPresent()) {
                 return;
             }
             dynamicBlockNorthOverlay(controller.getId(), controller.get().getTexOverride() != null ? RLUtils.toRL(controller.get().getTexOverride()) : BASE_TEXTURE, CONTROLLER_TEXTURE);
@@ -47,12 +49,12 @@ public class MMBlockStateProvider extends BlockStateProvider {
         }
 
         for (RegistryObject<MachinePortBlock> port : MMLoader.IPORT_BLOCKS) {
-            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, port.get().getOverlay());
-            simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
+            MasterfulPortType masterfulPortType = MMPorts.PORTS.get(port.get().getPortTypeId());
+            masterfulPortType.getParser().generateBlockStates(this, true, port);
         }
         for (RegistryObject<MachinePortBlock> port : MMLoader.OPORT_BLOCKS) {
-            dynamicBlock(port.getId(), port.get().getTextureOverride() != null ? RLUtils.toRL(port.get().getTextureOverride()) : BASE_TEXTURE, port.get().getOverlay());
-            simpleBlock(port.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(MM.ID, "block/" + port.getId().getPath())));
+            MasterfulPortType masterfulPortType = MMPorts.PORTS.get(port.get().getPortTypeId());
+            masterfulPortType.getParser().generateBlockStates(this, false, port);
         }
 
         directionalState(MMSetup.PROJECTOR_BLOCK.get());

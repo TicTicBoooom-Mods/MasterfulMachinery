@@ -80,7 +80,7 @@ public class RotationPortParser extends PortFactory {
     }
 
     @Override
-    public RegistryObject<MachinePortBlock> registerBlock(String id, DeferredRegister<Block> reg, Registerable<RegistryObject<TileEntityType<?>>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay) {
-        return reg.register(id, () -> new RotationMachinePortBlock(type.get(), name, controllerId, textureOverride, overlay));
+    public RegistryObject<MachinePortBlock> registerBlock(String id, DeferredRegister<Block> reg, Registerable<RegistryObject<TileEntityType<?>>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ResourceLocation portTypeId) {
+        return reg.register(id, () -> new RotationMachinePortBlock(type.get(), name, controllerId, textureOverride, overlay, portTypeId));
     }
 }

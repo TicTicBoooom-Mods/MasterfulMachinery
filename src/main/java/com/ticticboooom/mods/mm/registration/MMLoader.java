@@ -103,7 +103,7 @@ public class MMLoader {
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
                     Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
                     cont.set(MMSetup.CONTAINER_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
-                    block.set(value.getParser().registerBlock(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", MMSetup.BLOCKS_REG, tile, name, controllerId, portTextureOverrideFinal, value.getParser().getInputOverlay()));
+                    block.set(value.getParser().registerBlock(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", MMSetup.BLOCKS_REG, tile, name, controllerId, portTextureOverrideFinal, value.getParser().getInputOverlay(), resourceLocation));
                     tile.set(value.getParser().registerTileEntity(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", MMSetup.TILES_REG, tile, block, cont, data, true));
                     MMSetup.ITEMS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_input", () -> new BlockItem(block.get().get(), new Item.Properties().group(MASTERFUL_ITEM_GROUP)));
                     PORT_CONTAINERS.add(cont.get());
@@ -115,7 +115,7 @@ public class MMLoader {
                     Registerable<RegistryObject<MachinePortBlock>> block = new Registerable<>();
                     Registerable<RegistryObject<ContainerType<?>>> cont = new Registerable<>();
                     cont.set(MMSetup.CONTAINER_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> IForgeContainerType.create((i, o, u) -> new PortBlockContainer(cont.get().get(), i, o, u))));
-                    block.set(value.getParser().registerBlock(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", MMSetup.BLOCKS_REG, tile, name, controllerId, portTextureOverrideFinal, value.getParser().getOutputOverlay()));
+                    block.set(value.getParser().registerBlock(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", MMSetup.BLOCKS_REG, tile, name, controllerId, portTextureOverrideFinal, value.getParser().getOutputOverlay(), resourceLocation));
                     tile.set(value.getParser().registerTileEntity(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", MMSetup.TILES_REG, tile, block, cont, data, false));
                     MMSetup.ITEMS_REG.register(controllerId + "_" + id + "_port_" + resourceLocation.getPath() + "_output", () -> new BlockItem(block.get().get(), new Item.Properties().group(MASTERFUL_ITEM_GROUP)));
                     PORT_CONTAINERS.add(cont.get());
