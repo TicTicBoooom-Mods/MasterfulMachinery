@@ -37,5 +37,5 @@ public class MMSetup {
     public static final RegistryObject<TileEntityType<StructureGenBlockEntity>> STRUCTURE_TILE = TILES_REG.register("structure_generator", () -> TileEntityType.Builder.create(StructureGenBlockEntity::new, STRUCTURE_BLOCK.get()).build(null));
     public static final RegistryObject<ContainerType<StructureGenBlockContainer>> STRUCTURE_CONTAINER = CONTAINER_REG.register("structure_generator", () -> IForgeContainerType.create(StructureGenBlockContainer::new));
     public static final RegistryObject<Item> STRUCTURE_ITEM = ITEMS_REG.register("structure_generator", () -> new BlockItem(STRUCTURE_BLOCK.get(), new Item.Properties().group(MMLoader.MASTERFUL_ITEM_GROUP)));
-    public static final RegistryObject<Item> STRUCTURE_DEVICE = ITEMS_REG.register("structure_gen_device", StructureGenSelectionDevice::new);
+    public static final RegistryObject<Item> STRUCTURE_DEVICE = ITEMS_REG.register("structure_selector", StructureGenSelectionDevice::new);
 }

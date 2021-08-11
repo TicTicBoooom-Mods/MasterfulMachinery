@@ -67,6 +67,6 @@ public class MekInfusePortParser extends PortFactory {
 
     @Override
     public ResourceLocation getOutputOverlay() {
-        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_infusion_input_cutout");
+        return new ResourceLocation(MM.ID, "block/compat_ports/mekanism_infusion_output_cutout");
     }
 }
