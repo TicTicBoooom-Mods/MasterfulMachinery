@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 public class ControllerBlock extends DirectionalBlock {
-
+    @Getter
     private RegistryObject<TileEntityType<?>> type;
     @Getter
     private String controllerName;
