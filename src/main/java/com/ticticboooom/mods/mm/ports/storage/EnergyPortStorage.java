@@ -67,7 +67,8 @@ public class EnergyPortStorage extends PortStorage {
         if (inv.getMaxEnergyStored() > 0) {
             amount = (float)inv.getEnergyStored() / inv.getMaxEnergyStored();
         }
-        screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
+        //screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
+        screen.blit(stack, left + barOffsetX, top + barOffsetY + 108 - (int) (108*amount), 193, 18, 18, (int) (108*amount)-1);
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,Math.round((float)10000 * amount) / 100.f + "%", left + 30, top + 60, 0xfefefe);
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
     }
