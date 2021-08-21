@@ -114,7 +114,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         return -1;
     }
 
-    private boolean matchesWithRotation(BlockPos controllerPos, World world, List<MachineStructureRecipeKeyModel> items) {
+    public boolean matchesWithRotation(BlockPos controllerPos, World world, List<MachineStructureRecipeKeyModel> items) {
         for (MachineStructureRecipeKeyModel model : items) {
             if (!innerBlockMatch(controllerPos, world, model)) {
                 return false;
@@ -124,7 +124,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
     }
 
 
-    private boolean innerBlockMatch(BlockPos controllerPos, World world, MachineStructureRecipeKeyModel model) {
+    public boolean innerBlockMatch(BlockPos controllerPos, World world, MachineStructureRecipeKeyModel model) {
         BlockPos pos = controllerPos.add(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
         BlockState blockState = world.getBlockState(pos);
         boolean valid = false;

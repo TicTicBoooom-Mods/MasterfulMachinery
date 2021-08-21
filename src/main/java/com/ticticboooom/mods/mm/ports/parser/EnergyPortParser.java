@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 
 public class EnergyPortParser extends PortFactory {
 
-
-
     @Override
     public Supplier<PortStorage> createStorage(JsonObject obj) {
         return () -> {

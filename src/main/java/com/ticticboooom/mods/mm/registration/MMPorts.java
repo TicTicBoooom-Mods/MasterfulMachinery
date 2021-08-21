@@ -16,6 +16,7 @@ public class MMPorts {
         PORTS.put(new ResourceLocation(MM.ID, "items"), new MasterfulPortType(new ResourceLocation(MM.ID, "items"), new ItemPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "fluids"), new MasterfulPortType(new ResourceLocation(MM.ID, "fluids"), new FluidPortParser()));
         PORTS.put(new ResourceLocation(MM.ID, "energy"),new MasterfulPortType(new ResourceLocation(MM.ID, "energy"), new EnergyPortParser()));
+//        PORTS.put(new ResourceLocation(MM.ID, "weather"),new MasterfulPortType(new ResourceLocation(MM.ID, "weather"), new WeatherPortParser()));
         if (ModList.get().isLoaded("mekanism")) {
             PORTS.put(new ResourceLocation(MM.ID, "mekanism_gas"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_gas"), new MekGasPortParser()));
             PORTS.put(new ResourceLocation(MM.ID, "mekanism_slurry"),new MasterfulPortType(new ResourceLocation(MM.ID, "mekanism_slurry"), new MekSlurryPortParser()));

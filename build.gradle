@@ -21,7 +21,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.16.5-0.1.53-B' + getVersionNumber()
+version = '1.16.5-0.1.54-B' + getVersionNumber()
 group = 'com.ticticboooom.mods.mm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'MasterfulMachinery'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
@@ -198,7 +198,6 @@ dependencies {
     runtimeOnly fg.deobf("vazkii.botania:Botania:1.16.5-416")
 
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-51")
-
 
     implementation "dev.latvian.mods:rhino:1605.1.0-build.4"
     implementation fg.deobf("me.shedaniel:architectury-forge:v1.15.13")

@@ -69,7 +69,6 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                     return false;
                 }
             }
-
         }
         return true;
     }
