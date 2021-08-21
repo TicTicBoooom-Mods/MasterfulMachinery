@@ -4,15 +4,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.inventory.PortEnergyInventory;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -67,8 +63,9 @@ public class EnergyPortStorage extends PortStorage {
         if (inv.getMaxEnergyStored() > 0) {
             amount = (float)inv.getEnergyStored() / inv.getMaxEnergyStored();
         }
-        screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
-        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,Math.round((float)10000 * amount) / 100.f + "%", left + 30, top + 60, 0xfefefe);
+        //screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
+        screen.blit(stack, left + barOffsetX, top + barOffsetY + 108 - (int) (108*amount), 193, 18, 18, (int) (108*amount)-1);
+        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,String.format("%.2f",Math.round((float)10000 * amount) / 100.f) + "%", left + 30, top + 60, 0xfefefe);
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
     }
 }

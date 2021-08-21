@@ -52,12 +52,21 @@ public class StructureGenTileEntityRenderer extends TileEntityRenderer<Structure
             matrixStackIn.push();
             Matrix4f mat = matrixStackIn.getLast().getMatrix();
 
-            int x = Math.min(pos1.getX(), pos2.getX());
-            int y = Math.min(pos1.getY(), pos2.getY());
-            int z = Math.min(pos1.getZ(), pos2.getZ());
-            int dx = Math.max(pos1.getX(), pos2.getX()) + 1;
-            int dy = Math.max(pos1.getY(), pos2.getY()) + 1;
-            int dz = Math.max(pos1.getZ(), pos2.getZ()) + 1;
+            float x = Math.min(pos1.getX(), pos2.getX());
+            float y = Math.min(pos1.getY(), pos2.getY());
+            float z = Math.min(pos1.getZ(), pos2.getZ());
+            float dx = Math.max(pos1.getX(), pos2.getX()) + 1;
+            float dy = Math.max(pos1.getY(), pos2.getY()) + 1;
+            float dz = Math.max(pos1.getZ(), pos2.getZ()) + 1;
+            float xAdjust = addWiggleRoom(x,dx);
+            x = x+xAdjust;
+            dx = dx+(xAdjust*-1);
+            float yAdjust = addWiggleRoom(y,dy);
+            y = y+yAdjust;
+            dy = dy+(yAdjust*-1);
+            float zAdjust = addWiggleRoom(z,dz);
+            z = z+zAdjust;
+            dz = dz+(zAdjust*-1);
 
             int R = 255, G = 255, B = 255, A = 70;
             builder.pos(mat, x , y, z).color(R, G, B, A).endVertex();
@@ -92,5 +101,12 @@ public class StructureGenTileEntityRenderer extends TileEntityRenderer<Structure
 
             matrixStackIn.pop();
         }
+    }
+
+    private float addWiggleRoom(float coordOne, float coordTwo) {
+        if(coordOne > coordTwo) {
+            return 0.05f;
+        }
+        return -0.05f;
     }
 }
