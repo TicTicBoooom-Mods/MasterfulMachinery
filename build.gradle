@@ -73,6 +73,9 @@ minecraft {
                 masterfulmachinery {
                     source sourceSets.main
                 }
+                mmtest {
+                    source sourceSets.test
+                }
             }
         }
 
@@ -95,6 +98,9 @@ minecraft {
             mods {
                 masterfulmachinery {
                     source sourceSets.main
+                }
+                mmtest {
+                    source sourceSets.test
                 }
             }
         }
@@ -119,7 +125,7 @@ minecraft {
             args '--mod', 'masterfulmachinery', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                masterfulmachinery {
                     source sourceSets.main
                 }
             }

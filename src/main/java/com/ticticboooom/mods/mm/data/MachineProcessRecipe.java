@@ -244,6 +244,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 List<PortState> inputStates = getStates(inputs);
                 List<PortState> outputStates = getStates(outputs);
                 validateProcess(inputStates, outputStates, ticks, structureId, rl);
+                MM.LOG.debug("Added process '{}' for structure '{}'", rl, structureId);
                 return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId, rl);
             } catch (InvalidProcessDefinitionException e) {
                 MM.LOG.error("InvalidProcessDefinition: " + e.getMessage());

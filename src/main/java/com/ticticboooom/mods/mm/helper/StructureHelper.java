@@ -106,8 +106,8 @@ public class StructureHelper {
     private static JsonObject toJson(Map<Character, ResourceLocation> legend, List<List<String>> layout) {
         JsonObject result = new JsonObject();
         result.addProperty("type", "masterfulmachinery:machine_structure");
-        result.addProperty("id", "chance_this");
-        result.addProperty("controllerId", "chance_this");
+        result.addProperty("id", "change_this");
+        result.addProperty("controllerId", "change_this");
         result.addProperty("name", "Change This");
 
         DataResult<JsonElement> apply = JsonOps.INSTANCE.withEncoder(Codec.list(Codec.list(Codec.STRING))).apply(layout);

@@ -207,7 +207,6 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         @Override
         public MachineStructureRecipe read(ResourceLocation rl, JsonObject obj) {
             try {
-
                 JsonElement controllerIdJson = obj.get("controllerId");
                 List<String> ids = new ArrayList<>();
                 if (controllerIdJson.isJsonPrimitive()) {
@@ -231,6 +230,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
 
                 validateStructure(result, ids, id, rl);
+                MM.LOG.debug("Added structure '{}' with id '{}'", rl, id);
                 return new MachineStructureRecipe(result, ids, id, rl, name);
             } catch (InvalidStructureDefinitionException e) {
                 MM.LOG.error("InvalidStructureDefinition: " + e.getMessage());

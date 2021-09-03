@@ -1,90 +1,96 @@
 {
-  "controllerId": "basic",
-  "name": "Basic",
-  "ports": [
-    {
-      "type": "masterfulmachinery:items",
-      "textureOverride": "minecraft:textures/block/white_terracotta",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "rows": 3,
-        "columns": 3
-      }
-    },
-    {
-      "type": "masterfulmachinery:energy",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 1000000000
-      }
-    },
-    {
-      "type": "masterfulmachinery:fluids",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 10000
-      }
-    },
-    {
-      "type": "masterfulmachinery:pncr_pressure",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "criticalPressure": 7,
-        "dangerPressure": 5,
-        "volume": 10000
-      }
-    },
-    {
-      "type": "masterfulmachinery:botania_mana",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 100000
-      }
-    },
-    {
-      "type": "masterfulmachinery:astral_starlight",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 1000
-      }
-    },
-    {
-      "type": "masterfulmachinery:create_rotation",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "stress": 1
-      }
-    },
-    {
-      "type": "masterfulmachinery:mekanism_gas",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 100000000
-      }
-    },
-    {
-      "type": "masterfulmachinery:mekanism_slurry",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 100000000
-      }
-    },
-    {
-      "type": "masterfulmachinery:mekanism_infuse",
-      "name": "Simple",
-      "id": "simple",
-      "data": {
-        "capacity": 100000000
-      }
-    }
-  ]
+    "controllerId": "basic",
+    "name": "Basic",
+    "ports": [
+        {
+            "type": "masterfulmachinery:items",
+            "textureOverride": "minecraft:block/white_terracotta",
+            "name": "Item",
+            "id": "simple",
+            "data": {
+                "rows": 3,
+                "columns": 3
+            }
+        },
+        {
+            "type": "masterfulmachinery:energy",
+            "name": "Energy",
+            "id": "simple",
+            "data": {
+                "capacity": 1000000000
+            }
+        },
+        {
+            "type": "masterfulmachinery:fluids",
+            "name": "Fluid",
+            "id": "simple",
+            "data": {
+                "capacity": 10000
+            }
+        },
+        {
+            "type": "masterfulmachinery:pncr_pressure",
+            "name": "Pressure",
+            "id": "simple",
+            "data": {
+                "criticalPressure": 7,
+                "dangerPressure": 5,
+                "volume": 10000
+            }
+        },
+        {
+            "type": "masterfulmachinery:botania_mana",
+            "name": "Mana",
+            "id": "simple",
+            "data": {
+                "capacity": 100000
+            }
+        },
+        {
+            "type": "masterfulmachinery:astral_starlight",
+            "name": "Starlight",
+            "id": "simple",
+            "data": {
+                "capacity": 1000
+            }
+        },
+        {
+            "type": "masterfulmachinery:create_rotation",
+            "name": "Rotation",
+            "id": "simple",
+            "data": {
+                "stress": 1
+            }
+        },
+        {
+            "type": "masterfulmachinery:mekanism_gas",
+            "name": "Gas",
+            "id": "simple",
+            "data": {
+                "capacity": 100000000
+            }
+        },
+        {
+            "type": "masterfulmachinery:mekanism_slurry",
+            "name": "Slurry",
+            "id": "simple",
+            "data": {
+                "capacity": 100000000
+            }
+        },
+        {
+            "type": "masterfulmachinery:mekanism_infuse",
+            "name": "Infuse",
+            "id": "simple",
+            "data": {
+                "capacity": 100000000
+            }
+        },
+        {
+            "type": "masterfulmachinery:weather",
+            "name": "Weather",
+            "id": "simple",
+            "data": {}
+        }
+    ]
 }

@@ -70,7 +70,10 @@ public class MachinePortBlock extends Block {
         if (!level.isRemote()) {
             TileEntity blockEntity = level.getTileEntity(pos);
             if (blockEntity instanceof IMachinePortTile) {
-                NetworkHooks.openGui(((ServerPlayerEntity) player), (IMachinePortTile)blockEntity, pos);
+                IMachinePortTile port = (IMachinePortTile) blockEntity;
+                if (!port.getStorage().onPortActivated(state, level, pos, player, hand ,traceResult)) {
+                    NetworkHooks.openGui(((ServerPlayerEntity) player), port, pos);
+                }
             }
         }
 

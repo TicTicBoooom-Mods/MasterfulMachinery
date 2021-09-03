@@ -13,14 +13,11 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.java.games.input.Mouse;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
@@ -33,7 +30,6 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -168,6 +164,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             parts = parts.stream().filter(x -> x.getPos().getY() == sliceY).collect(Collectors.toList());
         }
 
+        //float sizeX = 162, sizeY = 121;
+        //float scaledSizeX = sizeX / scaleFactor, scaledSizeY = sizeY / scaleFactor;
+        float tx = 6.5f, ty = -5, tz = 10;
+
         int i = 0;
         for (MachineStructureRecipeKeyModel part : parts) {
             tagIndexes.putIfAbsent(i, 0);
@@ -185,11 +185,12 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                     BlockState defaultState = block.getDefaultState();
                     defaultState = with(defaultState, part.getProperties());
                     new GuiBlockRenderBuilder(defaultState).at(bp)
-                            .withPrePosition(new Vector3f(6.5f, -5, 10))
-                            .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                            .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                            .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                            .finalize(matrixStack);
+                        .withPrePosition(new Vector3f(tx, ty, tz))
+                        .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                        .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                        .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
+                        .withOffset(new Vector3f(-0.5f, -0.5f, -0.5f))
+                        .finalize(matrixStack);
                 }
             } else if (!part.getTag().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getTag());
@@ -208,11 +209,12 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                         BlockState defaultState = block.getDefaultState();
                         defaultState = with(defaultState, part.getProperties());
                         new GuiBlockRenderBuilder(defaultState).at(bp)
-                                .withPrePosition(new Vector3f(6.5f, -5, 10))
-                                .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                                .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                                .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                                .finalize(matrixStack);
+                            .withPrePosition(new Vector3f(tx, ty, tz))
+                            .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                            .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                            .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
+                            .withOffset(new Vector3f(-0.5f, -0.5f, -0.5f))
+                            .finalize(matrixStack);
                     }
                 }
             }
@@ -227,11 +229,12 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             if (block != null) {
                 BlockState defaultState = block.getDefaultState().with(DirectionalBlock.FACING, Direction.NORTH);
                 new GuiBlockRenderBuilder(defaultState).at(new BlockPos(0, 0, 0))
-                        .withPrePosition(new Vector3f(6.5f, -5, 10))
-                        .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                        .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                        .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                        .finalize(matrixStack);
+                    .withPrePosition(new Vector3f(tx, ty, tz))
+                    .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+                    .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+                    .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
+                    .withOffset(new Vector3f(-0.5f, -0.5f, -0.5f))
+                    .finalize(matrixStack);
 
             }
         }
@@ -269,7 +272,6 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         } else {
             sliceY++;
         }
-
 
     }
 

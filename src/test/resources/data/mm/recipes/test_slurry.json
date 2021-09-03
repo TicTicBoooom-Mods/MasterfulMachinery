@@ -1,0 +1,24 @@
+{
+    "type": "masterfulmachinery:machine_process",
+    "structureId": "test_slurry",
+    "controllerId": "basic",
+    "ticks": 200,
+    "inputs": [
+        {
+            "type": "masterfulmachinery:mekanism_slurry",
+            "data": {
+                "slurry": "mekanism:clean_gold",
+                "amount": 50
+            }
+        }
+    ],
+    "outputs":[
+        {
+            "type": "masterfulmachinery:mekanism_slurry",
+            "data": {
+                "slurry": "mekanism:clean_gold",
+                "amount": 50
+            }
+        }
+    ]
+}

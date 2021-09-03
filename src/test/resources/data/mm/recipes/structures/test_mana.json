@@ -1,0 +1,19 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "test_mana",
+  "controllerId": "basic",
+  "name": "Test Mana",
+  "layout": [
+    [
+      "1C2"
+    ]
+  ],
+  "legend": {
+    "1": {
+      "block": "masterfulmachinery:basic_simple_port_botania_mana_input"
+    },
+    "2": {
+      "block": "masterfulmachinery:basic_simple_port_botania_mana_output"
+    }
+  }
+}

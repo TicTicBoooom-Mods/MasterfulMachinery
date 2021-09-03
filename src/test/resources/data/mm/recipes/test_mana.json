@@ -1,0 +1,22 @@
+{
+    "type": "masterfulmachinery:machine_process",
+    "structureId": "test_mana",
+    "controllerId": "basic",
+    "ticks": 200,
+    "inputs": [
+        {
+            "type": "masterfulmachinery:botania_mana",
+            "data": {
+                "amount": 50
+            }
+        }
+    ],
+    "outputs":[
+        {
+            "type": "masterfulmachinery:botania_mana",
+            "data": {
+                "amount": 500
+            }
+        }
+    ]
+}

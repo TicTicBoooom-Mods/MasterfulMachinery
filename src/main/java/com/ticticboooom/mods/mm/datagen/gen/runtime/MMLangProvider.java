@@ -39,9 +39,10 @@ public class MMLangProvider extends LanguageProvider {
             return;
         }
         this.add(MMSetup.BLUEPRINT.get(), "Blueprint");
-        this.add(MMSetup.STRUCTURE_DEVICE.get(), "Structure Scanner");
+        this.add(MMSetup.STRUCTURE_DEVICE.get(), "Structure Selector");
         this.add(MMSetup.PROJECTOR_BLOCK.get(), "Structure Projector");
-        this.add(MMSetup.STRUCTURE_BLOCK.get(), "Structure Scanner");
+        this.add(MMSetup.STRUCTURE_BLOCK.get(), "Structure Generator");
         this.add("container.masterfulmachinery.create_rotation", "Rotation Port");
+        this.add("itemGroup.masterfulmachinery", "Masterful Machinery");
     }
 }

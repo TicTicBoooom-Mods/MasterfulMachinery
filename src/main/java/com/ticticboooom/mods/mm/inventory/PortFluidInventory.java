@@ -82,14 +82,14 @@ public class PortFluidInventory implements IFluidHandler {
 
     private FluidStack innerDrain(int amount, boolean simulate) {
         if (simulate) {
-            if (stack.getAmount() - amount < 0) {
+            if (stack.getAmount() - amount <= 0) {
                 return stack.copy();
             } else {
                 return new FluidStack(stack.getFluid(), amount);
             }
         }
 
-        if (stack.getAmount() - amount < 0) {
+        if (stack.getAmount() - amount <= 0) {
             FluidStack preStack = stack.copy();
             stack.setAmount(0);
             return preStack;

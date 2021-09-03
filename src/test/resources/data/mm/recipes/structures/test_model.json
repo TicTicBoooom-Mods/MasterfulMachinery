@@ -1,0 +1,19 @@
+{
+    "type": "masterfulmachinery:machine_structure",
+    "id": "test_model",
+    "controllerId": "basic",
+    "name": "Test Model",
+    "layout": [
+        [
+            "C"
+        ],
+        [
+            ")"
+        ]
+    ],
+    "legend": {
+        ")": {
+            "block": "pneumaticcraft:assembly_controller"
+        }
+    }
+}

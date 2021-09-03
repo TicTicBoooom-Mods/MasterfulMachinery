@@ -1,0 +1,22 @@
+{
+    "type": "masterfulmachinery:machine_process",
+    "structureId": "test_pressure",
+    "controllerId": "basic",
+    "ticks": 200,
+    "inputs": [
+        {
+            "type": "masterfulmachinery:pncr_pressure",
+            "data": {
+                "air": 50
+            }
+        }
+    ],
+    "outputs":[
+        {
+            "type": "masterfulmachinery:pncr_pressure",
+            "data": {
+                "air": 500
+            }
+        }
+    ]
+}

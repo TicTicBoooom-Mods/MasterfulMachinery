@@ -123,6 +123,8 @@ public class MMLoader {
                 }
 
             }
+
+            MM.LOG.debug("Registered controller with id '{}'", controllerId);
         }
     }
 
