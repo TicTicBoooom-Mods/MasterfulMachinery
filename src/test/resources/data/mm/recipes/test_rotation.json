@@ -1,22 +1,22 @@
 {
-    "type": "masterfulmachinery:machine_process",
-    "structureId": "test_rotation",
-    "controllerId": "basic",
-    "ticks": 200,
-    "inputs": [
-        {
-            "type": "masterfulmachinery:create_rotation",
-            "data": {
-                "speed": 2
-            }
-        }
-    ],
-    "outputs":[
-        {
-            "type": "masterfulmachinery:create_rotation",
-            "data": {
-                "speed": 4
-            }
-        }
-    ]
+  "type": "masterfulmachinery:machine_process",
+  "structureId": "test_rotation",
+  "controllerId": "basic",
+  "perTick": true,
+  "inputs": [
+    {
+      "type": "masterfulmachinery:create_rotation",
+      "data": {
+        "speed": 2
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "type": "masterfulmachinery:create_rotation",
+      "data": {
+        "speed": 64
+      }
+    }
+  ]
 }

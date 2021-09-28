@@ -137,19 +137,19 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
 
         // Calculate distances
-        int furthestX = Integer.MAX_VALUE;
-        int nearestX = Integer.MIN_VALUE;
-        int furthestZ = Integer.MAX_VALUE;
-        int nearestZ = Integer.MIN_VALUE;
-        int topY = Integer.MIN_VALUE;
-        int bottomY = Integer.MAX_VALUE;
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int minZ = Integer.MAX_VALUE;
+        int maxZ = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
         for (MachineStructureRecipeKeyModel part : recipe.getModels().get(0)) {
-            furthestX = Math.min(part.getPos().getX(), furthestX);
-            nearestX = Math.max(part.getPos().getX(), nearestX);
-            furthestZ = Math.min(part.getPos().getZ(), furthestZ);
-            nearestZ = Math.max(part.getPos().getZ(), nearestZ);
-            topY = Math.max(part.getPos().getY(), topY);
-            bottomY = Math.min(part.getPos().getY(), bottomY);
+            minX = Math.min(part.getPos().getX(), minX);
+            maxX = Math.max(part.getPos().getX(), maxX);
+            minZ = Math.min(part.getPos().getZ(), minZ);
+            maxZ = Math.max(part.getPos().getZ(), maxZ);
+            minY = Math.min(part.getPos().getY(), minY);
+            maxY = Math.max(part.getPos().getY(), maxY);
         }
 
         // Do mouse scroll zoom
@@ -160,11 +160,9 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             scaleFactor += (mouseY - yLastMousePosition) * 0.05;
             scaleFactor = Math.max(0.003f, scaleFactor);
         }
-        nearestX++;
-        nearestZ++;
-        float centreX = ((float) nearestX - furthestX) / 2f;
-        float centerY = ((float) topY - bottomY) / 2f;
-        float centreZ = ((float) nearestZ - furthestZ) / 2f;
+        float centreX = ((float) maxX - minX) / 2f;
+        float centerY = ((float) maxY - minY) / 2f;
+        float centreZ = ((float) maxZ - minZ) / 2f;
         mc.fontRenderer.drawString(matrixStack, recipe.getName(), 2, 2, 0xFFFFFFFF);
 
         // Get the block parts for the layer
@@ -174,13 +172,13 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
 
         //float tx = 6.5f, ty = -5, tz = 10;
-        float tx = 0, ty = 0, tz = 10;
+        float tx = 6.75f, ty = -5, tz = 10;
         Vector3f prePos = new Vector3f(tx, ty, tz);
-        Vector3f offset = new Vector3f(centreX / 2, centerY / 2, centreZ / 2);
+        Vector3f offset = new Vector3f(-minX - 0.5f - centreX, -minY - 0.5f - centerY, -minZ - 0.5f + centreZ);
 
         // Render the block parts
         for (MachineStructureRecipeKeyModel part : parts) {
-            variantIndices.putIfAbsent(part.getPos(), 0);
+            this.variantIndices.putIfAbsent(part.getPos(), 0);
             if (part.getBlock().isEmpty() && part.getTag().isEmpty() && part.getPort() == null) {
                 continue;
             }
@@ -202,7 +200,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
                 Block block = tag.getAllElements().get(index);
                 if (this.tickTimer == 0) {
-                    this.variantIndices.put(part.getPos(), (index+1) % tag.getAllElements().size());
+                    this.variantIndices.put(part.getPos(), (index + 1) % tag.getAllElements().size());
                 }
 
                 if (block != null) {
@@ -216,7 +214,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 Integer index = this.variantIndices.get(part.getPos());
                 String controllerId = port.getControllerId().get(index);
                 if (this.tickTimer == 0) {
-                    this.variantIndices.put(part.getPos(), (index+1) % port.getControllerId().size());
+                    this.variantIndices.put(part.getPos(), (index + 1) % port.getControllerId().size());
                 }
                 String type = port.getType();
                 MachinePortBlock block = null;
@@ -242,7 +240,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             Integer index = this.variantIndices.get(controllerPos);
             String controller = recipe.getControllerId().get(index);
             if (this.tickTimer == 0) {
-                this.variantIndices.put(controllerPos, (index+1) % recipe.getControllerId().size());
+                this.variantIndices.put(controllerPos, (index + 1) % recipe.getControllerId().size());
             }
             for (RegistryObject<ControllerBlock> reg : MMLoader.BLOCKS) {
                 if (reg.get().getControllerId().equals(controller)) {

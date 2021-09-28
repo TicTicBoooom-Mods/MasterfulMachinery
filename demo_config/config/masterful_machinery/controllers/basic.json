@@ -59,7 +59,7 @@
             "name": "Rotation",
             "id": "simple",
             "data": {
-                "stress": 1
+                "stress": 32
             }
         },
         {
