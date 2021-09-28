@@ -2,7 +2,6 @@ package com.ticticboooom.mods.mm.data;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -10,15 +9,12 @@ import com.mojang.serialization.JsonOps;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
-import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
-import com.ticticboooom.mods.mm.data.model.structure.MachineStructureObject;
-import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
-import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeLegendModel;
+import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
+import com.ticticboooom.mods.mm.data.model.structure.*;
 import com.ticticboooom.mods.mm.exception.InvalidStructureDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.nbt.NBTActionParser;
-import com.ticticboooom.mods.mm.nbt.NBTValidator;
 import com.ticticboooom.mods.mm.registration.MMLoader;
+import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -29,8 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
@@ -45,7 +39,6 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.util.*;
 
 public class MachineStructureRecipe implements IRecipe<IInventory> {
@@ -70,9 +63,9 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             BlockPos rotatedPos1 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.CLOCKWISE_180);
             BlockPos rotatedPos2 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.COUNTERCLOCKWISE_90);
 
-            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(), model.getBlock(), model.getProperties()));
-            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(), model.getBlock(), model.getProperties()));
-            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(), model.getBlock(), model.getProperties()));
+            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
+            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
+            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
         }
 
         this.models = new ArrayList<>();
@@ -142,6 +135,18 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             valid = tag.contains(blockState.getBlock());
         } else if (!model.getBlock().equals("")) {
             valid = blockState.getBlock().getRegistryName().toString().equals(model.getBlock());
+        } else if (model.getPort() != null) {
+            MachineStructurePort structurePort = model.getPort();
+            TileEntity portBlockEntity = world.getTileEntity(pos);
+            if (portBlockEntity instanceof IMachinePortTile && blockState.getBlock() instanceof MachinePortBlock) {
+                IMachinePortTile portTile = (IMachinePortTile) portBlockEntity;
+                MachinePortBlock portBlock = ((MachinePortBlock) blockState.getBlock());
+                if (portTile.isInput() == structurePort.isInput() &&
+                    portBlock.getPortTypeId().equals(RLUtils.toRL(structurePort.getType()))) {
+                    List<String> controllerIds = structurePort.getControllerId() != null ? structurePort.getControllerId() : this.controllerId;
+                    valid = controllerIds.contains(portBlock.getControllerId());
+                }
+            }
         }
 
         if (!valid) {
@@ -228,7 +233,6 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
                 List<MachineStructureRecipeKeyModel> result = getResult(obj.getAsJsonObject("legend"), layout);
 
-
                 validateStructure(result, ids, id, rl);
                 MM.LOG.debug("Added structure '{}' with id '{}'", rl, id);
                 return new MachineStructureRecipe(result, ids, id, rl, name);
@@ -262,7 +266,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                         }
                         MachineStructureRecipeLegendModel machineStructureRecipeLegendModel = model.get(c);
                         BlockPos pos = new BlockPos(x, y, z).subtract(new BlockPos(controllerPos));
-                        result.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()), machineStructureRecipeLegendModel.getTag(), machineStructureRecipeLegendModel.getBlock(), machineStructureRecipeLegendModel.getProperties()));
+                        result.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()), machineStructureRecipeLegendModel.getTag(), machineStructureRecipeLegendModel.getBlock(), machineStructureRecipeLegendModel.getProperties(), machineStructureRecipeLegendModel.getPort()));
                     }
                     z++;
                 }
@@ -355,8 +359,14 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                     if (!RLUtils.isRL(model.getTag())) {
                         throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() + " is defined but not a valid block tag id (ResourceLocation)");
                     }
+                } else if (model.getPort() != null) {
+                    if (!MMPorts.PORTS.containsKey(RLUtils.toRL(model.getPort().getType()))) {
+                        throw new InvalidStructureDefinitionException("Port: " + model.getPort() + " is defined but not a valid port type id (ResourceLocation)");
+                    } else if (!controllerId.containsAll(model.getPort().getControllerId())) {
+                        throw new InvalidStructureDefinitionException("Port: " + model.getPort() + " is defined but not a valid port controller id specified (ResourceLocation)");
+                    }
                 } else {
-                    throw new InvalidStructureDefinitionException("YUo must define at least 1 'block' or 'tag' per port within the 'data' object");
+                    throw new InvalidStructureDefinitionException("You must define at least 1 'block' or 'tag' per port within the 'data' object");
                 }
             }
 

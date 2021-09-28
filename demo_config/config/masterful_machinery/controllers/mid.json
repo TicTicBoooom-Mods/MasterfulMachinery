@@ -1,0 +1,106 @@
+{
+  "controllerId": "mid",
+  "name": "Mid",
+  "ports": [
+    {
+      "type": "masterfulmachinery:items",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Item",
+      "id": "intermediate",
+      "data": {
+        "rows": 3,
+        "columns": 3
+      }
+    },
+    {
+      "type": "masterfulmachinery:energy",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Energy",
+      "id": "intermediate",
+      "data": {
+        "capacity": 1000000000
+      }
+    },
+    {
+      "type": "masterfulmachinery:fluids",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Fluid",
+      "id": "intermediate",
+      "data": {
+        "capacity": 10000
+      }
+    },
+    {
+      "type": "masterfulmachinery:pncr_pressure",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Pressure",
+      "id": "intermediate",
+      "data": {
+        "criticalPressure": 7,
+        "dangerPressure": 5,
+        "volume": 10000
+      }
+    },
+    {
+      "type": "masterfulmachinery:botania_mana",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Mana",
+      "id": "intermediate",
+      "data": {
+        "capacity": 100000
+      }
+    },
+    {
+      "type": "masterfulmachinery:astral_starlight",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Starlight",
+      "id": "intermediate",
+      "data": {
+        "capacity": 1000
+      }
+    },
+    {
+      "type": "masterfulmachinery:create_rotation",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Rotation",
+      "id": "intermediate",
+      "data": {
+        "stress": 3
+      }
+    },
+    {
+      "type": "masterfulmachinery:mekanism_gas",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Gas",
+      "id": "intermediate",
+      "data": {
+        "capacity": 100000000
+      }
+    },
+    {
+      "type": "masterfulmachinery:mekanism_slurry",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Slurry",
+      "id": "intermediate",
+      "data": {
+        "capacity": 100000000
+      }
+    },
+    {
+      "type": "masterfulmachinery:mekanism_infuse",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Infuse",
+      "id": "intermediate",
+      "data": {
+        "capacity": 100000000
+      }
+    },
+    {
+      "type": "masterfulmachinery:weather",
+      "textureOverride": "minecraft:block/red_terracotta",
+      "name": "Weather",
+      "id": "intermediate",
+      "data": {}
+    }
+  ]
+}

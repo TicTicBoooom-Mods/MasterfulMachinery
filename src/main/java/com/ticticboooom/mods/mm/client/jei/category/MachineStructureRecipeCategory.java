@@ -3,9 +3,13 @@ package com.ticticboooom.mods.mm.client.jei.category;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
+import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.client.util.GuiBlockRenderBuilder;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
+import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
+import com.ticticboooom.mods.mm.data.model.structure.MachineStructurePort;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
+import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -50,9 +54,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
     private int sliceY = 0;
     private boolean slicingActive = false;
-    private Map<Integer, Integer> tagIndexes = new HashMap<>();
-    private Map<Integer, Integer> tagIndexCounter = new HashMap<>();
     private float scaleFactor = 1F;
+
+    private int tickTimer = 0;
+    private Map<MachineStructureBlockPos, Integer> variantIndices = new HashMap<>();
 
     public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
@@ -76,6 +81,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
     @Override
     public IDrawable getBackground() {
+
         return helpers.getGuiHelper().createDrawable(overlayRl, 0, 0, 162, 150);
     }
 
@@ -98,25 +104,22 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     }
 
     @Override
-    public void setRecipe(IRecipeLayout iRecipeLayout, MachineStructureRecipe machineStructureRecipe, IIngredients iIngredients) {
-
+    public void setRecipe(IRecipeLayout iRecipeLayout, MachineStructureRecipe recipe, IIngredients iIngredients) {
         this.xRotation = 0;
         this.yRotation = 0;
         this.yLastMousePosition = 0;
         this.xLastMousePosition = 0;
         this.scaleFactor = 1.2f;
+        this.recipe = recipe;
+        this.sliceY = 0;
+        this.slicingActive = false;
 
+        this.variantIndices.clear();
+        this.tickTimer = 0;
     }
 
     @Override
     public void draw(MachineStructureRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
-        if (this.recipe != recipe) {
-            this.recipe = null;
-            xRotation = 0;
-            yRotation = 0;
-            sliceY = 0;
-            slicingActive = false;
-        }
         Minecraft mc = Minecraft.getInstance();
         if (xLastMousePosition == 0) {
             xLastMousePosition = mouseX;
@@ -125,20 +128,21 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             yLastMousePosition = mouseY;
         }
 
+        // Do mouse rotations
         if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) != 0) {
             double relMoveX = mouseX - xLastMousePosition;
             double relMoveY = mouseY - yLastMousePosition;
             xRotation += relMoveX;
             yRotation += relMoveY;
         }
+
+        // Calculate distances
         int furthestX = Integer.MAX_VALUE;
         int nearestX = Integer.MIN_VALUE;
         int furthestZ = Integer.MAX_VALUE;
         int nearestZ = Integer.MIN_VALUE;
-
         int topY = Integer.MIN_VALUE;
         int bottomY = Integer.MAX_VALUE;
-
         for (MachineStructureRecipeKeyModel part : recipe.getModels().get(0)) {
             furthestX = Math.min(part.getPos().getX(), furthestX);
             nearestX = Math.max(part.getPos().getX(), nearestX);
@@ -147,6 +151,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             topY = Math.max(part.getPos().getY(), topY);
             bottomY = Math.min(part.getPos().getY(), bottomY);
         }
+
+        // Do mouse scroll zoom
         if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != 0) {
             if (scrollLastPos == 0) {
                 scrollLastPos = (int) mouseY;
@@ -157,22 +163,25 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         nearestX++;
         nearestZ++;
         float centreX = ((float) nearestX - furthestX) / 2f;
+        float centerY = ((float) topY - bottomY) / 2f;
         float centreZ = ((float) nearestZ - furthestZ) / 2f;
+        mc.fontRenderer.drawString(matrixStack, recipe.getName(), 2, 2, 0xFFFFFFFF);
 
+        // Get the block parts for the layer
         List<MachineStructureRecipeKeyModel> parts = recipe.getModels().get(0);
         if (slicingActive) {
             parts = parts.stream().filter(x -> x.getPos().getY() == sliceY).collect(Collectors.toList());
         }
 
-        //float sizeX = 162, sizeY = 121;
-        //float scaledSizeX = sizeX / scaleFactor, scaledSizeY = sizeY / scaleFactor;
-        float tx = 6.5f, ty = -5, tz = 10;
+        //float tx = 6.5f, ty = -5, tz = 10;
+        float tx = 0, ty = 0, tz = 10;
+        Vector3f prePos = new Vector3f(tx, ty, tz);
+        Vector3f offset = new Vector3f(centreX / 2, centerY / 2, centreZ / 2);
 
-        int i = 0;
+        // Render the block parts
         for (MachineStructureRecipeKeyModel part : parts) {
-            tagIndexes.putIfAbsent(i, 0);
-            tagIndexCounter.putIfAbsent(i, 0);
-            if (part.getBlock().isEmpty() && part.getTag().isEmpty()) {
+            variantIndices.putIfAbsent(part.getPos(), 0);
+            if (part.getBlock().isEmpty() && part.getTag().isEmpty() && part.getPort() == null) {
                 continue;
             }
 
@@ -184,65 +193,75 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 if (block != null) {
                     BlockState defaultState = block.getDefaultState();
                     defaultState = with(defaultState, part.getProperties());
-                    new GuiBlockRenderBuilder(defaultState).at(bp)
-                        .withPrePosition(new Vector3f(tx, ty, tz))
-                        .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                        .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                        .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                        .withOffset(new Vector3f(-0.5f, -0.5f, -0.5f))
-                        .finalize(matrixStack);
+                    renderBlock(defaultState, bp, prePos, offset, matrixStack);
                 }
             } else if (!part.getTag().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getTag());
                 ITag<Block> tag = BlockTags.getCollection().getTagByID(resourceLocation);
-                if (tag != null) {
-                    Integer index = tagIndexes.get(i);
+                Integer index = this.variantIndices.get(part.getPos());
 
-                    Block block = tag.getAllElements().get((int) Math.floor(index / 50.0));
-                    index++;
-                    if (index >= (tag.getAllElements().size()) * 50) {
-                        index = 0;
-                    }
+                Block block = tag.getAllElements().get(index);
+                if (this.tickTimer == 0) {
+                    this.variantIndices.put(part.getPos(), (index+1) % tag.getAllElements().size());
+                }
 
-                    tagIndexes.put(i, index);
-                    if (block != null) {
-                        BlockState defaultState = block.getDefaultState();
-                        defaultState = with(defaultState, part.getProperties());
-                        new GuiBlockRenderBuilder(defaultState).at(bp)
-                            .withPrePosition(new Vector3f(tx, ty, tz))
-                            .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                            .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                            .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                            .withOffset(new Vector3f(-0.5f, -0.5f, -0.5f))
-                            .finalize(matrixStack);
+                if (block != null) {
+                    BlockState defaultState = block.getDefaultState();
+                    defaultState = with(defaultState, part.getProperties());
+                    renderBlock(defaultState, bp, prePos, offset, matrixStack);
+                }
+            } else if (part.getPort() != null) {
+                MachineStructurePort port = part.getPort();
+                ArrayList<RegistryObject<MachinePortBlock>> ports = port.isInput() ? MMLoader.IPORT_BLOCKS : MMLoader.OPORT_BLOCKS;
+                Integer index = this.variantIndices.get(part.getPos());
+                String controllerId = port.getControllerId().get(index);
+                if (this.tickTimer == 0) {
+                    this.variantIndices.put(part.getPos(), (index+1) % port.getControllerId().size());
+                }
+                String type = port.getType();
+                MachinePortBlock block = null;
+                for (RegistryObject<MachinePortBlock> regPortBlock : ports) {
+                    MachinePortBlock portBlock = regPortBlock.get();
+                    if (portBlock.getPortTypeId().equals(RLUtils.toRL(type)) && portBlock.getControllerId().equals(controllerId)) {
+                        block = portBlock;
+                        break;
                     }
+                }
+                if (block != null) {
+                    BlockState defaultState = block.getDefaultState();
+                    defaultState = with(defaultState, part.getProperties());
+                    renderBlock(defaultState, bp, prePos, offset, matrixStack);
                 }
             }
         }
+        // Render the controller block
         if (sliceY == 0) {
             ControllerBlock block = null;
+            MachineStructureBlockPos controllerPos = new MachineStructureBlockPos(0, 0, 0);
+            this.variantIndices.putIfAbsent(controllerPos, 0);
+            Integer index = this.variantIndices.get(controllerPos);
+            String controller = recipe.getControllerId().get(index);
+            if (this.tickTimer == 0) {
+                this.variantIndices.put(controllerPos, (index+1) % recipe.getControllerId().size());
+            }
             for (RegistryObject<ControllerBlock> reg : MMLoader.BLOCKS) {
-                if (recipe.getControllerId().contains(reg.get().getControllerId())) {
+                if (reg.get().getControllerId().equals(controller)) {
                     block = reg.get();
                 }
             }
             if (block != null) {
                 BlockState defaultState = block.getDefaultState().with(DirectionalBlock.FACING, Direction.NORTH);
-                new GuiBlockRenderBuilder(defaultState).at(new BlockPos(0, 0, 0))
-                    .withPrePosition(new Vector3f(tx, ty, tz))
-                    .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-                    .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
-                    .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
-                    .withOffset(new Vector3f(-0.5f, -0.5f, -0.5f))
-                    .finalize(matrixStack);
-
+                renderBlock(defaultState, new BlockPos(0, 0, 0), prePos, offset, matrixStack);
             }
         }
 
-        this.recipe = recipe;
+        // End tick
         xLastMousePosition = mouseX;
         yLastMousePosition = mouseY;
         getButton().draw(matrixStack, 144, 125);
+        if (++this.tickTimer % 40 == 0) {
+            this.tickTimer = 0;
+        }
     }
 
     @Override
@@ -294,6 +313,16 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             }
         }
         return defaultState;
+    }
+
+    private void renderBlock(BlockState defaultState, BlockPos bp, Vector3f prePos, Vector3f offset, MatrixStack ms) {
+        new GuiBlockRenderBuilder(defaultState).at(bp)
+            .withPrePosition(prePos)
+            .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
+            .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+            .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
+            .withOffset(offset)
+            .finalize(ms);
     }
 
 }

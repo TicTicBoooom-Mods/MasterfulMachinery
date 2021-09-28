@@ -1,0 +1,52 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "variable_io",
+  "controllerId": "basic",
+  "name": "Variable IO",
+  "layout": [
+    [
+      ")C)",
+      "*+*",
+      ")*)"
+    ],
+    [
+      "),)",
+      "-./",
+      ")0)"
+    ],
+    [
+      ")))",
+      ")1)",
+      ")))"
+    ]
+  ],
+  "legend": {
+    "0": {
+      "block": "masterfulmachinery:basic_simple_port_fluids_output"
+    },
+    "1": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_gas_output"
+    },
+    ")": {
+      "block": "minecraft:polished_blackstone"
+    },
+    "*": {
+      "block": "masterfulmachinery:basic_simple_port_energy_output"
+    },
+    "+": {
+      "block": "masterfulmachinery:basic_simple_port_items_output"
+    },
+    ",": {
+      "block": "minecraft:glass"
+    },
+    "-": {
+      "block": "masterfulmachinery:basic_simple_port_items_input"
+    },
+    ".": {
+      "block": "minecraft:water"
+    },
+    "/": {
+      "block": "masterfulmachinery:basic_simple_port_fluids_input"
+    }
+  }
+}

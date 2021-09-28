@@ -8,8 +8,8 @@
             "name": "Item",
             "id": "simple",
             "data": {
-                "rows": 3,
-                "columns": 3
+                "rows": 1,
+                "columns": 1
             }
         },
         {
@@ -17,7 +17,7 @@
             "name": "Energy",
             "id": "simple",
             "data": {
-                "capacity": 1000000000
+                "capacity": 1000000
             }
         },
         {
@@ -25,7 +25,7 @@
             "name": "Fluid",
             "id": "simple",
             "data": {
-                "capacity": 10000
+                "capacity": 5000
             }
         },
         {
@@ -35,7 +35,7 @@
             "data": {
                 "criticalPressure": 7,
                 "dangerPressure": 5,
-                "volume": 10000
+                "volume": 7000
             }
         },
         {
@@ -43,7 +43,7 @@
             "name": "Mana",
             "id": "simple",
             "data": {
-                "capacity": 100000
+                "capacity": 50000
             }
         },
         {
@@ -51,7 +51,7 @@
             "name": "Starlight",
             "id": "simple",
             "data": {
-                "capacity": 1000
+                "capacity": 500
             }
         },
         {
@@ -67,7 +67,7 @@
             "name": "Gas",
             "id": "simple",
             "data": {
-                "capacity": 100000000
+                "capacity": 100000
             }
         },
         {
@@ -75,7 +75,7 @@
             "name": "Slurry",
             "id": "simple",
             "data": {
-                "capacity": 100000000
+                "capacity": 100000
             }
         },
         {
@@ -83,7 +83,7 @@
             "name": "Infuse",
             "id": "simple",
             "data": {
-                "capacity": 100000000
+                "capacity": 100000
             }
         },
         {

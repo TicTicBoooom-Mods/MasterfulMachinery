@@ -10,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class PortBlockContainerScreen extends ContainerScreen<PortBlockContainer> {
+    private static final ResourceLocation GUI = new ResourceLocation(MM.ID, "textures/gui/port_gui.png");
+
     private final PortBlockContainer container;
 
     public PortBlockContainerScreen(PortBlockContainer container, PlayerInventory p_i51105_2_, ITextComponent p_i51105_3_) {
@@ -17,18 +19,16 @@ public class PortBlockContainerScreen extends ContainerScreen<PortBlockContainer
         this.container = container;
     }
 
-    private static final ResourceLocation GUI = new ResourceLocation(MM.ID, "textures/gui/port_gui.png");
     @Override
-    public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-        super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
-        this.renderHoveredTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
+    public void render(MatrixStack ms, int mouseX, int mouseY, float partialTicks) {
+        super.render(ms, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(ms, mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack stack, float partialTicks, int x, int y) {
         this.renderBackground(stack);
         container.getTile().getStorage().render(stack, x, y, this.guiLeft, this.guiTop, this);
-
     }
 
     @Override

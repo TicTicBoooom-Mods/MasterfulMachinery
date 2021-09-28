@@ -3,8 +3,11 @@ package com.ticticboooom.mods.mm.data.model.structure;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.minecraft.util.math.vector.Vector3i;
+
+import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
@@ -22,7 +25,22 @@ public class MachineStructureBlockPos implements Comparable<MachineStructureBloc
 
     @Override
     public int compareTo(MachineStructureBlockPos other) {
-        return new Vector3i(this.x, this.y, this.z).compareTo(new Vector3i(other.x, other.y, other.z));
+        return toVector().compareTo(other.toVector());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        MachineStructureBlockPos that = (MachineStructureBlockPos) o;
+        return toVector().equals(that.toVector());
+    }
+
+    @Override
+    public int hashCode() {
+        return toVector().hashCode();
     }
 
     public Vector3i toVector(){
