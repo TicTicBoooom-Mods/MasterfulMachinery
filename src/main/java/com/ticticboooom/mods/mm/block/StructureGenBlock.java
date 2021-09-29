@@ -7,6 +7,8 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -29,12 +31,6 @@ import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 public class StructureGenBlock extends Block {
-    public StructureGenBlock() {
-        super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
-                .harvestTool(ToolType.PICKAXE));
-        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
-    }
-
     private static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 
     private static final VoxelShape SHAPE_N = Stream.of(
@@ -109,15 +105,15 @@ public class StructureGenBlock extends Block {
             Block.makeCuboidShape(15, 2, 15, 16, 5, 16)
     ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR)).get();
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    public StructureGenBlock() {
+        super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
+            .harvestTool(ToolType.PICKAXE));
+        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
     }
 
-    @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return MMSetup.STRUCTURE_TILE.get().create();
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder.add(FACING));
     }
 
     @Override
@@ -132,8 +128,16 @@ public class StructureGenBlock extends Block {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder.add(FACING));
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.matchesBlock(newState.getBlock())) {
+            TileEntity tileentity = worldIn.getTileEntity(pos);
+            if (tileentity instanceof StructureGenBlockEntity) {
+                InventoryHelper.dropInventoryItems(worldIn, pos, ((StructureGenBlockEntity) tileentity).getInv());
+                worldIn.updateComparatorOutputLevel(pos, this);
+            }
+
+            super.onReplaced(state, worldIn, pos, newState, isMoving);
+        }
     }
 
     @Nullable
@@ -156,5 +160,16 @@ public class StructureGenBlock extends Block {
             default:
                 throw new IllegalStateException("Invalid State");
         }
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return MMSetup.STRUCTURE_TILE.get().create();
     }
 }

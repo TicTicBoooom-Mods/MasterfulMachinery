@@ -27,7 +27,6 @@ public class StructureGenBlockEntity extends UpdatableTile implements ITickableT
         super(MMSetup.STRUCTURE_TILE.get());
     }
 
-
     @Getter
     private ItemStackHandler handler = new ItemStackHandler(1);
     @Getter

@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
+import com.ticticboooom.mods.mm.helper.GuiHelper;
 import lombok.Getter;
 import me.desht.pneumaticcraft.api.PNCCapabilities;
 import me.desht.pneumaticcraft.api.tileentity.IAirHandlerMachine;
@@ -78,16 +79,21 @@ public class PneumaticPortStorage extends PortStorage {
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
         Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0, 175, 256);
-        int barOffsetX = 175 - 30;
-        int barOffsetY = 20;
-        screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
-        float amount = inv.getPressure() / inv.getCriticalPressure();
-        screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
+        int barX = left + 175 - 30;
+        int barY = top + 20;
+        int barWidth = 18;
+        int barHeight = 108;
+        screen.blit(stack, barX, barY, 175, barWidth, barWidth, barHeight);
+
+        float pct = inv.getPressure() / inv.getCriticalPressure();
+        GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
 
         AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, NumberFormat.getInstance().format(inv.getPressure()) + "P", left + 50, top + 80, 0xfefefe);
         AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getAir() + " Air", left + 50, top + 60, 0xfefefe);
 
     }
+
+
 
     @Override
     public void tick(IMachinePortTile tile) {

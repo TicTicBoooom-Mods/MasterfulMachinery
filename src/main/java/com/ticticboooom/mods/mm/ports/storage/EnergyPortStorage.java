@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
+import com.ticticboooom.mods.mm.helper.GuiHelper;
 import com.ticticboooom.mods.mm.inventory.PortEnergyInventory;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -56,16 +57,17 @@ public class EnergyPortStorage extends PortStorage {
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
         Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0,  175, 256);
-        int barOffsetX = 175 - 30;
-        int barOffsetY = 20;
-        screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
-        float amount = 0;
+        int barX = left + 175 - 30;
+        int barY = top + 20;
+        int barWidth = 18;
+        int barHeight = 108;
+        screen.blit(stack, barX, barY, 175, 18, barWidth, barHeight);
+        float pct = 0;
         if (inv.getMaxEnergyStored() > 0) {
-            amount = (float)inv.getEnergyStored() / inv.getMaxEnergyStored();
+            pct = (float)inv.getEnergyStored() / inv.getMaxEnergyStored();
         }
-        //screen.blit(stack, left + barOffsetX, top + barOffsetY, 193, 18, 18, (int) (108 * amount));
-        screen.blit(stack, left + barOffsetX, top + barOffsetY + 108 - (int) (108*amount), 193, 18, 18, (int) (108*amount)-1);
-        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,String.format("%.2f",Math.round((float)10000 * amount) / 100.f) + "%", left + 30, top + 60, 0xfefefe);
+        GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
+        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,String.format("%.2f",Math.round((float)10000 * pct) / 100.f) + "%", left + 30, top + 60, 0xfefefe);
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
     }
 }

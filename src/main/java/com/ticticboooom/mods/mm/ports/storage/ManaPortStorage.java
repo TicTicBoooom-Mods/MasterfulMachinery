@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
+import com.ticticboooom.mods.mm.helper.GuiHelper;
 import com.ticticboooom.mods.mm.inventory.PortEnergyInventory;
 import com.ticticboooom.mods.mm.inventory.botania.PortManaInventory;
 import lombok.Getter;
@@ -68,12 +69,16 @@ public class ManaPortStorage extends PortStorage {
         screen.blit(stack, left, top, 0, 0,  175, 256);
         int barOffsetX = 175 - 30;
         int barOffsetY = 20;
-        screen.blit(stack, left + barOffsetX, top + barOffsetY, 175, 18, 18, 108);
-        float amount = 0;
+        int barX = left + 175 - 30;
+        int barY = top + 20;
+        int barWidth = 18;
+        int barHeight = 108;
+        screen.blit(stack, barX, barY, 175, 18, barWidth, barHeight);
+        float pct = 0;
         if (inv.getMaxManaStored() > 0) {
-            amount = (float)inv.getManaStored() / inv.getMaxManaStored();
+            pct = (float)inv.getManaStored() / inv.getMaxManaStored();
         }
-        screen.blit(stack, left + barOffsetX, top + barOffsetY + 108 - (int) (108*amount), 193, 18, 18, (int) (108*amount)-1);
+        GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
         AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getManaStored() + " Mana", left + 30, top + 60, 0xfefefe);
     }
 }

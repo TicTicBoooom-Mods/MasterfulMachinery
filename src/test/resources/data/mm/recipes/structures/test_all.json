@@ -1,0 +1,82 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "test_all",
+  "controllerId": "basic",
+  "name": "Testing All The Ports",
+  "layout": [
+    [
+      ")C*",
+      "+ ,",
+      "- .",
+      "/ 0",
+      "1 2",
+      "3 4",
+      "5 6",
+      "7 8",
+      "9 :",
+      "; <"
+    ]
+  ],
+  "legend": {
+    ")": {
+      "block": "masterfulmachinery:basic_simple_port_items_output"
+    },
+    "*": {
+      "block": "masterfulmachinery:basic_simple_port_items_input"
+    },
+    "+": {
+      "block": "masterfulmachinery:basic_simple_port_energy_output"
+    },
+    ",": {
+      "block": "masterfulmachinery:basic_simple_port_energy_input"
+    },
+    "-": {
+      "block": "masterfulmachinery:basic_simple_port_fluids_output"
+    },
+    ".": {
+      "block": "masterfulmachinery:basic_simple_port_fluids_input"
+    },
+    "/": {
+      "block": "masterfulmachinery:basic_simple_port_pncr_pressure_output"
+    },
+    "0": {
+      "block": "masterfulmachinery:basic_simple_port_pncr_pressure_input"
+    },
+    "1": {
+      "block": "masterfulmachinery:basic_simple_port_botania_mana_output"
+    },
+    "2": {
+      "block": "masterfulmachinery:basic_simple_port_botania_mana_input"
+    },
+    "3": {
+      "block": "masterfulmachinery:basic_simple_port_astral_starlight_output"
+    },
+    "4": {
+      "block": "masterfulmachinery:basic_simple_port_astral_starlight_input"
+    },
+    "5": {
+      "block": "masterfulmachinery:basic_simple_port_create_rotation_output"
+    },
+    "6": {
+      "block": "masterfulmachinery:basic_simple_port_create_rotation_input"
+    },
+    "7": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_gas_output"
+    },
+    "8": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_gas_input"
+    },
+    "9": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_slurry_output"
+    },
+    ":": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_slurry_input"
+    },
+    ";": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_infuse_output"
+    },
+    "<": {
+      "block": "masterfulmachinery:basic_simple_port_mekanism_infuse_input"
+    }
+  }
+}
