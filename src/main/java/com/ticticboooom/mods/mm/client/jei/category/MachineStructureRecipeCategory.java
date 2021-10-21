@@ -9,6 +9,7 @@ import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructurePort;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
+import com.ticticboooom.mods.mm.helper.GLScissor;
 import com.ticticboooom.mods.mm.helper.RLUtils;
 import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMSetup;
@@ -31,6 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
@@ -51,6 +53,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private float yRotation = 0;
     private double yLastMousePosition = 0;
     private int scrollLastPos = 0;
+    private Vector3f prePos;
 
     private int sliceY = 0;
     private boolean slicingActive = false;
@@ -116,6 +119,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
         this.variantIndices.clear();
         this.tickTimer = 0;
+        float tx = 6.75f, ty = -5, tz = 10;
+        prePos = new Vector3f(tx, ty, tz);
     }
 
     @Override
@@ -129,7 +134,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
 
         // Do mouse rotations
-        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) != 0) {
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) != 0 && GLFW.glfwGetKey(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) == 0) {
             double relMoveX = mouseX - xLastMousePosition;
             double relMoveY = mouseY - yLastMousePosition;
             xRotation += relMoveX;
@@ -153,7 +158,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
 
         // Do mouse scroll zoom
-        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != 0) {
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) != 0 && GLFW.glfwGetKey(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) == 0) {
             if (scrollLastPos == 0) {
                 scrollLastPos = (int) mouseY;
             }
@@ -172,10 +177,17 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
 
         //float tx = 6.5f, ty = -5, tz = 10;
-        float tx = 6.75f, ty = -5, tz = 10;
-        Vector3f prePos = new Vector3f(tx, ty, tz);
+
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) != 0 && GLFW.glfwGetKey(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) != 0){
+            double relMoveX = mouseX - xLastMousePosition;
+            double relMoveY = mouseY - yLastMousePosition;
+            prePos.add((float)relMoveX * 0.08f, (float)-relMoveY * 0.08f, 0);
+        }
         Vector3f offset = new Vector3f(-minX - 0.5f - centreX, -minY - 0.5f - centerY, -minZ - 0.5f + centreZ);
 
+        Vector4f zero = new Vector4f(0, 0, 0, 1);
+        zero.transform(matrixStack.getLast().getMatrix().copy());
+        GLScissor.enable((int)zero.getX(), (int)zero.getY(), 160, 120);
         // Render the block parts
         for (MachineStructureRecipeKeyModel part : parts) {
             this.variantIndices.putIfAbsent(part.getPos(), 0);
@@ -252,6 +264,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 renderBlock(defaultState, new BlockPos(0, 0, 0), prePos, offset, matrixStack);
             }
         }
+        GLScissor.disable();
 
         // End tick
         xLastMousePosition = mouseX;

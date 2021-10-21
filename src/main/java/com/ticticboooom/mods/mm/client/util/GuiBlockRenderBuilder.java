@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -78,18 +79,18 @@ public class GuiBlockRenderBuilder {
     }
 
     private void prepareRender() {
-        RenderSystem.enableBlend();
-        RenderSystem.enableRescaleNormal();
-        RenderSystem.enableAlphaTest();
-        RenderHelper.setupGui3DDiffuseLighting();
-        RenderSystem.alphaFunc(516, 0.1F);
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.enableBlend();
+//        RenderSystem.enableRescaleNormal();
+//        RenderSystem.enableAlphaTest();
+//        RenderHelper.setupGui3DDiffuseLighting();
+//        RenderSystem.alphaFunc(516, 0.1F);
+//        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     private void cleanupRender() {
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableRescaleNormal();
+//        RenderSystem.disableAlphaTest();
+//        RenderSystem.disableRescaleNormal();
     }
 
     public void finalize(MatrixStack ms) {
@@ -116,7 +117,11 @@ public class GuiBlockRenderBuilder {
         ms.push();
         try {
             if (ter != null) {
-                ter.render(tile, 1.f, ms, buf, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                MatrixStack isolatedStack = new MatrixStack();
+                isolatedStack.push();
+                isolatedStack.getLast().getMatrix().set(ms.getLast().getMatrix().copy());
+                isolatedStack.getLast().getNormal().set(ms.getLast().getNormal().copy());
+                ter.render(tile, 1.f, isolatedStack, buf, 0xF000F0, OverlayTexture.NO_OVERLAY);
             }
         } catch (Exception ignored) {
         }
