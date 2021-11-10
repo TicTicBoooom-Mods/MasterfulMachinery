@@ -1,0 +1,40 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "botanist_rotational_generator_structure",
+  "controllerId": "botanist_rotational_generator",
+  "name": "botanist's Rotational Generator",
+  "layout": [
+    [
+      "   ",
+      ")))",
+      "   "
+    ],
+    [
+      ")))",
+      "*+,",
+      ")C)"
+    ],
+    [
+      "   ",
+      ")1)",
+      "   "
+    ]
+  ],
+  "legend": {
+    ")": {
+      "block": "create:andesite_casing"
+    },
+    "*": {
+      "block": "masterfulmachinery:botanist_rotational_generator_botanist_rotational_generator_mana_port_botania_mana_input"
+    },
+    "+": {
+      "block": "create:shaft"
+    },
+    ",": {
+      "block": "masterfulmachinery:botanist_rotational_generator_botanist_rotational_generator_rotation_port_create_rotation_output"
+    },
+	"1": {
+      "block": "create:framed_glass"
+    }
+  }
+}

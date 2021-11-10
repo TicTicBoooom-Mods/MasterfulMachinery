@@ -1,0 +1,23 @@
+{
+  "type": "masterfulmachinery:machine_process",
+  "structureId": "test_all",
+  "controllerId": "basic",
+  "ticks": 1,
+  "inputs": [
+    {
+      "type": "masterfulmachinery:fluids",
+      "data": {
+        "fluid": "mekanism:steam",
+        "amount": 5
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "type": "masterfulmachinery:energy",
+      "data": {
+        "amount": 10
+      }
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package com.ticticboooom.mods.mm.client.jei.category;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.MachinePortBlock;
@@ -22,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.state.Property;
@@ -29,6 +31,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
@@ -108,8 +111,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
     @Override
     public void setRecipe(IRecipeLayout iRecipeLayout, MachineStructureRecipe recipe, IIngredients iIngredients) {
-        this.xRotation = 0;
-        this.yRotation = 0;
+        this.xRotation = -225;
+        this.yRotation = 15;
         this.yLastMousePosition = 0;
         this.xLastMousePosition = 0;
         this.scaleFactor = 1.2f;
@@ -183,7 +186,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             double relMoveY = mouseY - yLastMousePosition;
             prePos.add((float)relMoveX * 0.08f, (float)-relMoveY * 0.08f, 0);
         }
-        Vector3f offset = new Vector3f(-minX - 0.5f - centreX, -minY - 0.5f - centerY, -minZ - 0.5f + centreZ);
+        Vector3f offset = new Vector3f(-minX - 0.5f - centreX, -minY - 0.5f - centerY, minZ - 0.5f + centreZ);
 
         Vector4f zero = new Vector4f(0, 0, 0, 1);
         zero.transform(matrixStack.getLast().getMatrix().copy());
@@ -244,6 +247,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 }
             }
         }
+
         // Render the controller block
         if (sliceY == 0) {
             ControllerBlock block = null;
@@ -266,6 +270,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         }
         GLScissor.disable();
 
+        // Render hover block outline
+        AxisAlignedBB structureAABB = new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        renderHoverOutline(matrixStack);
+
         // End tick
         xLastMousePosition = mouseX;
         yLastMousePosition = mouseY;
@@ -283,8 +291,15 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         return false;
     }
 
-    private void startIncrementSlice() {
+    private void renderHoverOutline(MatrixStack ms) {
+        //float tx = 6.75f, ty = -5, tz = 10;
+        float tx = 0, ty = 0, tz = 0;
+        IVertexBuilder buf = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource().getBuffer(RenderType.getLines());
+        //buf.pos(tx, ty, tz).color(255, 255, 255, 255).endVertex();
+        //buf.pos(ms.getLast().getMatrix(), tx, ty, tz).color(255, 255, 255, 255).endVertex();
+    }
 
+    private void startIncrementSlice() {
         int topY = Integer.MIN_VALUE;
         int bottomY = Integer.MAX_VALUE;
 
@@ -329,8 +344,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private void renderBlock(BlockState defaultState, BlockPos bp, Vector3f prePos, Vector3f offset, MatrixStack ms) {
         new GuiBlockRenderBuilder(defaultState).at(bp)
             .withPrePosition(prePos)
-            .withRotation(new Quaternion(new Vector3f(1, 0, 0), 15 + yRotation, true))
-            .withRotation(new Quaternion(new Vector3f(0, -1, 0), 225 - xRotation, true))
+            .withRotation(new Quaternion(new Vector3f(1, 0, 0), yRotation, true))
+            .withRotation(new Quaternion(new Vector3f(0, -1, 0), -xRotation, true))
             .withScale(new Vector3f(scaleFactor, -scaleFactor, scaleFactor))
             .withOffset(offset)
             .finalize(ms);

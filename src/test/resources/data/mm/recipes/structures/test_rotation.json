@@ -6,6 +6,9 @@
   "layout": [
     [
       "1C2"
+    ],
+    [
+      " T "
     ]
   ],
   "legend": {
@@ -14,6 +17,9 @@
     },
     "2": {
       "block": "masterfulmachinery:basic_simple_port_create_rotation_output"
+    },
+    "T": {
+      "block": "create:deployer"
     }
   }
 }

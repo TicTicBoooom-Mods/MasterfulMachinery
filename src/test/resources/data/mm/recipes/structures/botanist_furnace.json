@@ -1,0 +1,82 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "botanist_furnace_structure",
+  "controllerId": "botanist_furnace",
+  "name": "Botanist's Furnace",
+  "layout": [
+    [
+      ")))))",
+      ")***)",
+      "+++++",
+      ",))))"
+    ],
+    [
+      "-----",
+      ".///0",
+      "1   1",
+      "2333C"
+    ],
+    [
+      "4---4",
+      "5   5",
+      "1   1",
+      "13331"
+    ],
+    [
+      " 4-4 ",
+      " 676 ",
+      " 181 ",
+      " 111 "
+    ]
+  ],
+  "legend": {
+    ")": {
+      "block": "botania:livingrock"
+    },
+    "*": {
+      "block": "minecraft:redstone_block"
+    },
+    "+": {
+      "block": "create:belt"
+    },
+    ",": {
+      "block": "create:gearbox"
+    },
+    "-": {
+      "block": "minecraft:cobblestone"
+    },
+    ".": {
+      "block": "masterfulmachinery:botanist_furnace_botanist_furnace_item_port_items_input"
+    },
+    "/": {
+      "block": "minecraft:campfire"
+    },
+    "0": {
+      "block": "masterfulmachinery:botanist_furnace_botanist_furnace_item_port_items_output"
+    },
+    "1": {
+      "block": "botania:livingrock_stairs"
+    },
+    "2": {
+      "block": "masterfulmachinery:botanist_furnace_botanist_furnace_rotation_port_create_rotation_input"
+    },
+    "3": {
+      "block": "create:framed_glass"
+    },
+    "4": {
+      "block": "minecraft:cobblestone"
+    },
+    "5": {
+      "block": "minecraft:jack_o_lantern"
+    },
+    "6": {
+      "block": "minecraft:cobblestone"
+    },
+    "7": {
+      "block": "botania:mana_spreader"
+    },
+    "8": {
+      "block": "masterfulmachinery:botanist_furnace_botanist_furnace_mana_port_botania_mana_input"
+    }
+  }
+}

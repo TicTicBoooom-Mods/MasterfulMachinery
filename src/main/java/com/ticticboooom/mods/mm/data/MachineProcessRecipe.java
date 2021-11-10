@@ -152,8 +152,6 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         boolean canTick = true;
 
 
-
-
         index = 0;
         for (PortState input : inputs) {
             if (input.isConsumePerTick()) {

@@ -17,7 +17,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -43,20 +42,21 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     @Override
     public void tick() {
-        if (world.isRemote()){
+        if (world.isRemote()) {
             return;
         }
+
         update.setMsg("Failed to construct \nthe machine");
-        List<MachineStructureRecipe> recipes = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
-        for (MachineStructureRecipe recipe : recipes) {
-            int index = recipe.matches(this.pos, world, controllerId);
+        List<MachineStructureRecipe> structures = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
+        for (MachineStructureRecipe structure : structures) {
+            int index = structure.matches(this.pos, world, controllerId);
             if (index != -1) {
-                if (!update.getSid().equals(recipe.getId().toString())){
+                if (!update.getSid().equals(structure.getId().toString())) {
                     update.setTicksTaken(0);
                 }
-                update.setSid(recipe.getId().toString());
+                update.setSid(structure.getId().toString());
                 update.setMsg("Found structure");
-                onStructureFound(recipe, index);
+                onStructureFound(structure, index);
                 break;
             }
         }
@@ -88,7 +88,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         boolean processed = false;
         for (MachineProcessRecipe recipe : processRecipes) {
             if (recipe.matches(inputPorts, structure.getStructureId(), update)) {
-                if (!update.getId().equals(recipe.getId().toString())){
+                if (!update.getId().equals(recipe.getId().toString())) {
                     update.setTicksTaken(0);
                 }
                 this.update.setId(recipe.getId().toString());

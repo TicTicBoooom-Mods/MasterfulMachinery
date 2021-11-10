@@ -1,0 +1,55 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "weak_coke_oven_structure",
+  "controllerId": "weak_coke_oven",
+  "name": "Weak Coke Oven",
+  "layout": [
+    [
+      ")*)",
+      "+,-",
+      ".,/"
+    ],
+    [
+      ")))",
+      "0 0",
+      "1C1"
+    ],
+    [
+      ")))",
+      "212",
+      "   "
+    ]
+  ],
+  "legend": {
+    "0": {
+      "block": "botania:drum_wild"
+    },
+    "1": {
+      "block": "botania:livingwood_planks_stairs"
+    },
+    "2": {
+      "block": "botania:livingrock_stairs"
+    },
+    ")": {
+      "block": "botania:livingrock_bricks"
+    },
+    "*": {
+      "block": "masterfulmachinery:weak_coke_oven_weak_coke_oven_mana_port_botania_mana_input"
+    },
+    "+": {
+      "block": "masterfulmachinery:weak_coke_oven_weak_coke_oven_fluid_port_fluids_input"
+    },
+    ",": {
+      "block": "botania:livingwood_planks"
+    },
+    "-": {
+      "block": "masterfulmachinery:weak_coke_oven_weak_coke_oven_fluid_port_fluids_output"
+    },
+    ".": {
+      "block": "masterfulmachinery:weak_coke_oven_weak_coke_oven_item_port_items_input"
+    },
+    "/": {
+      "block": "masterfulmachinery:weak_coke_oven_weak_coke_oven_item_port_items_output"
+    }
+  }
+}
