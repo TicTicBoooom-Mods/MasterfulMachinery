@@ -186,7 +186,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             double relMoveY = mouseY - yLastMousePosition;
             prePos.add((float)relMoveX * 0.08f, (float)-relMoveY * 0.08f, 0);
         }
-        Vector3f offset = new Vector3f(-minX - 0.5f - centreX, -minY - 0.5f - centerY, minZ - 0.5f + centreZ);
+
+        Vector3f offset = new Vector3f(minX, -minY, minZ); // Align bottom back left corner block to be at the center
+        offset.add(centreX, -centerY, centreZ); // Center on structure
+        offset.add(-0.5f, -0.5f, -0.5f); // Center on block
 
         Vector4f zero = new Vector4f(0, 0, 0, 1);
         zero.transform(matrixStack.getLast().getMatrix().copy());

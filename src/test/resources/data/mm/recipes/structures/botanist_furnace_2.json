@@ -1,8 +1,8 @@
 {
   "type": "masterfulmachinery:machine_structure",
-  "id": "botanist_furnace_structure",
+  "id": "botanist_furnace_structure_2",
   "controllerId": "botanist_furnace",
-  "name": "Botanist's Furnace",
+  "name": "Botanist's Furnace 2",
   "layout": [
     [
       ")))))",
@@ -13,8 +13,8 @@
     [
       "-----",
       ".///0",
-      "1  C1",
-      "2333)"
+      "1   1",
+      "2333C"
     ],
     [
       "4---4",
