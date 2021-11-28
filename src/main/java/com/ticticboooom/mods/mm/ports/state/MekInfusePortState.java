@@ -48,7 +48,7 @@ public class MekInfusePortState extends PortState {
     public void processRequirement(List<PortStorage> storage) {
         long current = amount;
         for (PortStorage st : storage) {
-            if (st instanceof MekSlurryPortStorage) {
+            if (st instanceof MekInfusePortStorage) {
                 MekInfusePortStorage gasStorage = (MekInfusePortStorage) st;
                 if (gasStorage.getInv().getStack().getType().getRegistryName().toString().equals(infuse)) {
                     InfusionStack extract = gasStorage.getInv().extractChemical(0, current, Action.EXECUTE);
