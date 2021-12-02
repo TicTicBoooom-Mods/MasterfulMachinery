@@ -1,39 +1,28 @@
 buildscript {
     repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
-        maven { url "https://repo.spongepowered.org/maven/" }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
-
-plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
-}
-
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
 
-version = '1.16.5-0.1.57-B' + getVersionNumber()
-group = 'com.ticticboooom.mods.mm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'MasterfulMachinery'
-java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+version = '0.1.0-1.18'
+group = 'live.ticticboooom.mods' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'masterfulmachinery'
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
+    // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
     // snapshot   YYYYMMDD   Snapshot are built nightly.
     // stable     #          Stables are built at the discretion of the MCP team.
@@ -42,22 +31,20 @@ minecraft {
     // You must be aware of the Mojang license when using the 'official' mappings.
     // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
     //
-    // Use non-default mappings at your own risk. they may not always work.
+    // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20210309-1.16.5'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings channel: 'official', version: '1.18'
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run')
-            arg '-mixin.config=masterfulmachinery.mixins.json'
 
             // Recommended logging data for a userdev environment
-            // The markers can be changed as needed. 
+            // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
             // "REGISTRIES": For firing of registry events.
             // "REGISTRYDUMP": For getting the contents of all registries.
@@ -67,13 +54,12 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+
             mods {
                 masterfulmachinery {
                     source sourceSets.main
                 }
-                mmtest {
+                masterfulmachinery_test {
                     source sourceSets.test
                 }
             }
@@ -81,9 +67,9 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-            arg '-mixin.config=masterfulmachinery.mixins.json'
+
             // Recommended logging data for a userdev environment
-            // The markers can be changed as needed. 
+            // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
             // "REGISTRIES": For firing of registry events.
             // "REGISTRYDUMP": For getting the contents of all registries.
@@ -93,13 +79,12 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+
             mods {
                 masterfulmachinery {
                     source sourceSets.main
                 }
-                mmtest {
+                masterfulmachinery_test {
                     source sourceSets.test
                 }
             }
@@ -109,148 +94,84 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            // The markers can be changed as needed. 
+            // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
             // "REGISTRIES": For firing of registry events.
             // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'masterfulmachinery', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 masterfulmachinery {
                     source sourceSets.main
+                }
+                masterfulmachinery_test {
+                    source sourceSets.test
                 }
             }
         }
     }
 }
 
-shadowJar {
-    configurations = [project.configurations.shade]
-}
-
+// Include resources generated by data generators.
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven { url 'https://modmaven.dev/' }
-    maven {
-        name = "Cursemaven"
-        url = "https://www.cursemaven.com/"
-    }
-    maven {
-        url 'https://repo.spongepowered.org/maven/'
-    }
-    maven {
-        name 'HellFirePvP'
-        url 'https://maven.hellfiredev.net/'
-    }
+    // Put repositories for dependencies here
+    // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
-    maven {
-        name 'Curios'
-        url "https://maven.theillusivec4.top/"
-    }
-    maven { url 'https://maven.blamejared.com' }
-    maven {
-        url = "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-        }
-    }
-    maven {
-        // Shedaniel's maven (Architectury API)
-        url = "https://maven.architectury.dev"
-        content {
-            includeGroup "me.shedaniel"
-        }
-    }
+    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
+    // flatDir {
+    //     dir 'libs'
+    // }
 }
+
 dependencies {
-    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    compileOnly 'org.projectlombok:lombok:1.18.18'
-    annotationProcessor 'org.projectlombok:lombok:1.18.18'
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.23'
+    minecraft 'net.minecraftforge:forge:1.18-38.0.5'
 
-    compileOnly 'com.google.code.gson:gson:2.8.7'
-    implementation 'org.spongepowered:mixin:0.8-SNAPSHOT'
-    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+    // Real mod deobf dependency examples - these get remapped to your current mappings
+    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
+    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
-    implementation fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
-
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    // at runtime, use the full JEI jar
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
-    implementation fg.deobf('me.desht.pneumaticcraft:pneumaticcraft-repressurized:1.16.5-2.12.2-186')
-
-    implementation fg.deobf("curse.maven:hwyla-253449:3033593")
-
-    implementation fg.deobf("curse.maven:create-328085:3384222")
-    implementation fg.deobf("curse.maven:flywheel-486392:3384004")
-
-    implementation fg.deobf("curse.maven:astral-sorcery-241721:3156477")
-    implementation fg.deobf("curse.maven:observerlib-316833:3162044")
-    // runtime deps
-    runtimeOnly fg.deobf("curse.maven:curios-309927:3231111")
-    compileOnly fg.deobf("vazkii.botania:Botania:1.16.5-416:api")
-    runtimeOnly fg.deobf("vazkii.botania:Botania:1.16.5-416")
-
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-51")
-
-    implementation "dev.latvian.mods:rhino:1605.1.0-build.4"
-    implementation fg.deobf("me.shedaniel:architectury-forge:v1.15.13")
-    implementation fg.deobf("dev.latvian.mods:kubejs-forge:1605.3.10-build.8")
-    // You may put jars on which you depend on in ./libs or you may define them like so..
-    // compile "some.group:artifact:version:classifier"
-    // compile "some.group:artifact:version"
-
-    // Real examples
-    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // These dependencies get remapped to your current MCP mappings
-    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    // Examples using mod jars from ./libs
+    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
+// Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
-                "MixinConfigs"            : "masterfulmachinery.mixins.json",
                 "Specification-Title"     : "masterfulmachinery",
-                "Specification-Vendor"    : "ticticboooom",
+                "Specification-Vendor"    : "masterfulmachinerysareus",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "TicTicBoooom",
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : "masterfulmachinerysareus",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-// Example configuration to allow publishing using the maven-publish task
+// Example configuration to allow publishing using the maven-publish plugin
 // This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfShadowJar')
+jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
+// publish.dependsOn('reobfJar')
 
 publishing {
     publications {
@@ -260,47 +181,7 @@ publishing {
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            url "file://${project.projectDir}/mcmodsrepo"
         }
-    }
-}
-
-reobf {
-    shadowJar {
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
-    }
-}
-
-def getVersionNumber() {
-    def vFile = file('version.properties')
-    def Integer buildNumber = 0
-    if (vFile.canRead()) {
-        def Properties versionProps = new Properties();
-
-        versionProps.load(new FileInputStream(vFile))
-
-        def code = versionProps.getProperty("VERSION_CODE").toInteger() + 1
-        buildNumber = code
-        versionProps.setProperty("VERSION_CODE", code.toString())
-
-        versionProps.store(vFile.newWriter(), null)
-    }
-    return buildNumber.toString()
-}
-
-mixin {
-    add sourceSets.main, "masterfulmachinery.refmap.json"
-}
-
-artifacts {
-    archives shadowJar
-    shadow shadowJar
-}
-
-reobf {
-    shadowJar {
-        dependsOn createMcpToSrg
-        mappings = createMcpToSrg.outputs.files.singleFile
     }
 }
