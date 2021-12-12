@@ -2,7 +2,7 @@
   "type": "masterfulmachinery:machine_process",
   "structureId": "test_rotation",
   "controllerId": "basic",
-  "ticks": 200,
+  "ticks": 60,
   "inputs": [
     {
       "type": "masterfulmachinery:create_rotation",
@@ -16,7 +16,8 @@
     {
       "type": "masterfulmachinery:create_rotation",
       "data": {
-        "speed": 64
+        "capacity": 256,
+        "speed": 24
       },
       "perTick": true
     }

@@ -1,38 +1,25 @@
 package com.ticticboooom.mods.mm.ports.storage;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.simibubi.create.Create;
-import com.simibubi.create.content.contraptions.KineticNetwork;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
+import com.ticticboooom.mods.mm.block.tile.RotationMachinePortBlockEntity;
+import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import lombok.Getter;
 import lombok.Setter;
-import me.desht.pneumaticcraft.api.PNCCapabilities;
-import me.desht.pneumaticcraft.api.tileentity.IAirHandlerMachine;
-import me.desht.pneumaticcraft.common.capabilities.MachineAirHandler;
-import me.desht.pneumaticcraft.common.util.DirectionUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class RotationPortStorage extends PortStorage {
     public static final Codec<RotationPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
@@ -43,10 +30,12 @@ public class RotationPortStorage extends PortStorage {
     private float speed;
 
     @Getter
+    private boolean isOverStressed;
+
+    @Getter
     private int stress;
 
     public RotationPortStorage(int stress) {
-
         this.stress = stress;
     }
 
@@ -84,6 +73,13 @@ public class RotationPortStorage extends PortStorage {
 
     @Override
     public void tick(IMachinePortTile tile) {
+        KineticTileEntity kinetic = tile.getTile();
+        this.isOverStressed = kinetic.isOverStressed();
+        this.speed = Math.abs(kinetic.getSpeed());
+    }
+
+    @Override
+    public void onRecipeInterrupted(MachineProcessRecipe recipe) {
         this.speed = 0;
     }
 }

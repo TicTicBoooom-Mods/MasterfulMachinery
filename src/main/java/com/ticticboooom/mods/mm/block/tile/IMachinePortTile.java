@@ -6,4 +6,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 public interface IMachinePortTile extends INamedContainerProvider {
     PortStorage getStorage();
     boolean isInput();
+
+    default <T> T getTile() {
+        return (T) this;
+    }
 }

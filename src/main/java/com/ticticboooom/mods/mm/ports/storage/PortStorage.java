@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
 import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
+import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -49,5 +50,9 @@ public abstract class PortStorage {
 
     public boolean onPortActivated(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult traceResult) {
         return false;
+    }
+
+    public void onRecipeInterrupted(MachineProcessRecipe recipe) {
+
     }
 }

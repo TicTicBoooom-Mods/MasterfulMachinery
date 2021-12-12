@@ -27,8 +27,8 @@ public class RotationPortState extends PortState {
 
     private float speed;
 
-    public RotationPortState(float pressure) {
-        this.speed = pressure;
+    public RotationPortState(float speed) {
+        this.speed = speed;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class RotationPortState extends PortState {
         for (PortStorage portStorage : storage) {
             if (portStorage instanceof RotationPortStorage){
                 RotationPortStorage rot = (RotationPortStorage) portStorage;
-                if (rot.getSpeed() >= speed) {
+                if (!rot.isOverStressed() && rot.getSpeed() >= speed) {
                     return true;
                 }
             }

@@ -30,20 +30,19 @@ import java.util.Random;
 
 public class MachineProcessRecipe implements IRecipe<IInventory> {
 
-
     @Getter
     private final List<PortState> inputs;
     @Getter
     private final List<PortState> outputs;
     @Getter
-    private int ticks;
+    private final int ticks;
     @Getter
-    private String structureId;
-    private ResourceLocation rl;
+    private final String structureId;
+    private final ResourceLocation rl;
 
-    private List<Double> inputRolls = new ArrayList<>();
-    private List<Double> outputRolls = new ArrayList<>();
-    private Random rand = new Random();
+    private final List<Double> inputRolls = new ArrayList<>();
+    private final List<Double> outputRolls = new ArrayList<>();
+    private final Random rand = new Random();
 
     public MachineProcessRecipe(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
         this.inputs = inputs;
@@ -101,17 +100,18 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         }
     }
 
-    public ProcessUpdate process(List<PortStorage> inputPorts, List<PortStorage> outputPorts, ProcessUpdate update) {
+    public void process(List<PortStorage> inputPorts, List<PortStorage> outputPorts, ProcessUpdate update) {
         resetChances();
         boolean canTake = canTake(inputPorts, update.getTakenIndices());
         boolean canPut = canPut(outputPorts);
 
         if (!canTake || !canPut) {
             update.setMsg("Found Structure");
-            return update;
+            return;
         }
 
         int takenIndex = 0;
+        // Update instantly consumed inputs when recipe starts
         if (update.getTicksTaken() <= 0) {
             for (PortState input : inputs) {
                 if (input.isInstantConsume() && input.validateRequirement(inputPorts)) {
@@ -123,9 +123,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         }
 
         int index = 0;
+        // When the recipe has finished
         if (update.getTicksTaken() >= ticks) {
             update.getTakenIndices().clear();
             for (PortState input : inputs) {
+                // Don't consume when recipe is finished if the input is consumePerTick or consumeInstant
                 if (input.isConsumePerTick() || input.isInstantConsume()) {
                     continue;
                 }
@@ -136,6 +138,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
             index = 0;
             for (PortState output : outputs) {
+                // Don't produce output when recipe is finished if the output is consumePerTick
                 if (output.isConsumePerTick()) {
                     continue;
                 }
@@ -145,12 +148,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
             update.setMsg("");
             update.setTicksTaken(0);
-            update.setTakenIndices(new ArrayList<>());
-            return update;
+            update.getTakenIndices().clear();
+            return;
         }
 
         boolean canTick = true;
-
 
         index = 0;
         for (PortState input : inputs) {
@@ -191,7 +193,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             update.setTicksTaken(update.getTicksTaken() + 1);
         }
         update.setMsg((int) (((float) update.getTicksTaken() / (float) ticks) * 100) + "%");
-        return update;
+        return;
     }
 
     @Override
@@ -227,6 +229,16 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
     @Override
     public IRecipeType<?> getType() {
         return RecipeTypes.MACHINE_PROCESS;
+    }
+
+    public void onInterrupted(List<PortStorage> inputPorts, List<PortStorage> outputPorts) {
+        for (PortStorage port : inputPorts) {
+            port.onRecipeInterrupted(this);
+        }
+
+        for (PortStorage port : outputPorts) {
+            port.onRecipeInterrupted(this);
+        }
     }
 
     public static final class Serializer implements IRecipeSerializer<MachineProcessRecipe> {

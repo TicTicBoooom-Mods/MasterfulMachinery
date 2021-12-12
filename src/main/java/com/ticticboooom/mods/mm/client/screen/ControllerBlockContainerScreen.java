@@ -3,7 +3,6 @@ package com.ticticboooom.mods.mm.client.screen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +30,7 @@ public class ControllerBlockContainerScreen extends ContainerScreen<ControllerBl
         this.minecraft.fontRenderer.func_238418_a_(container.getTile().getDisplayName(), 10, -10, 176, 0xfefefe);
         drawString(stack, this.minecraft.fontRenderer, "Inventory", 7, 110, 0xfefefe);
         int y = 50;
-        for (String s : container.getTile().getUpdate().getMsg().split("\n")) {
+        for (String s : container.getTile().getProcessData().getMsg().split("\n")) {
             drawString(stack, this.minecraft.fontRenderer, s, 12, y, 0xfefefe);
             y += 12;
         }

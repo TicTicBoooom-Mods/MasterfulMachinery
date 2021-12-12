@@ -29,10 +29,10 @@ import java.util.List;
 public class ControllerBlockEntity extends UpdatableTile implements ITickableTileEntity, INamedContainerProvider {
 
 
-    private RegistryObject<ContainerType<ControllerBlockContainer>> container;
-    private String controllerId;
+    private final RegistryObject<ContainerType<ControllerBlockContainer>> container;
+    private final String controllerId;
     @Getter
-    private ProcessUpdate update = new ProcessUpdate(0, "", "", "", new ArrayList<>());
+    private ProcessUpdate processData = new ProcessUpdate();
 
     public ControllerBlockEntity(RegistryObject<TileEntityType<?>> type, RegistryObject<ContainerType<ControllerBlockContainer>> container, String controllerId) {
         super(type.get());
@@ -46,62 +46,94 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
             return;
         }
 
-        update.setMsg("Failed to construct \nthe machine");
+        processData.setMsg("Failed to construct \nthe machine");
         List<MachineStructureRecipe> structures = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
+        // TODO Maybe check if our structure is still matching before finding a new structure?
+        boolean foundStructure = false;
         for (MachineStructureRecipe structure : structures) {
             int index = structure.matches(this.pos, world, controllerId);
             if (index != -1) {
-                if (!update.getSid().equals(structure.getId().toString())) {
-                    update.setTicksTaken(0);
+                if (!structure.equals(processData.getStructureDefinition().getStructure())) {
+                    processData.setTicksTaken(0);
                 }
-                update.setSid(structure.getId().toString());
-                update.setMsg("Found structure");
+                processData.getStructureDefinition().setStructure(structure);
+                processData.setMsg("Found structure");
                 onStructureFound(structure, index);
+                foundStructure = true;
                 break;
             }
         }
         update();
+
+        if (!foundStructure) {
+            invalidateRecipe();
+            processData.getStructureDefinition().setStructure(null);
+            processData.setRecipe(null);
+        }
     }
 
     private void onStructureFound(MachineStructureRecipe structure, int index) {
-        ArrayList<BlockPos> ports = structure.getPorts(pos, world, index);
+        ArrayList<BlockPos> portPoses = structure.getPorts(pos, world, index);
         List<PortStorage> inputPorts = new ArrayList<>();
         List<PortStorage> outputPorts = new ArrayList<>();
-        for (BlockPos port : ports) {
-            TileEntity blockEntity = world.getTileEntity(port);
+        for (BlockPos pos : portPoses) {
+            TileEntity blockEntity = world.getTileEntity(pos);
             if (blockEntity instanceof IMachinePortTile) {
-                IMachinePortTile portBE = (IMachinePortTile) blockEntity;
+                IMachinePortTile port = (IMachinePortTile) blockEntity;
 
-                if (portBE.isInput()) {
-                    inputPorts.add(portBE.getStorage());
+                if (port.isInput()) {
+                    inputPorts.add(port.getStorage());
                 } else {
-                    outputPorts.add(portBE.getStorage());
+                    outputPorts.add(port.getStorage());
                 }
             }
         }
 
+        processData.getStructureDefinition().setInputPorts(inputPorts);
+        processData.getStructureDefinition().setOutputPorts(outputPorts);
         onPortsEstablished(inputPorts, outputPorts, structure);
     }
 
     private void onPortsEstablished(List<PortStorage> inputPorts, List<PortStorage> outputPorts, MachineStructureRecipe structure) {
         List<MachineProcessRecipe> processRecipes = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_PROCESS);
         boolean processed = false;
-        for (MachineProcessRecipe recipe : processRecipes) {
-            if (recipe.matches(inputPorts, structure.getStructureId(), update)) {
-                if (!update.getId().equals(recipe.getId().toString())) {
-                    update.setTicksTaken(0);
+        // Maybe instead of checking all recipe again first check if our current recipe is still valid?
+        if (processData.getRecipe() != null && processData.getRecipe().matches(inputPorts, structure.getStructureId(), processData)) {
+            processData.getRecipe().process(inputPorts, outputPorts, processData);
+            processed = true;
+        }
+
+        if (!processed) {
+            // If we havent processed the previous recipe that means it needs to be invalidated
+            invalidateRecipe();
+            for (MachineProcessRecipe recipe : processRecipes) {
+                if (recipe.matches(inputPorts, structure.getStructureId(), processData)) {
+                    // TODO Make sure the recipe doesn't stop progress when some inputs aren't present
+                    if (!recipe.equals(processData.getRecipe())) {
+                        if (processData.getRecipe() != null){
+                            processData.getRecipe().onInterrupted(inputPorts, outputPorts);
+                        }
+                        processData.setTicksTaken(0);
+                    }
+                    processData.setRecipe(recipe);
+                    recipe.process(inputPorts, outputPorts, processData);
+                    processed = true;
+                    break;
                 }
-                this.update.setId(recipe.getId().toString());
-                this.update = recipe.process(inputPorts, outputPorts, this.update);
-                processed = true;
-                break;
             }
         }
+
         if (!processed) {
-            this.update.setTicksTaken(0);
+            this.processData.setRecipe(null);
+            this.processData.setTicksTaken(0);
         }
     }
 
+    public void invalidateRecipe() {
+        if (processData.getStructureDefinition().getStructure() != null && processData.getRecipe() != null) {
+            processData.getRecipe().onInterrupted(processData.getStructureDefinition().getInputPorts(), processData.getStructureDefinition().getOutputPorts());
+        }
+    }
 
     @Override
     public ITextComponent getDisplayName() {
@@ -116,15 +148,15 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     @Override
     public CompoundNBT write(CompoundNBT nbt) {
-        nbt.putInt("ticks", update.getTicksTaken());
-        nbt.putString("msg", update.getMsg());
+        nbt.putInt("ticks", processData.getTicksTaken());
+        nbt.putString("msg", processData.getMsg());
         return super.write(nbt);
     }
 
     @Override
     public void read(BlockState p_230337_1_, CompoundNBT nbt) {
         super.read(p_230337_1_, nbt);
-        update.setTicksTaken(nbt.getInt("ticks"));
-        update.setMsg(nbt.getString("msg"));
+        processData.setTicksTaken(nbt.getInt("ticks"));
+        processData.setMsg(nbt.getString("msg"));
     }
 }

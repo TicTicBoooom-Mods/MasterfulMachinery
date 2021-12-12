@@ -1,14 +1,12 @@
 package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
-import com.ticticboooom.mods.mm.model.ModelOverrideModel;
 import lombok.Getter;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -17,10 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -28,16 +22,15 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
-import java.util.stream.Stream;
 
 public class ControllerBlock extends DirectionalBlock {
-    private RegistryObject<TileEntityType<?>> type;
+    private final RegistryObject<TileEntityType<?>> type;
     @Getter
-    private String controllerName;
+    private final String controllerName;
     @Getter
-    private String controllerId;
+    private final String controllerId;
     @Getter
-    private String texOverride;
+    private final String texOverride;
 
     public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride) {
         super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
@@ -82,5 +75,16 @@ public class ControllerBlock extends DirectionalBlock {
         return ActionResultType.SUCCESS;
     }
 
-
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!worldIn.isRemote()) {
+            TileEntity blockEntity = worldIn.getTileEntity(pos);
+            if (blockEntity instanceof ControllerBlockEntity) {
+                // Send an update to ports notifying that the current recipe was interrupted
+                ControllerBlockEntity controller = (ControllerBlockEntity) blockEntity;
+                controller.invalidateRecipe();
+            }
+        }
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
+    }
 }

@@ -2,7 +2,6 @@ package com.ticticboooom.mods.mm.block.tile;
 
 import com.simibubi.create.content.contraptions.KineticNetwork;
 import com.simibubi.create.content.contraptions.base.GeneratingKineticTileEntity;
-import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.network.packets.TileClientUpdatePacket;
@@ -15,7 +14,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -23,12 +21,12 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
-public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEntity implements IMachinePortTile, ITickableTileEntity {
+public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEntity implements IMachinePortTile {
     private final ContainerType<?> container;
     @Getter
     private final PortStorage storage;
     @Getter
-    private boolean input;
+    private final boolean input;
 
     public RotationGenMachinePortBlockEntity(TileEntityType<?> typeIn, ContainerType<?> container, PortStorage storage, boolean input) {
         super(typeIn);
@@ -38,7 +36,6 @@ public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEnti
         if (input) {
             this.stress = ((RotationPortStorage) storage).getStress();
         }
-
     }
 
     @Override
@@ -57,26 +54,6 @@ public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEnti
         this.reActivateSource = true;
         super.tick();
         this.storage.tick(this);
-//        if (storage instanceof RotationPortStorage) {
-//            RotationPortStorage stor = (RotationPortStorage) this.storage;
-//            float prev = this.speed;
-//            float speed = stor.getSpeed();
-//            if (speed != prev) {
-//                if (!hasSource()) {
-//                    effects.queueRotationIndicators();
-//                }
-//                applyNewSpeed(prev, speed);
-//            }
-//            if (hasNetwork() && speed != 0) {
-//                KineticNetwork network = getOrCreateNetwork();
-//                notifyStressCapacityChange(calculateAddedStressCapacity());
-//                getOrCreateNetwork().updateCapacityFor(this, calculateStressApplied());
-//                network.updateStress();
-//            }
-//
-//            onSpeedChanged(prev);
-//            sendData();
-//        }
 
         if (!world.isRemote()) {
             PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(pos, write(new CompoundNBT())));
@@ -86,6 +63,7 @@ public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEnti
     @Override
     protected void fromTag(BlockState state, CompoundNBT compound, boolean clientPacket) {
         this.storage.load(compound.getCompound("inv"));
+        super.fromTag(state, compound, clientPacket);
     }
 
     @Override
@@ -94,6 +72,17 @@ public class RotationGenMachinePortBlockEntity extends GeneratingKineticTileEnti
         super.write(compound, clientPacket);
     }
 
+    @Override
+    public float calculateAddedStressCapacity() {
+        float stress = 0;
+        if (!input && storage instanceof RotationPortStorage) {
+            RotationPortStorage stor = (RotationPortStorage) this.storage;
+            stress = stor.getStress();
+        }
+
+        lastCapacityProvided = stress;
+        return stress;
+    }
 
     @Override
     public float getGeneratedSpeed() {

@@ -1,7 +1,5 @@
 package com.ticticboooom.mods.mm.block.tile;
 
-import com.simibubi.create.Create;
-import com.simibubi.create.content.contraptions.KineticNetwork;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.network.PacketHandler;
@@ -38,7 +36,6 @@ public class RotationMachinePortBlockEntity extends KineticTileEntity implements
         if (input) {
             this.stress = ((RotationPortStorage) storage).getStress();
         }
-
     }
 
     @Override
@@ -55,24 +52,39 @@ public class RotationMachinePortBlockEntity extends KineticTileEntity implements
     @Override
     public void tick() {
         super.tick();
+        this.storage.tick(this);
 
-        if (this.world.isRemote) {
+        /*if (this.world.isRemote) {
             return;
         }
+
         if (storage instanceof RotationPortStorage) {
             RotationPortStorage storage = (RotationPortStorage) this.storage;
             if (input) {
                 storage.setSpeed(Math.abs(getSpeed()));
             }
-        }
+        }*/
         if (!world.isRemote()) {
             PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(pos, write(new CompoundNBT())));
         }
     }
 
     @Override
+    public float calculateStressApplied() {
+        float stress = 0;
+        if (input && storage instanceof RotationPortStorage) {
+            RotationPortStorage stor = (RotationPortStorage) this.storage;
+            stress = stor.getStress();
+        }
+
+        this.lastStressApplied = stress;
+        return stress;
+    }
+
+    @Override
     protected void fromTag(BlockState state, CompoundNBT compound, boolean clientPacket) {
         this.storage.load(compound.getCompound("inv"));
+        super.fromTag(state, compound, clientPacket);
     }
 
     @Override
