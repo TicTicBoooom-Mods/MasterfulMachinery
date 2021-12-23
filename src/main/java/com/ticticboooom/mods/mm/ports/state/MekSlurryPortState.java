@@ -41,7 +41,7 @@ public class MekSlurryPortState extends PortState {
     public MekSlurryPortState(String gas, long amount) {
         this.slurry = gas;
         this.amount = amount;
-        renderer = new ChemicalStackRenderer<>(amount, false,  16, 16, null);
+        renderer = new ChemicalStackRenderer<>(amount, 16, 16);
     }
 
     @Override

@@ -41,7 +41,7 @@ public class MekGasPortState extends PortState {
 
         this.gas = gas;
         this.amount = amount;
-        renderer = new ChemicalStackRenderer<>(amount, false, 16, 16, null);
+        renderer = new ChemicalStackRenderer<>(amount, 16, 16); // Fixed to meet Mekanism 10.1's revised code
     }
 
     @Override
