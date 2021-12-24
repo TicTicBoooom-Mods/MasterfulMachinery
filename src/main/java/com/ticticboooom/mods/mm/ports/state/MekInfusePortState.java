@@ -41,7 +41,7 @@ public class MekInfusePortState extends PortState {
     public MekInfusePortState(String gas, long amount) {
         this.infuse = gas;
         this.amount = amount;
-        renderer = new ChemicalStackRenderer<>(amount, false,  16, 16, null);
+        renderer = new ChemicalStackRenderer<>(amount, 16, 16);
     }
 
     @Override

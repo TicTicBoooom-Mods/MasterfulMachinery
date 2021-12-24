@@ -177,7 +177,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     compileOnly 'org.projectlombok:lombok:1.18.18'
     annotationProcessor 'org.projectlombok:lombok:1.18.18'
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.23'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.21'
 
     compileOnly 'com.google.code.gson:gson:2.8.7'
     implementation 'org.spongepowered:mixin:0.8-SNAPSHOT'
