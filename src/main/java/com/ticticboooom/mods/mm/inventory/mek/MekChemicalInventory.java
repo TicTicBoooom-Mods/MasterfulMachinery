@@ -5,13 +5,10 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
 import net.minecraft.nbt.CompoundNBT;
 
 import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class MekChemicalInventory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalHandler<CHEMICAL, STACK>, IChemicalTank<CHEMICAL, STACK> {
     private STACK stack;
