@@ -154,6 +154,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
         boolean canTick = true;
 
+        // Every tick
         index = 0;
         for (PortState input : inputs) {
             if (input.isConsumePerTick()) {
@@ -175,7 +176,9 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
         }
 
-        if (canTick) {
+        if (!canTick) {
+            this.onInterrupted(inputPorts, outputPorts);
+        } else {
             for (PortState input : inputs) {
                 if (inputRolls.get(index) < input.getChance()) {
                     if (input.isConsumePerTick()) {

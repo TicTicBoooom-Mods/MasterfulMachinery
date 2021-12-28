@@ -25,6 +25,7 @@ public class RotationPortStorage extends PortStorage {
     public static final Codec<RotationPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(
             Codec.INT.fieldOf("stress").forGetter(z -> z.stress)
     ).apply(x, RotationPortStorage::new));
+
     @Getter
     @Setter
     private float speed;
