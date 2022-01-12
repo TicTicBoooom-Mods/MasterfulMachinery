@@ -1,6 +1,7 @@
 package com.ticticboooom.mods.mm.ports.base;
 
 import com.google.gson.JsonObject;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.function.Supplier;
@@ -15,4 +16,7 @@ public abstract class PortType extends ForgeRegistryEntry<PortType> {
     }
 
     public abstract PortStorage parseStorage(JsonObject data);
+    public TileEntity createTileEntity() {
+        return null;
+    }
 }
