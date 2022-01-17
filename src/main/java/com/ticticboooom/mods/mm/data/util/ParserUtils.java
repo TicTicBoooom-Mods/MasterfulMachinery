@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm.data.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.types.Func;
 import com.ticticboooom.mods.mm.data.model.base.BlockstateModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -10,6 +11,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class ParserUtils {
     public static ITextComponent parseTextComponent(JsonElement elem) {
@@ -35,5 +37,13 @@ public class ParserUtils {
             model.properties.put(entry.getKey(), entry.getValue().getAsString());
         }
         return model;
+    }
+
+    public static <R> R parseOrDefault(JsonObject json, String key, Function<JsonElement, R> parse, R defaultValue) {
+        if (json.has(key)) {
+            return parse.apply(json.get(key));
+        } else {
+            return defaultValue;
+        }
     }
 }

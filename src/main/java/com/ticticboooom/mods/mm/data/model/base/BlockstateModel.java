@@ -1,5 +1,6 @@
 package com.ticticboooom.mods.mm.data.model.base;
 
+import com.ticticboooom.mods.mm.Ref;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
@@ -16,6 +17,16 @@ import java.util.Map;
 public class BlockstateModel {
     public ResourceLocation block;
     public Map<String, String> properties;
+    public static final BlockstateModel DEFAULT = new BlockstateModel(Ref.res("base_block"));
+
+    public BlockstateModel(){
+
+    }
+
+    public BlockstateModel(ResourceLocation block) {
+
+        this.block = block;
+    }
 
     public BlockState createState() {
         CompoundNBT nbt = new CompoundNBT();

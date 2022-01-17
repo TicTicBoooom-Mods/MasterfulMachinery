@@ -1,6 +1,0 @@
-{
-  "parent": "masterfulmachinery:block/northen",
-  "textures": {
-    "overlay": "masterfulmachinery:block/controller_cutout"
-  }
-}

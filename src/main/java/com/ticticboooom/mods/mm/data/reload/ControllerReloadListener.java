@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
+import com.ticticboooom.mods.mm.data.model.base.BlockstateModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
@@ -40,7 +41,8 @@ public class ControllerReloadListener extends JsonReloadListener {
         ControllerModel model = new ControllerModel();
         model.id = res;
         model.name = ParserUtils.parseTextComponent(json.get("name"));
-        model.defaultModel = ParserUtils.parseBlockState(json.getAsJsonObject("defaultModel"));
+        model.defaultModel = ParserUtils.parseOrDefault(json, "defaultModel", (x) -> ParserUtils.parseBlockState(x.getAsJsonObject()), BlockstateModel.DEFAULT);
+        model.showCutout = ParserUtils.parseOrDefault(json, "showCutout", JsonElement::getAsBoolean, true);
         return model;
     }
 }
