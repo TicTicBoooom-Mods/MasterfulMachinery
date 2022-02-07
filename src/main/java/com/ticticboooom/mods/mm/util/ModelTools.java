@@ -8,9 +8,10 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.util.math.vector.*;
+import net.minecraftforge.client.model.QuadTransformer;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+import net.minecraftforge.common.model.TransformationHelper;
 
 public class ModelTools {
 
@@ -52,7 +53,7 @@ public class ModelTools {
         }
     }
 
-    public static BakedQuad createQuad(ResourceLocation texture, Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4) {
+    public static BakedQuad createQuad(ResourceLocation texture, Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4, Direction side) {
         Vector3f normal = v3.copy();
         normal.sub(v2);
         Vector3f tmp = v1.copy();
@@ -67,9 +68,32 @@ public class ModelTools {
         BakedQuadBuilder b = new BakedQuadBuilder(sprite);
         putVertex(b, normal, new Vector4f(v1), 0, 0, sprite);
         putVertex(b, normal, new Vector4f(v2), 0, th, sprite);
-        putVertex(b, normal, new Vector4f(v3), tw,th, sprite);
+        putVertex(b, normal, new Vector4f(v3), tw, th, sprite);
         putVertex(b, normal, new Vector4f(v4), tw, 0, sprite);
-        b.setQuadOrientation(Direction.NORTH);
+        b.setQuadOrientation(side);
         return b.build();
     }
+
+    public static BakedQuad createQuad(ResourceLocation texture, Direction side) {
+        if (side == Direction.NORTH){
+            return createQuad(texture, new Vector3f(1, 1, 0), new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0), side);
+        }
+        else if (side == Direction.SOUTH) {
+            return createQuad(texture, new Vector3f(0, 1, 1), new Vector3f(0, 0, 1), new Vector3f(1, 0, 1), new Vector3f(1, 1, 1), side);
+        }
+        else if (side == Direction.WEST) {
+            return createQuad(texture, new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(0, 1, 1), side);
+        }
+        else if (side == Direction.EAST) {
+            return createQuad(texture, new Vector3f(1, 1, 1), new Vector3f(1, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 1, 0), side);
+        }
+        else if (side == Direction.UP) {
+            return createQuad(texture, new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), new Vector3f(1, 1, 0), new Vector3f(1, 1, 1), side);
+        }
+        else if (side == Direction.DOWN) {
+            return createQuad(texture, new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 0, 1), side);
+        }
+        return createQuad(texture, new Vector3f(1, 1, 0), new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0), side);
+    }
+
 }

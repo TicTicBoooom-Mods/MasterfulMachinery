@@ -1,10 +1,8 @@
-package com.ticticboooom.mods.mm.block.ter.model;
+package com.ticticboooom.mods.mm.block.ter.model.controller;
 
-import com.google.common.collect.ImmutableList;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;

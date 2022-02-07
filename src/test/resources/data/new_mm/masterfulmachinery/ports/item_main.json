@@ -1,0 +1,9 @@
+{
+  "controllerId": "main",
+  "name": "Main Items",
+  "type": "masterfulmachinery:items",
+  "defaultMode": {
+    "block": "minecraft:sponge",
+    "properties": {}
+  }
+}

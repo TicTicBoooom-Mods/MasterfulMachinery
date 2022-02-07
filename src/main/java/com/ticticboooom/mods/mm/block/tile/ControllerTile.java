@@ -1,6 +1,6 @@
 package com.ticticboooom.mods.mm.block.tile;
 
-import com.ticticboooom.mods.mm.block.ter.model.ControllerBlockModel;
+import com.ticticboooom.mods.mm.block.ter.model.controller.ControllerBlockModel;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.setup.MMTiles;
 import net.minecraft.tileentity.ITickableTileEntity;

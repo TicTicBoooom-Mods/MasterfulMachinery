@@ -20,11 +20,11 @@ public class BlockstateModel {
     public static final BlockstateModel DEFAULT = new BlockstateModel(Ref.res("base_block"));
 
     public BlockstateModel(){
-
+        properties = new HashMap<>();
     }
 
     public BlockstateModel(ResourceLocation block) {
-
+        properties = new HashMap<>();
         this.block = block;
     }
 

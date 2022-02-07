@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.PortModel;
+import com.ticticboooom.mods.mm.data.model.base.BlockstateModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.profiler.IProfiler;
@@ -17,16 +18,16 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class PortConfigurationReloadListener extends JsonReloadListener {
+public class PortReloadListener extends JsonReloadListener {
     public static final Gson GSON = new Gson();
 
-    public PortConfigurationReloadListener() {
+    public PortReloadListener() {
         super(GSON, "masterfulmachinery/ports");
     }
 
     @SubscribeEvent
     public static void on(AddReloadListenerEvent event) {
-        event.addListener(new PortConfigurationReloadListener());
+        event.addListener(new PortReloadListener());
     }
 
     @Override
@@ -39,8 +40,11 @@ public class PortConfigurationReloadListener extends JsonReloadListener {
     private PortModel parse(ResourceLocation res, JsonObject json) {
         PortModel model = new PortModel();
         model.id = res;
+        model.type = ResourceLocation.tryCreate(json.get("type").getAsString());
         model.name = ParserUtils.parseTextComponent(json.get("name"));
         model.controllerId = ResourceLocation.tryCreate(json.get("controllerId").getAsString());
+        model.defaultModel = ParserUtils.parseOrDefault(json, "defaultModel", (x) -> ParserUtils.parseBlockState(x.getAsJsonObject()), BlockstateModel.DEFAULT);
+        model.showCutout = ParserUtils.parseOrDefault(json, "showCutout", JsonElement::getAsBoolean, true);
         return model;
     }
 }

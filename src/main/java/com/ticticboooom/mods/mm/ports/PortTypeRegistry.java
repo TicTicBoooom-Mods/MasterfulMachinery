@@ -1,6 +1,8 @@
 package com.ticticboooom.mods.mm.ports;
 
+import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.ports.base.PortType;
+import com.ticticboooom.mods.mm.ports.items.ItemPortType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.HashMap;
@@ -10,6 +12,6 @@ public class PortTypeRegistry {
     public static final Map<ResourceLocation, PortType> PORT_TYPES = new HashMap<>();
 
     public static void registerDefault() {
-        
+        PORT_TYPES.put(Ref.PortTypes.ITEM_TYPE, new ItemPortType());
     }
 }

@@ -1,6 +1,6 @@
 package com.ticticboooom.mods.mm.block.item;
 
-import com.ticticboooom.mods.mm.block.tile.ControllerTile;
+import com.ticticboooom.mods.mm.block.tile.PortTile;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
 import com.ticticboooom.mods.mm.util.TagHelper;
@@ -15,25 +15,24 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class ControllerBlockItem extends BlockItem {
-    public ControllerBlockItem() {
-        super(MMBlocks.CONTROLLER.get(), new Properties().group(MMItemGroup.INSTANCE));
+public class PortBlockItem extends BlockItem {
+    public PortBlockItem() {
+        super(MMBlocks.PORT.get(), new Properties().group(MMItemGroup.INSTANCE));
     }
-
 
     @Override
     protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
-        ResourceLocation loc = TagHelper.getControllerId(stack);
+        ResourceLocation loc = TagHelper.getPortId(stack);
         if (loc == null) {
             return false;
         }
-        if (!DataRegistry.CONTROLLERS.containsKey(loc)){
+        if (!DataRegistry.PORTS.containsKey(loc)){
             return false;
         }
         TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if (tileEntity instanceof ControllerTile) {
-            ControllerTile controller = (ControllerTile) tileEntity;
-            controller.controllerModel = DataRegistry.CONTROLLERS.get(loc);
+        if (tileEntity instanceof PortTile) {
+            PortTile controller = (PortTile) tileEntity;
+            controller.portModel = DataRegistry.PORTS.get(loc);
         }
         return super.onBlockPlaced(pos, worldIn, player, stack, state);
     }
