@@ -66,11 +66,11 @@ public class ModelTools {
         int th = sprite.getHeight();
 
         BakedQuadBuilder b = new BakedQuadBuilder(sprite);
+        b.setQuadOrientation(side);
         putVertex(b, normal, new Vector4f(v1), 0, 0, sprite);
         putVertex(b, normal, new Vector4f(v2), 0, th, sprite);
         putVertex(b, normal, new Vector4f(v3), tw, th, sprite);
         putVertex(b, normal, new Vector4f(v4), tw, 0, sprite);
-        b.setQuadOrientation(side);
         return b.build();
     }
 
@@ -88,10 +88,10 @@ public class ModelTools {
             return createQuad(texture, new Vector3f(1, 1, 1), new Vector3f(1, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 1, 0), side);
         }
         else if (side == Direction.UP) {
-            return createQuad(texture, new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), new Vector3f(1, 1, 0), new Vector3f(1, 1, 1), side);
+            return createQuad(texture, new Vector3f(1, 1, 1), new Vector3f(1, 1, 0), new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), side);
         }
         else if (side == Direction.DOWN) {
-            return createQuad(texture, new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 0, 1), side);
+            return createQuad(texture, new Vector3f(0, 0, 1), new Vector3f(0, 0, 0), new Vector3f(1, 0, 0), new Vector3f(1, 0, 1), side);
         }
         return createQuad(texture, new Vector3f(1, 1, 0), new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0), side);
     }

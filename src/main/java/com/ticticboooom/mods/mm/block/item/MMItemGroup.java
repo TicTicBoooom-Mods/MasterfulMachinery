@@ -30,8 +30,9 @@ public class MMItemGroup extends ItemGroup {
 
     @Override
     public void fill(NonNullList<ItemStack> items) {
-        items.addAll(getControllers());
         super.fill(items);
+        items.clear();
+        items.addAll(getControllers());
     }
 
     private NonNullList<ItemStack> getControllers() {

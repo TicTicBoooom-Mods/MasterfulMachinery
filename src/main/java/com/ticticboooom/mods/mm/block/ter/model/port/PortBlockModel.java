@@ -34,8 +34,11 @@ public class PortBlockModel implements IDynamicBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData data) {
         List<BakedQuad> quads = Lists.newArrayList(getModel(data).getQuads(state, side, rand, data));
+        if (side == null) {
+            return quads;
+        }
         PortModel port = data.getData(PORT);
-        if (data.hasProperty(PORT) && port != null && side != Direction.UP && side != Direction.DOWN) {
+        if (data.hasProperty(PORT) && port != null) {
             PortType portType = PortTypeRegistry.PORT_TYPES.get(port.type);
             if (data.hasProperty(PORT_IO_TYPE)) {
                 Boolean isInput = data.getData(PORT_IO_TYPE);
