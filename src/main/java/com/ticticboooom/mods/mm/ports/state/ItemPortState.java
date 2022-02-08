@@ -1,6 +1,8 @@
 package com.ticticboooom.mods.mm.ports.state;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -241,7 +243,9 @@ public class ItemPortState extends PortState {
             return (List<T>) ImmutableList.of(new ItemStack(ForgeRegistries.ITEMS.getValue(RLUtils.toRL(item)), this.count));
         } else if (!tag.equals("") && RLUtils.isRL(tag)) {
             ITag<Item> tag = ItemTags.getCollection().get(RLUtils.toRL(this.tag));
-            assert tag != null;
+            if (tag == null) {
+                throw new JsonSyntaxException("Invalid Tag " + this.tag);
+            }
 
             List<ItemStack> stacks = new ArrayList<>();
             tag.getAllElements().forEach(z -> stacks.add(new ItemStack(z, this.count)));
