@@ -1,0 +1,100 @@
+{
+  "controllerId": [
+    "test:main",
+    "test:second"
+  ],
+  "controllerSettings": {
+    "facing": "west"
+  },
+  "pattern": [
+    [
+      "ABC",
+      "DEF",
+      "GHI"
+    ],
+    [
+      "   ",
+      " C ",
+      "   "
+    ],
+    [
+      "KLM",
+      "NOP",
+      "   "
+    ]
+  ],
+  "keys": {
+    "A": {
+      "include": [
+        "minecraft:dirt",
+        "#minecraft:logs"
+      ]
+    },
+    "B": "minecraft:glass",
+    "D": "#minecraft:wools",
+    "E": {
+      "include": "#minecraft:logs",
+      "exclude": [
+        "minecraft:oak_log"
+      ]
+    },
+    "F": {
+      "type": "mm:port_group",
+      "group": "mygroup"
+    },
+    "G": {
+      "type": "mm:port_tier",
+      "portTier": "item_main",
+      "input": false
+    },
+    "H": {
+      "type": "mm:port",
+      "port": "mm:items",
+      "input": true
+    },
+    "I": {
+      "type": "mm:modifiable",
+      "modifiers": {
+        "starter": "minecraft:air",
+        "basic": {
+          "include": [
+            "minecraft:stone",
+            "minecraft:cobblestone"
+          ]
+        },
+        "intermediate": {
+          "include": "minecraft:iron_block"
+        }
+      }
+    },
+    "J": {
+      "include": "#minecraft:logs",
+      "properties": {
+        "axis": "x"
+      }
+    }
+  },
+  "requiredPorts": {
+    "first": {
+      "port": "mm:items",
+      "input": true,
+      "tiers": [
+        "item_main"
+      ]
+    },
+    "second": {
+      "port": "mm:fluids",
+      "input": false
+    },
+    "third": {
+      "port": "mm:fluids",
+      "input": true
+    }
+  },
+  "portGroupings": {
+    "mygroup": [
+      "first",
+      "third"
+    ]
+  }
+}

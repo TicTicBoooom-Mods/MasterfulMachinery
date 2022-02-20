@@ -20,7 +20,7 @@ public class MMItemGroup extends ItemGroup {
     public static final MMItemGroup INSTANCE = new MMItemGroup();
 
     public MMItemGroup() {
-        super("masterfulmachinery");
+        super("mm");
     }
 
     @Override

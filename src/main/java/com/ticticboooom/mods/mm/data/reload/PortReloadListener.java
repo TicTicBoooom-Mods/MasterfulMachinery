@@ -22,7 +22,7 @@ public class PortReloadListener extends JsonReloadListener {
     public static final Gson GSON = new Gson();
 
     public PortReloadListener() {
-        super(GSON, "masterfulmachinery/ports");
+        super(GSON, "mm/port_tiers");
     }
 
     @SubscribeEvent

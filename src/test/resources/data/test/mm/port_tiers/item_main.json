@@ -1,7 +1,7 @@
 {
-  "controllerId": "main",
+  "controllerId": "test:main",
   "name": "Main Items",
-  "type": "masterfulmachinery:items",
+  "type": "mm:items",
   "defaultModel": {
     "block": "minecraft:sponge",
     "properties": {}

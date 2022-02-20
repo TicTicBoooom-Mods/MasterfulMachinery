@@ -22,7 +22,7 @@ public class ControllerReloadListener extends JsonReloadListener {
     public static final Gson GSON = new Gson();
 
     public ControllerReloadListener() {
-        super(GSON, "masterfulmachinery/controllers");
+        super(GSON, "mm/controllers");
     }
 
     @SubscribeEvent

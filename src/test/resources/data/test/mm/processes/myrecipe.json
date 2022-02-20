@@ -1,0 +1,21 @@
+{
+  "structure": "test:mystructure",
+  "inputs": {
+    "firstboi": {
+      "type": "mm:modifiable",
+      "modifier_results": {
+        "starter": {
+          "type": "mm:nothing"
+        },
+        "basic": {
+          "type": "mm:speed",
+          "ticks": "-10%"
+        },
+        "intermediate": {
+          "type": "mm:chance",
+          "chance": "+10%"
+        }
+      }
+    }
+  }
+}
