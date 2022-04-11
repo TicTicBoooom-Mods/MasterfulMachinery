@@ -23,7 +23,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class ControllerBlock extends DirectionalBlock {
+public class ControllerBlock extends HorizontalBlock {
     private final RegistryObject<TileEntityType<?>> type;
     @Getter
     private final String controllerName;
@@ -39,18 +39,18 @@ public class ControllerBlock extends DirectionalBlock {
         this.controllerName = name;
         this.controllerId = id;
         this.texOverride = texOverride;
-        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH));
+        this.setDefaultState(this.getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder.add(FACING));
+        super.fillStateContainer(builder.add(HORIZONTAL_FACING));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlacementHorizontalFacing().getOpposite());
+        return this.getDefaultState().with(HORIZONTAL_FACING, ctx.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
