@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
+import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class PortStructureKeyType extends StructureKeyType {
     }
 
     @Override
-    public Object parse(JsonElement json, List<ResourceLocation> controllerIds, ResourceLocation structureId) {
+    public StructureKeyTypeValue parse(JsonElement json, List<ResourceLocation> controllerIds, ResourceLocation structureId) {
         Value result = new Value();
         JsonObject obj = json.getAsJsonObject();
         result.port = ResourceLocation.tryCreate(obj.get("port").getAsString());
@@ -27,8 +28,8 @@ public class PortStructureKeyType extends StructureKeyType {
         return result;
     }
 
-    public static final class Value {
-        public ResourceLocation port;
+    public static final class Value implements StructureKeyTypeValue {
+        public ResourceLocation  port;
         public Optional<Boolean> input;
     }
 }

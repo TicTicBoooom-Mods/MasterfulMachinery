@@ -2,11 +2,14 @@ package com.ticticboooom.mods.mm;
 
 import com.ticticboooom.mods.mm.block.ter.model.controller.ControllerBlockModel;
 import com.ticticboooom.mods.mm.block.ter.model.port.PortBlockModel;
+import com.ticticboooom.mods.mm.client.screen.ControllerScreen;
 import com.ticticboooom.mods.mm.ports.PortTypeRegistry;
 import com.ticticboooom.mods.mm.ports.base.PortType;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
+import com.ticticboooom.mods.mm.setup.MMContainerTypes;
 import com.ticticboooom.mods.mm.setup.MMItems;
 import com.ticticboooom.mods.mm.setup.MMTiles;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -26,12 +29,15 @@ import java.util.Map;
 
 @Mod(Ref.MOD_ID)
 public class ModRoot {
+
+
     public ModRoot() {
         PortTypeRegistry.registerDefault();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         MMTiles.TILES.register(bus);
         MMBlocks.BLOCKS.register(bus);
         MMItems.ITEMS.register(bus);
+        MMContainerTypes.CONTAINERS.register(bus);
 
         if (EffectiveSide.get().isClient()) {
             bus.addListener(ModRoot::modelRegistry);
@@ -71,6 +77,7 @@ public class ModRoot {
         event.enqueueWork(() -> {
             RenderTypeLookup.setRenderLayer(MMBlocks.CONTROLLER.get(), RenderType.getTranslucent());
             RenderTypeLookup.setRenderLayer(MMBlocks.PORT.get(), RenderType.getTranslucent());
+            ScreenManager.registerFactory(MMContainerTypes.CONTROLLER.get(), ControllerScreen::new);
         });
     }
 }

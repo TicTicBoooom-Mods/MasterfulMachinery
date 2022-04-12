@@ -1,0 +1,27 @@
+{
+  "controllerId": [
+    "test:main",
+    "test:second"
+  ],
+  "controllerSettings": {
+    "facing": "west"
+  },
+  "pattern": [
+    [
+      "ACB"
+    ]
+  ],
+  "keys": {
+    "A": {
+      "include": [
+        "minecraft:dirt",
+        "#minecraft:logs"
+      ]
+    },
+    "B": "minecraft:glass"
+  },
+  "requiredPorts": {
+  },
+  "portGroupings": {
+  }
+}

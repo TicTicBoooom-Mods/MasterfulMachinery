@@ -2,7 +2,7 @@ package com.ticticboooom.mods.mm.setup;
 
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
-import com.ticticboooom.mods.mm.structures.keys.BlockStructureKeyType;
+import com.ticticboooom.mods.mm.structures.keys.*;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,7 +22,11 @@ public class MMRegistries {
     @SubscribeEvent
     public static void register(RegistryEvent.Register<StructureKeyType> event) {
         event.getRegistry().registerAll(
-                new BlockStructureKeyType().setRegistryName(Ref.Reg.SKT.BLOCK)
+                new BlockStructureKeyType().setRegistryName(Ref.Reg.SKT.BLOCK),
+                new PortStructureKeyType().setRegistryName(Ref.Reg.SKT.PORT),
+                new PortTierStructureKeyType().setRegistryName(Ref.Reg.SKT.PORT_TIER),
+                new PortGroupStructureKeyType().setRegistryName(Ref.Reg.SKT.PORT_GROUP),
+                new ModifiableStructureKeyType().setRegistryName(Ref.Reg.SKT.MODIFIABLE)
         );
     }
 }

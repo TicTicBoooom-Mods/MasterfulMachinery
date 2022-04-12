@@ -135,6 +135,10 @@ shadowJar {
 
 
 repositories {
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
     maven { url 'https://modmaven.dev/' }
     maven {
         name = "Cursemaven"
@@ -166,16 +170,17 @@ repositories {
             includeGroup "me.shedaniel"
         }
     }
+    mavenCentral()
 }
 dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    compileOnly 'org.projectlombok:lombok:1.18.18'
-    annotationProcessor 'org.projectlombok:lombok:1.18.18'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
 
-    compileOnly 'com.google.code.gson:gson:2.8.7'
+//    compileOnly 'com.google.code.gson:gson:2.9.0'
     implementation 'org.spongepowered:mixin:0.8-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 //

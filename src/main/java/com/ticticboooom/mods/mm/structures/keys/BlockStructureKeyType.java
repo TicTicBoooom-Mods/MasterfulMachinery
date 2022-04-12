@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
+import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class BlockStructureKeyType extends StructureKeyType {
     }
 
     @Override
-    public Object parse(JsonElement json, List<ResourceLocation> controllerIds, ResourceLocation structureId) {
+    public StructureKeyTypeValue parse(JsonElement json, List<ResourceLocation> controllerIds, ResourceLocation structureId) {
         Value result = new Value();
         result.blockSelector = new ArrayList<>();
         if (json.isJsonPrimitive()) {
@@ -47,8 +48,8 @@ public class BlockStructureKeyType extends StructureKeyType {
             result.properties = ParserUtils.parseOrDefault(jsonObj, "properties", x -> {
                 HashMap<String, String> res = new HashMap<>();
                 JsonObject obj = x.getAsJsonObject();
-                obj.keySet().forEach(z -> {
-                    res.put(z, obj.get(z).getAsString());
+                obj.entrySet().forEach(z -> {
+                    res.put(z.getKey(), z.getValue().getAsString());
                 });
                 return res;
             }, new HashMap<>());
@@ -56,7 +57,7 @@ public class BlockStructureKeyType extends StructureKeyType {
         return result;
     }
 
-    public static final class Value {
+    public static final class Value  implements StructureKeyTypeValue {
         public List<String> blockSelector;
         public Map<String, String> properties;
     }

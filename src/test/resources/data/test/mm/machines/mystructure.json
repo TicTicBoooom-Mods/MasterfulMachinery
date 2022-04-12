@@ -8,18 +8,13 @@
   },
   "pattern": [
     [
-      "ABC",
-      "DEF",
-      "GHI"
+      "ABD",
+      "EFG",
+      "HIJ"
     ],
     [
       "   ",
       " C ",
-      "   "
-    ],
-    [
-      "KLM",
-      "NOP",
       "   "
     ]
   ],
@@ -44,7 +39,7 @@
     },
     "G": {
       "type": "mm:port_tier",
-      "portTier": "item_main",
+      "portTier": "test:item_main",
       "input": false
     },
     "H": {
@@ -79,7 +74,7 @@
       "port": "mm:items",
       "input": true,
       "tiers": [
-        "item_main"
+        "mm:item_main"
       ]
     },
     "second": {
