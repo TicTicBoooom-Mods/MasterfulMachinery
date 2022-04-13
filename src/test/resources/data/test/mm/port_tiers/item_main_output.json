@@ -1,0 +1,10 @@
+{
+  "controllerId": "test:main",
+  "name": "Main Items",
+  "type": "mm:items",
+  "defaultModel": {
+    "block": "minecraft:sponge",
+    "properties": {}
+  },
+  "isInput": false
+}

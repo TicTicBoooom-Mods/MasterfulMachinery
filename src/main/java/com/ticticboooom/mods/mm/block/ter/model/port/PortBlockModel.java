@@ -40,13 +40,11 @@ public class PortBlockModel implements IDynamicBakedModel {
         PortModel port = data.getData(PORT);
         if (data.hasProperty(PORT) && port != null) {
             PortType portType = PortTypeRegistry.PORT_TYPES.get(port.type);
-            if (data.hasProperty(PORT_IO_TYPE)) {
-                Boolean isInput = data.getData(PORT_IO_TYPE);
-                if (isInput != null && isInput) {
-                    quads.add(ModelTools.createQuad(portType.getInputCutout(), side));
-                } else {
-                    quads.add(ModelTools.createQuad(portType.getOutputCutout(), side));
-                }
+            boolean isInput = port.input;
+            if (isInput) {
+                quads.add(ModelTools.createQuad(portType.getInputCutout(), side));
+            } else {
+                quads.add(ModelTools.createQuad(portType.getOutputCutout(), side));
             }
         }
         return quads;

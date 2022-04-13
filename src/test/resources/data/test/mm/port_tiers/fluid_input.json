@@ -1,0 +1,10 @@
+{
+  "controllerId": "test:main",
+  "name": "Main Fluids",
+  "type": "mm:fluids",
+  "defaultModel": {
+    "block": "minecraft:sponge",
+    "properties": {}
+  },
+  "isInput": true
+}

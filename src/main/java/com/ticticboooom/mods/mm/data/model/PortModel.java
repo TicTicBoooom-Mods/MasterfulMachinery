@@ -11,4 +11,5 @@ public class PortModel {
     public ITextComponent name;
     public BlockstateModel defaultModel;
     public boolean showCutout;
+    public boolean input;
 }
