@@ -1,7 +1,6 @@
 package com.ticticboooom.mods.mm.block.tile;
 
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
-import com.ticticboooom.mods.mm.ports.storage.ManaPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.Getter;
 import net.minecraft.block.BlockState;
@@ -9,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -18,9 +16,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import vazkii.botania.api.mana.IManaBlock;
-import vazkii.botania.api.mana.IManaPool;
-import vazkii.botania.api.mana.IManaReceiver;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

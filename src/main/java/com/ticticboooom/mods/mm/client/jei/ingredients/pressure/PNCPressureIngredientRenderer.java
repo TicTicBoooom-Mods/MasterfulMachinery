@@ -8,7 +8,6 @@ import lombok.Setter;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientRenderer;
-import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;

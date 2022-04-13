@@ -1,13 +1,11 @@
 package com.ticticboooom.mods.mm.block;
 
-import com.ticticboooom.mods.mm.block.tile.ControllerBlockEntity;
 import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;

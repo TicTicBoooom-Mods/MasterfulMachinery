@@ -2,17 +2,13 @@ package com.ticticboooom.mods.mm.item;
 
 import com.ticticboooom.mods.mm.helper.NBTHelper;
 import com.ticticboooom.mods.mm.registration.MMLoader;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
 
 public class StructureGenSelectionDevice extends Item {
     public StructureGenSelectionDevice() {

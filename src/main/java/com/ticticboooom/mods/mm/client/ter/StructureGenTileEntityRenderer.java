@@ -6,16 +6,13 @@ import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
 import com.ticticboooom.mods.mm.client.MMRenderTypes;
 import com.ticticboooom.mods.mm.helper.NBTHelper;
 import com.ticticboooom.mods.mm.registration.MMSetup;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
 
 public class StructureGenTileEntityRenderer extends TileEntityRenderer<StructureGenBlockEntity> {
     public StructureGenTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {

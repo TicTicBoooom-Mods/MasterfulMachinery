@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.inventory;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class PortEnergyInventory implements IEnergyStorage {

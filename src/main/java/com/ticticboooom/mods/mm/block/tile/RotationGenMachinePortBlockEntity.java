@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.block.tile;
 
-import com.simibubi.create.content.contraptions.KineticNetwork;
 import com.simibubi.create.content.contraptions.base.GeneratingKineticTileEntity;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.network.PacketHandler;

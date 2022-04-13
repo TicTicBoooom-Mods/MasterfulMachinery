@@ -1,7 +1,6 @@
 package com.ticticboooom.mods.mm.block.container;
 
 import com.ticticboooom.mods.mm.block.container.slot.StructureDeviceSlot;
-import com.ticticboooom.mods.mm.block.tile.ProjectorBlockEntity;
 import com.ticticboooom.mods.mm.block.tile.StructureGenBlockEntity;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class StructureGenBlockContainer extends Container {
     @Getter

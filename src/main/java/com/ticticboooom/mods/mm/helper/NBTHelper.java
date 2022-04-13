@@ -2,7 +2,6 @@ package com.ticticboooom.mods.mm.helper;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import org.lwjgl.system.CallbackI;
 
 public class NBTHelper {
     public static CompoundNBT toCompound(BlockPos pos) {

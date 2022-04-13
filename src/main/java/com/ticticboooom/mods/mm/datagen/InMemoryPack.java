@@ -9,7 +9,6 @@ import net.minecraft.resources.data.IMetadataSectionSerializer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

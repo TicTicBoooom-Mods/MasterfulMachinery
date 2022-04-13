@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients.mana;
 
-import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.inventory.botania.PortManaInventory;
 import mezz.jei.api.ingredients.IIngredientHelper;
 

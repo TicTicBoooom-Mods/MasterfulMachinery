@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
-import com.ticticboooom.mods.mm.block.tile.RotationMachinePortBlockEntity;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import lombok.Getter;
 import lombok.Setter;

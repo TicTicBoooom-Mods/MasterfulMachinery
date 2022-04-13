@@ -2,26 +2,16 @@ package com.ticticboooom.mods.mm.client.jei.ingredients.rotation;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.simibubi.create.AllItems;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.RotationStack;
-import com.ticticboooom.mods.mm.client.jei.ingredients.model.StarlightStack;
 import lombok.Setter;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.List;

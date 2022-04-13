@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.container.PortBlockContainer;
 import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.InvHelper;
 import com.ticticboooom.mods.mm.inventory.ItemStackInventory;
 import lombok.Getter;

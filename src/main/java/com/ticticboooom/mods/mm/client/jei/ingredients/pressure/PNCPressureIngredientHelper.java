@@ -1,10 +1,7 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients.pressure;
 
-import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import mezz.jei.api.ingredients.IIngredientHelper;
-import mezz.jei.api.ingredients.IIngredientType;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
 

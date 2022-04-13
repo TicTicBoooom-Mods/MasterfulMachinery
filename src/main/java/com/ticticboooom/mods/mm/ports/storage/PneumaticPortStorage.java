@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.block.tile.IMachinePortTile;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.GuiHelper;
 import lombok.Getter;
 import me.desht.pneumaticcraft.api.PNCCapabilities;

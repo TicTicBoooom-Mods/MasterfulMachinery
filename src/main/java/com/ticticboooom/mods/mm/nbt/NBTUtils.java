@@ -1,6 +1,7 @@
 package com.ticticboooom.mods.mm.nbt;
 
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 
 public class NBTUtils {
     public static boolean containsKey(CompoundNBT tag, String key) {

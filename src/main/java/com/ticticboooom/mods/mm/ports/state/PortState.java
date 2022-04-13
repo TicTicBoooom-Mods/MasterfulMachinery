@@ -7,7 +7,6 @@ import lombok.Setter;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;

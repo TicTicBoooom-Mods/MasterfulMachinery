@@ -12,7 +12,6 @@ import com.ticticboooom.mods.mm.ports.state.ManaPortState;
 import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.storage.ManaPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
-import com.ticticboooom.mods.mm.registration.MMSetup;
 import com.ticticboooom.mods.mm.registration.Registerable;
 import lombok.SneakyThrows;
 import mezz.jei.api.ingredients.IIngredients;

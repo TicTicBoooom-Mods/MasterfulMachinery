@@ -1,7 +1,6 @@
 package com.ticticboooom.mods.mm.nbt.model;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

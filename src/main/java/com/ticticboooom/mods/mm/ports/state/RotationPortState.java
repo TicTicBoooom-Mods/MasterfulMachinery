@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.client.jei.MMJeiPlugin;
-import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.RotationStack;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.RotationPortStorage;

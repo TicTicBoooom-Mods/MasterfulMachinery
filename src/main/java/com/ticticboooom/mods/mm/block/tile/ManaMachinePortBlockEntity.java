@@ -6,9 +6,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import vazkii.botania.api.mana.IManaBlock;
 import vazkii.botania.api.mana.IManaPool;
-import vazkii.botania.api.mana.IManaSpreader;
 import vazkii.botania.api.mana.spark.ISparkAttachable;
 import vazkii.botania.api.mana.spark.ISparkEntity;
 

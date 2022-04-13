@@ -3,9 +3,12 @@ package com.ticticboooom.mods.mm.helper;
 //once again robbed kindly from https://github.com/vincentmetevelis/CustomQuests2/blob/1.16.5-2.1.0/src/main/java/com/vincentmet/customquests/helpers/rendering/GLScissor.java Thanks Vince ;)
 
 
-import net.minecraft.client.*;
-import net.minecraftforge.api.distmarker.*;
+import net.minecraft.client.MainWindow;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
+
 import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)

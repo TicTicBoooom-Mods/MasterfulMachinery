@@ -4,27 +4,16 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.block.tile.MachinePortBlockEntity;
 import com.ticticboooom.mods.mm.helper.GuiHelper;
-import com.ticticboooom.mods.mm.inventory.PortEnergyInventory;
 import com.ticticboooom.mods.mm.inventory.botania.PortManaInventory;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import vazkii.botania.api.mana.IManaPool;
-import vazkii.botania.api.mana.IManaReceiver;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ManaPortStorage extends PortStorage {
     public static final Codec<ManaPortStorage> CODEC  = RecordCodecBuilder.create(x -> x.group(

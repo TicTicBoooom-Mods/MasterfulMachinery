@@ -12,8 +12,6 @@ import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.SneakyThrows;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.client.jei.ChemicalStackRenderer;
 import mekanism.client.jei.MekanismJEI;

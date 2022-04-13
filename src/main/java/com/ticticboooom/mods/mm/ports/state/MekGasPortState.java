@@ -7,8 +7,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.ticticboooom.mods.mm.MM;
 import com.ticticboooom.mods.mm.exception.InvalidProcessDefinitionException;
 import com.ticticboooom.mods.mm.helper.RLUtils;
-import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.MekGasPortStorage;
+import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import lombok.SneakyThrows;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -20,7 +20,6 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 

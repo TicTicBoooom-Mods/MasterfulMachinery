@@ -3,11 +3,8 @@ package com.ticticboooom.mods.mm.data.model.structure;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.minecraft.util.math.vector.Vector3i;
-
-import java.util.Objects;
 
 @Getter
 @AllArgsConstructor

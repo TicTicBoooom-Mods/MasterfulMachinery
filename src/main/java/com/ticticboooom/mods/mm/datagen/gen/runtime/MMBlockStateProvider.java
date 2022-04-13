@@ -9,7 +9,6 @@ import com.ticticboooom.mods.mm.registration.MMLoader;
 import com.ticticboooom.mods.mm.registration.MMPorts;
 import com.ticticboooom.mods.mm.registration.MMSetup;
 import net.minecraft.block.Block;
-import net.minecraft.block.DirectionalBlock;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.DataGenerator;

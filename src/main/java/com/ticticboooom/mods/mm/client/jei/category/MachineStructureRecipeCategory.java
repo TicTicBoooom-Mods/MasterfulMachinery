@@ -21,7 +21,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DirectionalBlock;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.item.ItemStack;
@@ -267,7 +267,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
                 }
             }
             if (block != null) {
-                BlockState defaultState = block.getDefaultState().with(DirectionalBlock.FACING, Direction.NORTH);
+                BlockState defaultState = block.getDefaultState().with(HorizontalBlock.HORIZONTAL_FACING, Direction.NORTH);
                 renderBlock(defaultState, new BlockPos(0, 0, 0), prePos, offset, matrixStack);
             }
         }

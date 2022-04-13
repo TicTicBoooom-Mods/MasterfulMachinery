@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients.as;
 
-import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.StarlightStack;
 import mezz.jei.api.ingredients.IIngredientHelper;
 

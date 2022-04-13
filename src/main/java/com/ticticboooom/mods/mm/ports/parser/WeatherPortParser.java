@@ -10,7 +10,6 @@ import com.ticticboooom.mods.mm.block.MachinePortBlock;
 import com.ticticboooom.mods.mm.ports.state.PortState;
 import com.ticticboooom.mods.mm.ports.state.StarlightPortState;
 import com.ticticboooom.mods.mm.ports.state.WeatherPortState;
-import com.ticticboooom.mods.mm.ports.storage.EnergyPortStorage;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.ports.storage.WeatherPortStorage;
 import com.ticticboooom.mods.mm.registration.Registerable;

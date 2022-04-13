@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.client.jei.ingredients.energy;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;

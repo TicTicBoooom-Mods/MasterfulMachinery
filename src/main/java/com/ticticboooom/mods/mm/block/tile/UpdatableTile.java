@@ -3,7 +3,6 @@ package com.ticticboooom.mods.mm.block.tile;
 import com.ticticboooom.mods.mm.network.PacketHandler;
 import com.ticticboooom.mods.mm.network.packets.TileClientUpdatePacket;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.network.PacketDistributor;

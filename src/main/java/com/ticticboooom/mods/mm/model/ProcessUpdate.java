@@ -1,10 +1,8 @@
 package com.ticticboooom.mods.mm.model;
 
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,6 @@ package com.ticticboooom.mods.mm.client.jei.ingredients.as;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.ticticboooom.mods.mm.MM;
-import com.ticticboooom.mods.mm.client.jei.ingredients.model.PressureStack;
 import com.ticticboooom.mods.mm.client.jei.ingredients.model.StarlightStack;
 import lombok.Setter;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
