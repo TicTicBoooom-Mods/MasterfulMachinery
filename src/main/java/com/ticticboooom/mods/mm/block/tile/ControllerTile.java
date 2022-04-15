@@ -91,7 +91,7 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
                 }
             } else {
                 if (blockState.getBlock().getRegistryName().toString().equals(s)) {
-                    matches =  true;
+                    matches = true;
                 }
             }
         }
@@ -101,12 +101,12 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
     private boolean isValidPort(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
         PortStructureKeyType.Value data = (PortStructureKeyType.Value) dataIn;
         if (blockState.getBlock().getRegistryName().equals(MMBlocks.PORT.getId())) {
-            TileEntity te = world.getTileEntity(pos);
+            TileEntity te = world.getTileEntity(this.pos.add(pos));
             if (te instanceof PortTile) {
                 PortTile pte = (PortTile) te;
                 boolean io = true;
                 if (data.input.isPresent()) {
-                    io = data.input.get() == pte.isInput;
+                    io = data.input.get() == pte.portModel.input;
                 }
                 return io && pte.portModel.type.equals(data.port);
             }
@@ -117,12 +117,12 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
     private boolean isValidPortTier(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
         PortTierStructureKeyType.Value data = (PortTierStructureKeyType.Value) dataIn;
         if (blockState.getBlock().getRegistryName().equals(MMBlocks.PORT.getId())) {
-            TileEntity te = world.getTileEntity(pos);
+            TileEntity te = world.getTileEntity(this.pos.add(pos));
             if (te instanceof PortTile) {
                 PortTile pte = (PortTile) te;
                 boolean io = true;
                 if (data.input.isPresent()) {
-                    io = data.input.get() == pte.isInput;
+                    io = data.input.get() == pte.portModel.input;
                 }
                 return io && pte.portModel.id.equals(data.portTier);
             }
@@ -132,18 +132,22 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
 
     private boolean isValidPortGroup(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
         PortGroupStructureKeyType.Value data = (PortGroupStructureKeyType.Value) dataIn;
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getTileEntity(this.pos.add(pos));
         if (te instanceof PortTile) {
-
             PortTile pte = (PortTile) te;
             List<String> reqKeys = model.portGroupings.get(data.group);
             for (String reqKey : reqKeys) {
                 StructureModel.RequiredPort requiredPort = model.requiredPorts.get(reqKey);
-                if (!requiredPort.port.equals(pte.portModel.type)) {
+                if (requiredPort != null && !requiredPort.port.equals(pte.portModel.type)) {
                     return false;
                 }
-
-                return requiredPort.tiers.contains(pte.portModel.id);
+                boolean matches = false;
+                for (ResourceLocation tier : requiredPort.tiers) {
+                    if (tier.toString().equals(pte.portModel.id.toString())) {
+                        matches = true;
+                    }
+                }
+                return matches;
             }
         }
         return false;
@@ -212,7 +216,7 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
     private boolean isValidBlockPlacement(StructureModel model) {
         Rotation rotation = Rotation.NONE;
         for (int i = 0; i < 4; i++) {
-            boolean found = true;
+             boolean found = true;
             for (StructureModel.PositionedKey positionedKey : rotateKeys(model, rotation)) {
                 if (!isValidBlockSingleWithKey(positionedKey, model)) {
                     found = false;

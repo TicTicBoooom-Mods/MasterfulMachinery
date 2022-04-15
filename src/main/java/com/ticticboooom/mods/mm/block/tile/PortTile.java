@@ -16,7 +16,6 @@ public class PortTile extends TileEntity implements ITickableTileEntity {
     }
 
     public PortModel portModel;
-    public boolean isInput;
 
     @Override
     public void tick() {
@@ -27,7 +26,6 @@ public class PortTile extends TileEntity implements ITickableTileEntity {
     public IModelData getModelData() {
         return new ModelDataMap.Builder()
                 .withInitial(PortBlockModel.PORT, portModel)
-                .withInitial(PortBlockModel.PORT_IO_TYPE, isInput)
                 .build();
     }
 

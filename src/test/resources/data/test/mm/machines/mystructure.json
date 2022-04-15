@@ -26,7 +26,7 @@
       ]
     },
     "B": "minecraft:glass",
-    "D": "#minecraft:wools",
+    "D": "#minecraft:wool",
     "E": {
       "include": "#minecraft:logs",
       "exclude": [
@@ -39,7 +39,7 @@
     },
     "G": {
       "type": "mm:port_tier",
-      "portTier": "test:item_main",
+      "portTier": "test:item_main_output",
       "input": false
     },
     "H": {
@@ -74,22 +74,17 @@
       "port": "mm:items",
       "input": true,
       "tiers": [
-        "mm:item_main"
+        "test:item_main_input"
       ]
     },
     "second": {
-      "port": "mm:fluids",
+      "port": "mm:items",
       "input": false
-    },
-    "third": {
-      "port": "mm:fluids",
-      "input": true
     }
   },
   "portGroupings": {
     "mygroup": [
-      "first",
-      "third"
+      "first"
     ]
   }
 }

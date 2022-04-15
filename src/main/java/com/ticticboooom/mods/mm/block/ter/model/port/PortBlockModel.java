@@ -27,7 +27,6 @@ import java.util.Random;
 
 public class PortBlockModel implements IDynamicBakedModel {
     public static final ModelProperty<PortModel> PORT = new ModelProperty<>();
-    public static final ModelProperty<Boolean> PORT_IO_TYPE = new ModelProperty<>();
     public static final PortItemOverrideList OVERRIDE_LIST = new PortItemOverrideList();
 
     @Nonnull
