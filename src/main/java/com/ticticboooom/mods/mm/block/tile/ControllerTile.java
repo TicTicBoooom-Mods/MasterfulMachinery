@@ -6,8 +6,12 @@ import com.ticticboooom.mods.mm.client.container.ControllerContainer;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
+import com.ticticboooom.mods.mm.net.MMNetworkManager;
+import com.ticticboooom.mods.mm.net.packets.TileClientUpdatePacket;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
+import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.setup.MMTiles;
+import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.structures.keys.*;
 import net.minecraft.block.BlockState;
@@ -28,6 +32,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,9 +52,14 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
 
     @Override
     public void tick() {
-        if (controllerModel == null) {
+        if (EffectiveSide.get().isServer()) {
+            CompoundNBT compound = write(new CompoundNBT());
+            MMNetworkManager.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(this.pos, compound));
+        }
+        if (controllerModel == null || controllerModel.id == null) {
             return;
         }
+
         StructureModel valid = getValid();
         if (valid == null) {
             return;
@@ -80,129 +91,11 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
         return false;
     }
 
-    private boolean isValidBlock(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
-        BlockStructureKeyType.Value data = (BlockStructureKeyType.Value) dataIn;
-        boolean matches = false;
-        for (String s : data.blockSelector) {
-            if (s.startsWith("#")) {
-                String tagName = s.substring(1);
-                if (blockState.isIn(BlockTags.getCollection().getTagByID(Objects.requireNonNull(ResourceLocation.tryCreate(tagName))))) {
-                    matches = true;
-                }
-            } else {
-                if (blockState.getBlock().getRegistryName().toString().equals(s)) {
-                    matches = true;
-                }
-            }
-        }
-        return matches;
-    }
-
-    private boolean isValidPort(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
-        PortStructureKeyType.Value data = (PortStructureKeyType.Value) dataIn;
-        if (blockState.getBlock().getRegistryName().equals(MMBlocks.PORT.getId())) {
-            TileEntity te = world.getTileEntity(this.pos.add(pos));
-            if (te instanceof PortTile) {
-                PortTile pte = (PortTile) te;
-                boolean io = true;
-                if (data.input.isPresent()) {
-                    io = data.input.get() == pte.portModel.input;
-                }
-                return io && pte.portModel.type.equals(data.port);
-            }
-        }
-        return false;
-    }
-
-    private boolean isValidPortTier(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
-        PortTierStructureKeyType.Value data = (PortTierStructureKeyType.Value) dataIn;
-        if (blockState.getBlock().getRegistryName().equals(MMBlocks.PORT.getId())) {
-            TileEntity te = world.getTileEntity(this.pos.add(pos));
-            if (te instanceof PortTile) {
-                PortTile pte = (PortTile) te;
-                boolean io = true;
-                if (data.input.isPresent()) {
-                    io = data.input.get() == pte.portModel.input;
-                }
-                return io && pte.portModel.id.equals(data.portTier);
-            }
-        }
-        return false;
-    }
-
-    private boolean isValidPortGroup(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
-        PortGroupStructureKeyType.Value data = (PortGroupStructureKeyType.Value) dataIn;
-        TileEntity te = world.getTileEntity(this.pos.add(pos));
-        if (te instanceof PortTile) {
-            PortTile pte = (PortTile) te;
-            List<String> reqKeys = model.portGroupings.get(data.group);
-            for (String reqKey : reqKeys) {
-                StructureModel.RequiredPort requiredPort = model.requiredPorts.get(reqKey);
-                if (requiredPort != null && !requiredPort.port.equals(pte.portModel.type)) {
-                    return false;
-                }
-                boolean matches = false;
-                for (ResourceLocation tier : requiredPort.tiers) {
-                    if (tier.toString().equals(pte.portModel.id.toString())) {
-                        matches = true;
-                    }
-                }
-                return matches;
-            }
-        }
-        return false;
-    }
-
-    private boolean isValidModifiable(StructureKeyTypeValue dataIn, StructureModel model, BlockState blockState, BlockPos pos) {
-        ModifiableStructureKeyType.Value data = (ModifiableStructureKeyType.Value) dataIn;
-        for (Map.Entry<String, StructureKeyTypeValue> entry : data.modifiers.entrySet()) {
-            if (isValidBlockSingleWithData(entry.getValue(), model, pos)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean isValidBlockSingleWithKey(StructureModel.PositionedKey positionedKey, StructureModel model) {
         BlockState blockState = world.getBlockState(this.pos.add(positionedKey.pos));
-        if (positionedKey.type.equals(Ref.Reg.SKT.BLOCK)) {
-            return isValidBlock(positionedKey.data, model, blockState, positionedKey.pos);
-        }
-        if (positionedKey.type.equals(Ref.Reg.SKT.PORT)) {
-            return isValidPort(positionedKey.data, model, blockState, positionedKey.pos);
-        }
-        if (positionedKey.type.equals(Ref.Reg.SKT.PORT_TIER)) {
-            return isValidPortTier(positionedKey.data, model, blockState, positionedKey.pos);
-        }
-        if (positionedKey.type.equals(Ref.Reg.SKT.PORT_GROUP)) {
-            return isValidPortGroup(positionedKey.data, model, blockState, positionedKey.pos);
-        }
-        if (positionedKey.type.equals(Ref.Reg.SKT.MODIFIABLE)) {
-            return isValidModifiable(positionedKey.data, model, blockState, positionedKey.pos);
-        }
-        return true;
+        StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(positionedKey.type);
+        return value.isValidPlacement(this.pos.add(positionedKey.pos), model, blockState, positionedKey.data, world);
     }
-
-    private boolean isValidBlockSingleWithData(StructureKeyTypeValue dataIn, StructureModel model, BlockPos pos) {
-        BlockState blockState = world.getBlockState(this.pos.add(pos));
-        if (dataIn instanceof BlockStructureKeyType.Value) {
-            return isValidBlock(dataIn, model, blockState, pos);
-        }
-        if (dataIn instanceof PortStructureKeyType.Value) {
-            return isValidPort(dataIn, model, blockState, pos);
-        }
-        if (dataIn instanceof PortTierStructureKeyType.Value) {
-            return isValidPortTier(dataIn, model, blockState, pos);
-        }
-        if (dataIn instanceof PortGroupStructureKeyType.Value) {
-            return isValidPortGroup(dataIn, model, blockState, pos);
-        }
-        if (dataIn instanceof ModifiableStructureKeyType.Value) {
-            return isValidModifiable(dataIn, model, blockState, pos);
-        }
-        return true;
-    }
-
 
     private List<StructureModel.PositionedKey> rotateKeys(StructureModel model, Rotation rotation) {
         List<StructureModel.PositionedKey> result = new ArrayList<>();
@@ -216,7 +109,7 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
     private boolean isValidBlockPlacement(StructureModel model) {
         Rotation rotation = Rotation.NONE;
         for (int i = 0; i < 4; i++) {
-             boolean found = true;
+            boolean found = true;
             for (StructureModel.PositionedKey positionedKey : rotateKeys(model, rotation)) {
                 if (!isValidBlockSingleWithKey(positionedKey, model)) {
                     found = false;
@@ -250,16 +143,16 @@ public class ControllerTile extends TileEntity implements ITickableTileEntity, I
 
     @Override
     public void read(BlockState state, CompoundNBT nbt) {
+        super.read(state, nbt);
         if (nbt.contains("ControllerId")) {
             String controllerId = nbt.getString("ControllerId");
             controllerModel = DataRegistry.CONTROLLERS.get(ResourceLocation.tryCreate(controllerId));
         }
-        super.read(state, nbt);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
-        if (controllerModel.id != null) {
+        if (controllerModel != null) {
             compound.putString("ControllerId", controllerModel.id.toString());
         }
         return super.write(compound);

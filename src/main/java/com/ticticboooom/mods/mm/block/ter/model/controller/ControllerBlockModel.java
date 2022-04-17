@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 public class ControllerBlockModel implements IDynamicBakedModel {
@@ -37,7 +38,7 @@ public class ControllerBlockModel implements IDynamicBakedModel {
                 quads.add(ModelTools.createQuad(Ref.res("block/controller_cutout"), side));
             }
         }
-         return quads;
+        return quads;
     }
 
 

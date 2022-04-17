@@ -2,18 +2,23 @@ package com.ticticboooom.mods.mm.block.item;
 
 import com.ticticboooom.mods.mm.block.tile.ControllerTile;
 import com.ticticboooom.mods.mm.data.DataRegistry;
+import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
 import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class ControllerBlockItem extends BlockItem {
     public ControllerBlockItem() {
@@ -23,18 +28,31 @@ public class ControllerBlockItem extends BlockItem {
 
     @Override
     protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
-        ResourceLocation loc = TagHelper.getControllerId(stack);
-        if (loc == null) {
-            return false;
-        }
-        if (!DataRegistry.CONTROLLERS.containsKey(loc)){
-            return false;
-        }
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof ControllerTile) {
             ControllerTile controller = (ControllerTile) tileEntity;
-            controller.controllerModel = DataRegistry.CONTROLLERS.get(loc);
+            controller.controllerModel = getModel(stack);
         }
         return super.onBlockPlaced(pos, worldIn, player, stack, state);
+    }
+
+    @Override
+    public ITextComponent getDisplayName(ItemStack stack) {
+        ControllerModel model = getModel(stack);
+        if (model == null) {
+            return super.getDisplayName(stack);
+        }
+        return model.name;
+    }
+
+    private ControllerModel getModel(ItemStack stack) {
+        ResourceLocation loc = TagHelper.getControllerId(stack);
+        if (loc == null) {
+            return null;
+        }
+        if (!DataRegistry.CONTROLLERS.containsKey(loc)){
+            return null;
+        }
+        return DataRegistry.CONTROLLERS.get(loc);
     }
 }

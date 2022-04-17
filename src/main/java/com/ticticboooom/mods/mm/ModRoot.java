@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm;
 import com.ticticboooom.mods.mm.block.ter.model.controller.ControllerBlockModel;
 import com.ticticboooom.mods.mm.block.ter.model.port.PortBlockModel;
 import com.ticticboooom.mods.mm.client.screen.ControllerScreen;
+import com.ticticboooom.mods.mm.net.MMNetworkManager;
 import com.ticticboooom.mods.mm.ports.PortTypeRegistry;
 import com.ticticboooom.mods.mm.ports.base.PortType;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
@@ -19,10 +20,12 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.Map;
@@ -38,6 +41,7 @@ public class ModRoot {
         MMBlocks.BLOCKS.register(bus);
         MMItems.ITEMS.register(bus);
         MMContainerTypes.CONTAINERS.register(bus);
+        bus.addListener(ModRoot::commonSetup);
 
         if (EffectiveSide.get().isClient()) {
             bus.addListener(ModRoot::modelRegistry);
@@ -45,6 +49,10 @@ public class ModRoot {
             bus.addListener(ModRoot::clientSetup);
             bus.addListener(ModRoot::stitch);
         }
+    }
+
+    private static void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(MMNetworkManager::init);
     }
 
     public static void bake(ModelBakeEvent event) {

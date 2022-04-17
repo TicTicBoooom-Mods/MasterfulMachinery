@@ -47,7 +47,6 @@ public class MMItemGroup extends ItemGroup {
             ItemStack stack = new ItemStack(MMItems.PORT.get());
             CompoundNBT tag = stack.getOrCreateTag();
             tag.putString("Port", entry.getValue().id.toString());
-            stack.setDisplayName(entry.getValue().name);
             controllers.add(stack);
         }
         return controllers;

@@ -3,11 +3,15 @@ package com.ticticboooom.mods.mm.structures.keys;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.Ref;
+import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import lombok.SneakyThrows;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +29,12 @@ public class ModifiableStructureKeyType extends StructureKeyType {
     public StructureKeyTypeValue parse(JsonElement json, List<ResourceLocation> controllerIds, ResourceLocation structureId) {
         JsonObject obj = json.getAsJsonObject();
         JsonObject modifiers = obj.getAsJsonObject("modifiers");
-        HashMap<String, StructureKeyTypeValue> modifiersMap = new HashMap<>();
+        HashMap<String, StructureModel.Key> modifiersMap = new HashMap<>();
         modifiers.entrySet().forEach(x -> {
             JsonElement jsonElement = x.getValue();
             for (StructureKeyType skt : MMRegistries.STRUCTURE_KEY_TYPES) {
                 if (skt.matches(jsonElement)) {
-                    modifiersMap.put(x.getKey(), skt.parse(jsonElement, controllerIds, structureId));
+                    modifiersMap.put(x.getKey(), new StructureModel.Key(skt.getRegistryName(), skt.parse(jsonElement, controllerIds, structureId)));
                     return;
                 }
             }
@@ -42,7 +46,19 @@ public class ModifiableStructureKeyType extends StructureKeyType {
         return value;
     }
 
+    @Override
+    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world) {
+        ModifiableStructureKeyType.Value data = (ModifiableStructureKeyType.Value) dataIn;
+        for (Map.Entry<String, StructureModel.Key> entry : data.modifiers.entrySet()) {
+            StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(entry.getValue().type);
+            if (value.isValidPlacement(pos, model, state, entry.getValue().data, world)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static final class Value implements StructureKeyTypeValue {
-        public Map<String, StructureKeyTypeValue> modifiers;
+        public Map<String, StructureModel.Key> modifiers;
     }
 }

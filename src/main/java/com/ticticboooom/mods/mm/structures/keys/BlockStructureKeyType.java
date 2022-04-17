@@ -3,15 +3,17 @@ package com.ticticboooom.mods.mm.structures.keys;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
+import net.minecraft.block.BlockState;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlockStructureKeyType extends StructureKeyType {
     @Override
@@ -55,6 +57,25 @@ public class BlockStructureKeyType extends StructureKeyType {
             }, new HashMap<>());
         }
         return result;
+    }
+
+    @Override
+    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world) {
+        BlockStructureKeyType.Value data = (BlockStructureKeyType.Value) dataIn;
+        boolean matches = false;
+        for (String s : data.blockSelector) {
+            if (s.startsWith("#")) {
+                String tagName = s.substring(1);
+                if (state.isIn(BlockTags.getCollection().getTagByID(Objects.requireNonNull(ResourceLocation.tryCreate(tagName))))) {
+                    matches = true;
+                }
+            } else {
+                if (state.getBlock().getRegistryName().toString().equals(s)) {
+                    matches = true;
+                }
+            }
+        }
+        return matches;
     }
 
     public static final class Value  implements StructureKeyTypeValue {
