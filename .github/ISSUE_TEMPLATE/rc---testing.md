@@ -1,9 +1,9 @@
 ---
 name: RC - Testing
 about: A Temporary template used for RC-Testing
-title: ''
+title: "[RC-TEST]"
 labels: RC-TESTING
-assignees: ticticboooom, MasterSloth1
+assignees: MasterSloth1, ticticboooom
 
 ---
 
