@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
+import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.block.BlockState;
@@ -60,7 +61,7 @@ public class BlockStructureKeyType extends StructureKeyType {
     }
 
     @Override
-    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world) {
+    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world, MachineStructureContext ctx) {
         BlockStructureKeyType.Value data = (BlockStructureKeyType.Value) dataIn;
         boolean matches = false;
         for (String s : data.blockSelector) {

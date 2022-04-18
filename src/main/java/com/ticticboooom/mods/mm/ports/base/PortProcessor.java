@@ -1,6 +1,7 @@
 package com.ticticboooom.mods.mm.ports.base;
 
+import com.ticticboooom.mods.mm.ports.ctx.MachineProcessContext;
+
 public abstract class PortProcessor {
-    public abstract boolean canProcess(MachineRecipeContext ctx, PortStorage current);
-    public abstract boolean process(MachineRecipeContext ctx, PortStorage current);
+    public abstract boolean canProcess(MachineProcessContext ctx);
 }

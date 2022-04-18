@@ -46,6 +46,7 @@ public class PortReloadListener extends JsonReloadListener {
         model.defaultModel = ParserUtils.parseOrDefault(json, "defaultModel", (x) -> ParserUtils.parseBlockState(x.getAsJsonObject()), BlockstateModel.DEFAULT);
         model.showCutout = ParserUtils.parseOrDefault(json, "showCutout", JsonElement::getAsBoolean, true);
         model.input = ParserUtils.parseOrDefault(json, "isInput", JsonElement::getAsBoolean, false);
+        model.json = json;
         return model;
     }
 }

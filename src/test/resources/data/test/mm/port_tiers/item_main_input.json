@@ -6,5 +6,7 @@
     "block": "minecraft:sponge",
     "properties": {}
   },
+  "rows": 2,
+  "columns": 2,
   "isInput": true
 }

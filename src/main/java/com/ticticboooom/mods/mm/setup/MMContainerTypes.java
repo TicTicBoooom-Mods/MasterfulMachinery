@@ -4,6 +4,7 @@ import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.PortBlock;
 import com.ticticboooom.mods.mm.client.container.ControllerContainer;
+import com.ticticboooom.mods.mm.client.container.PortContainer;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -15,4 +16,5 @@ public class MMContainerTypes {
     public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Ref.MOD_ID);
 
     public static final RegistryObject<ContainerType<ControllerContainer>> CONTROLLER = CONTAINERS.register("controller", () -> IForgeContainerType.create(ControllerContainer::new));
+    public static final RegistryObject<ContainerType<PortContainer>> PORT = CONTAINERS.register("port", () -> IForgeContainerType.create(PortContainer::new));
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.block.tile.PortTile;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
+import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.block.BlockState;
@@ -33,15 +34,18 @@ public class PortGroupStructureKeyType extends StructureKeyType {
     }
 
     @Override
-    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world) {
+    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world, MachineStructureContext ctx) {
         PortGroupStructureKeyType.Value data = (PortGroupStructureKeyType.Value) dataIn;
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof PortTile) {
             PortTile pte = (PortTile) te;
+            if (pte.portModel == null || pte.portModel.id == null) {
+                return false;
+            }
             List<String> reqKeys = model.portGroupings.get(data.group);
             for (String reqKey : reqKeys) {
                 StructureModel.RequiredPort requiredPort = model.requiredPorts.get(reqKey);
-                if (requiredPort != null && !requiredPort.port.equals(pte.portModel.type)) {
+                if (requiredPort != null && requiredPort.port != null && !requiredPort.port.equals(pte.portModel.type)) {
                     return false;
                 }
                 boolean matches = false;

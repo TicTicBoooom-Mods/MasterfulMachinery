@@ -7,10 +7,6 @@ import com.ticticboooom.mods.mm.ports.base.PortType;
 import net.minecraft.util.ResourceLocation;
 
 public class ItemPortType extends PortType {
-    public ItemPortType() {
-        super(new ItemPortInputProcessor(), new ItemPortOutputProcessor());
-    }
-
     @Override
     public PortStorage parseStorage(JsonObject data) {
         int rows = data.get("rows").getAsInt();

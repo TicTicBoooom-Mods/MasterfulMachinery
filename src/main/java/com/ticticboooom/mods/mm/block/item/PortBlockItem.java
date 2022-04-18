@@ -4,7 +4,10 @@ import com.ticticboooom.mods.mm.block.tile.PortTile;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.data.model.PortModel;
+import com.ticticboooom.mods.mm.ports.PortTypeRegistry;
+import com.ticticboooom.mods.mm.ports.base.PortType;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
+import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,11 +29,13 @@ public class PortBlockItem extends BlockItem {
 
     @Override
     protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
-
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         if (tileEntity instanceof PortTile) {
-            PortTile controller = (PortTile) tileEntity;
-            controller.portModel = getModel(stack);
+            PortTile tile = (PortTile) tileEntity;
+            PortModel model = getModel(stack);
+            PortType type = PortTypeRegistry.PORT_TYPES.get(model.type);
+            tile.storage = type.parseStorage(model.json);
+            tile.portModel = model;
         }
         return super.onBlockPlaced(pos, worldIn, player, stack, state);
     }

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
+import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
@@ -13,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +49,12 @@ public class ModifiableStructureKeyType extends StructureKeyType {
     }
 
     @Override
-    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world) {
+    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world, MachineStructureContext ctx) {
         ModifiableStructureKeyType.Value data = (ModifiableStructureKeyType.Value) dataIn;
         for (Map.Entry<String, StructureModel.Key> entry : data.modifiers.entrySet()) {
             StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(entry.getValue().type);
-            if (value.isValidPlacement(pos, model, state, entry.getValue().data, world)) {
+            if (value.isValidPlacement(pos, model, state, entry.getValue().data, world, ctx)) {
+                ctx.activeModifiers.add(entry.getKey());
                 return true;
             }
         }

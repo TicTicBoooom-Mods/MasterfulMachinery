@@ -6,6 +6,7 @@ import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.block.tile.PortTile;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
+import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
@@ -36,12 +37,15 @@ public class PortTierStructureKeyType extends StructureKeyType {
     }
 
     @Override
-    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world) {
+    public boolean isValidPlacement(BlockPos pos, StructureModel model, BlockState state, StructureKeyTypeValue dataIn, World world, MachineStructureContext ctx) {
         PortTierStructureKeyType.Value data = (PortTierStructureKeyType.Value) dataIn;
         if (state.getBlock().getRegistryName().equals(MMBlocks.PORT.getId())) {
             TileEntity te = world.getTileEntity(pos);
             if (te instanceof PortTile) {
                 PortTile pte = (PortTile) te;
+                if (pte.portModel == null || pte.portModel.id == null) {
+                    return false;
+                }
                 boolean io = true;
                 if (data.input.isPresent()) {
                     io = data.input.get() == pte.portModel.input;

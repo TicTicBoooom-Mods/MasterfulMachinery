@@ -1,7 +1,22 @@
 {
   "structure": "test:mystructure",
+  "ticks": 100,
   "inputs": {
-    "firstboi": {
+    "myitem": {
+      "type": "mm:items",
+      "item": "minecraft:glass",
+      "amount": 10
+    }
+  },
+  "outputs": {
+    "myout": {
+      "type": "mm:items",
+      "item": "minecraft:coal",
+      "amount": 23
+    }
+  },
+  "preprocessors": {
+    "mypp": {
       "type": "mm:modifiable",
       "modifier_results": {
         "starter": {
@@ -9,11 +24,7 @@
         },
         "basic": {
           "type": "mm:speed",
-          "ticks": "-10%"
-        },
-        "intermediate": {
-          "type": "mm:chance",
-          "chance": "+10%"
+          "ticks": 0.01
         }
       }
     }

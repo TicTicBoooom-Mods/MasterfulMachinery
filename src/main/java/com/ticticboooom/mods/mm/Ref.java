@@ -31,6 +31,26 @@ public class Ref {
             public static final ResourceLocation PORT_GROUP = res("port_group");
             public static final ResourceLocation MODIFIABLE = res("modifiable");
         }
+        public static final ResourceLocation PROCESS_INGREDIENT_TYPE = res("processes/ingredient_type");
+        public static final class PIT {
+            public static final ResourceLocation ITEMS = res("items");
+        }
+
+        public static final ResourceLocation PROCESS_OUTPUT_TYPE = res("processes/output_type");
+        public static final class POT {
+            public static final ResourceLocation ITEMS = res("items");
+        }
+
+        public static final ResourceLocation PREPROCESSOR_TYPE = res("processes/preprocessor_type");
+        public static final class PT {
+            public static final ResourceLocation MODIFIABLE = res("modifiable");
+        }
+
+        public static final ResourceLocation MODIFIER_ACTIONS = res("processes/modifier_actions");
+        public static final class MA {
+            public static final ResourceLocation NOTHING = res("nothing");
+            public static final ResourceLocation SPEED = res("speed");
+        }
     }
 
     public static final ResourceLocation JEI_PLUGIN = res("jei");

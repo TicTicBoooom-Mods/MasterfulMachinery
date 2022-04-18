@@ -13,4 +13,5 @@ public class DataRegistry {
     public static final Map<ResourceLocation, ControllerModel> CONTROLLERS = new HashMap<>();
     public static final Map<ResourceLocation, PortModel> PORTS = new HashMap<>();
     public static final Map<ResourceLocation, StructureModel> STRUCTURES = new HashMap<>();
+    public static final Map<ResourceLocation, ProcessModel> PROCESSES = new HashMap<>();
 }
