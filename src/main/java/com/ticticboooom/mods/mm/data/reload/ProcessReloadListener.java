@@ -39,6 +39,7 @@ public class ProcessReloadListener extends JsonReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+        DataRegistry.PROCESSES.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : objectIn.entrySet()) {
             DataRegistry.PROCESSES.put(entry.getKey(), parse(entry.getKey(), entry.getValue().getAsJsonObject()));
         }

@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ControllerBlockItem extends BlockItem {
     public ControllerBlockItem() {
@@ -50,9 +52,21 @@ public class ControllerBlockItem extends BlockItem {
         if (loc == null) {
             return null;
         }
-        if (!DataRegistry.CONTROLLERS.containsKey(loc)){
+        if (!DataRegistry.CONTROLLERS.containsKey(loc)) {
             return null;
         }
         return DataRegistry.CONTROLLERS.get(loc);
     }
+
+    @Override
+    public void onCreated(ItemStack stack, World worldIn, PlayerEntity playerIn) {
+        Set<Map.Entry<ResourceLocation, ControllerModel>> entries = DataRegistry.CONTROLLERS.entrySet();
+        if (entries.size() != 0) {
+            Map.Entry<ResourceLocation, ControllerModel> next = entries.iterator().next();
+            stack.getOrCreateTag().putString("Controller", next.getValue().id.toString());
+        }
+        super.onCreated(stack, worldIn, playerIn);
+    }
+
+
 }

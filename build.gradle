@@ -20,7 +20,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.1.57-B' + getVersionNumber()
+version = '1.16.5-2.0.3-B' + getVersionNumber()
 group = 'com.ticticboooom.mods.mm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'MasterfulMachinery'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
@@ -183,12 +183,12 @@ dependencies {
 //    compileOnly 'com.google.code.gson:gson:2.9.0'
     implementation 'org.spongepowered:mixin:0.8-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
-//
-//    implementation fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
-//
+
+    implementation fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
+
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
@@ -235,7 +235,6 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "MixinConfigs"            : "masterfulmachinery.mixins.json",
                 "Specification-Title"     : "masterfulmachinery",
                 "Specification-Vendor"    : "ticticboooom",
                 "Specification-Version"   : "1", // We are version 1 of ourselves

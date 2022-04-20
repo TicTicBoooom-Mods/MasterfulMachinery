@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -16,6 +17,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -55,9 +57,21 @@ public class ControllerBlock extends DirectionalBlock {
         if (!worldIn.isRemote()) {
             TileEntity blockEntity = worldIn.getTileEntity(pos);
             if (blockEntity instanceof ControllerTile) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (ControllerTile)blockEntity, pos);
+                NetworkHooks.openGui((ServerPlayerEntity) player, (ControllerTile) blockEntity, pos);
             }
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos
+            pos, PlayerEntity player) {
+        ItemStack pickBlock = super.getPickBlock(state, target, world, pos, player);
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof ControllerTile) {
+            ControllerTile cte = (ControllerTile) te;
+            pickBlock.getOrCreateTag().putString("Controller", cte.controllerModel.id.toString());
+        }
+        return pickBlock;
     }
 }

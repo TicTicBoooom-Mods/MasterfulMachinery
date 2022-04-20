@@ -18,11 +18,14 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -88,4 +91,13 @@ public class PortTile extends TileEntity implements ITickableTileEntity, INamedC
     }
 
 
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        LazyOptional<T> lazyOptional = storage.getLazyOptional(cap, side);
+        if (lazyOptional == null) {
+            return super.getCapability(cap, side);
+        }
+        return lazyOptional;
+    }
 }

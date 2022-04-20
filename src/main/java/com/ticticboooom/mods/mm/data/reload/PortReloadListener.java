@@ -32,6 +32,8 @@ public class PortReloadListener extends JsonReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+        DataRegistry.PORTS.clear();
+
         for (Map.Entry<ResourceLocation, JsonElement> entry : objectIn.entrySet()) {
             DataRegistry.PORTS.put(entry.getKey(), parse(entry.getKey(), entry.getValue().getAsJsonObject()));
         }

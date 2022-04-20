@@ -1,0 +1,11 @@
+{
+  "controllerId": "test:main",
+  "name": "Main Fluids",
+  "type": "mm:fluids",
+  "defaultModel": {
+    "block": "minecraft:stone",
+    "properties": {}
+  },
+  "capacity": 100000,
+  "isInput": true
+}

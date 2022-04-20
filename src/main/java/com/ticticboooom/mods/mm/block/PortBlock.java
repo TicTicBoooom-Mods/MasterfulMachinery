@@ -15,6 +15,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -48,10 +49,22 @@ public class PortBlock extends Block {
         if (!worldIn.isRemote()) {
             TileEntity blockEntity = worldIn.getTileEntity(pos);
             if (blockEntity instanceof PortTile) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, (PortTile)blockEntity, pos);
+                NetworkHooks.openGui((ServerPlayerEntity) player, (PortTile) blockEntity, pos);
             }
         }
         return ActionResultType.SUCCESS;
     }
 
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos
+            pos, PlayerEntity player) {
+        ItemStack pickBlock = super.getPickBlock(state, target, world, pos, player);
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof PortTile) {
+            PortTile cte = (PortTile) te;
+            pickBlock.getOrCreateTag().putString("Port", cte.portModel.id.toString());
+        }
+        return pickBlock;
+    }
 }
+

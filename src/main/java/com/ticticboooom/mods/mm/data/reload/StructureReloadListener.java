@@ -37,6 +37,7 @@ public class StructureReloadListener extends JsonReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+        DataRegistry.STRUCTURES.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : objectIn.entrySet()) {
             DataRegistry.STRUCTURES.put(entry.getKey(), parse(entry.getKey(), entry.getValue().getAsJsonObject()));
         }
@@ -84,7 +85,7 @@ public class StructureReloadListener extends JsonReloadListener {
             JsonArray arr = elem.getAsJsonArray();
             ArrayList<String> strings = new ArrayList<>();
             for (JsonElement jsonElement : arr) {
-                strings.add(jsonElement.getAsString());
+                strings.add(new StringBuilder(jsonElement.getAsString()).reverse().toString());
             }
             pattern.add(strings);
         }

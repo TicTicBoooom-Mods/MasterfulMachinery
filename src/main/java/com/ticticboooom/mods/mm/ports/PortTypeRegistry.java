@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm.ports;
 
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.ports.base.PortType;
+import com.ticticboooom.mods.mm.ports.fluids.FluidPortType;
 import com.ticticboooom.mods.mm.ports.items.ItemPortType;
 import net.minecraft.util.ResourceLocation;
 
@@ -13,5 +14,6 @@ public class PortTypeRegistry {
 
     public static void registerDefault() {
         PORT_TYPES.put(Ref.PortTypes.ITEM_TYPE, new ItemPortType());
+        PORT_TYPES.put(Ref.PortTypes.FLUID_TYPE, new FluidPortType());
     }
 }

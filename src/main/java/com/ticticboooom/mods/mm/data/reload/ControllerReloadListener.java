@@ -32,6 +32,7 @@ public class ControllerReloadListener extends JsonReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objectIn, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+        DataRegistry.CONTROLLERS.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : objectIn.entrySet()) {
             DataRegistry.CONTROLLERS.put(entry.getKey(), parse(entry.getKey(), entry.getValue().getAsJsonObject()));
         }
