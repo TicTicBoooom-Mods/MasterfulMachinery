@@ -21,6 +21,7 @@ public class Ref {
     public static final class PortTypes {
         public static final ResourceLocation ITEM_TYPE = res("items");
         public static final ResourceLocation FLUID_TYPE = res("fluids");
+        public static final ResourceLocation ENERGY_TYPE = res("energy");
     }
 
     public static final class Reg {
