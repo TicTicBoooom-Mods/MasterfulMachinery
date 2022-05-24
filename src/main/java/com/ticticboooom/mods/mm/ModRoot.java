@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm;
 
 import com.ticticboooom.mods.mm.block.ter.model.controller.ControllerBlockModel;
 import com.ticticboooom.mods.mm.block.ter.model.port.PortBlockModel;
+import com.ticticboooom.mods.mm.client.screen.BlueprintScreen;
 import com.ticticboooom.mods.mm.client.screen.ControllerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortScreen;
 import com.ticticboooom.mods.mm.net.MMNetworkManager;
@@ -33,7 +34,6 @@ import java.util.Map;
 
 @Mod(Ref.MOD_ID)
 public class ModRoot {
-
 
     public ModRoot() {
         PortTypeRegistry.registerDefault();
@@ -88,6 +88,7 @@ public class ModRoot {
             RenderTypeLookup.setRenderLayer(MMBlocks.PORT.get(), RenderType.getTranslucent());
             ScreenManager.registerFactory(MMContainerTypes.CONTROLLER.get(), ControllerScreen::new);
             ScreenManager.registerFactory(MMContainerTypes.PORT.get(), PortScreen::new);
+            ScreenManager.registerFactory(MMContainerTypes.BLUEPRINT.get(), BlueprintScreen::new);
         });
     }
 }

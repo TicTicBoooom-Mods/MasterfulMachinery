@@ -4,12 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.block.tile.PortTile;
+import com.ticticboooom.mods.mm.client.helper.GuiBlockRenderBuilder;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
+import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -56,8 +58,21 @@ public class PortTierStructureKeyType extends StructureKeyType {
         return false;
     }
 
+    @Override
+    public void onBlueprintInitialRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        data.renderBlock = GuiBlockUtils.getGuiBlockPort(pos, data.portTier);
+    }
+
+    @Override
+    public GuiBlockRenderBuilder onBlueprintRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        return data.renderBlock;
+    }
+
     public static final class Value implements StructureKeyTypeValue {
         public ResourceLocation portTier;
         public Optional<Boolean> input;
+        public GuiBlockRenderBuilder renderBlock;
     }
 }
