@@ -5,7 +5,7 @@ license="All rights reserved"
 [[mods]]
 modId="mmtest"
 version="${file.jarVersion}"
-displayName="Masterful Machinery Test Mod" #mandatory
+displayName="Masterful Machinery Test Mod"
 description='''
 MM Test Mod
 '''

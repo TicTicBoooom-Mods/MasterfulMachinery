@@ -1,11 +1,8 @@
 package com.ticticboooom.mods.mm.data.model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
-import javafx.geometry.Pos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import org.lwjgl.system.CallbackI;
 
 import java.util.List;
 import java.util.Map;

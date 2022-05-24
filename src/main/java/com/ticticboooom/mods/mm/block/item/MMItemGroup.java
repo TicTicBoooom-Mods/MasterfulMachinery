@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.block.item;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.data.model.PortModel;
+import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.setup.MMItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

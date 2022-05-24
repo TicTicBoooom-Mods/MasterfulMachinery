@@ -21,7 +21,6 @@ public class ControllerScreen extends ContainerScreen<ControllerContainer> {
         this.renderHoveredTooltip(stack, mouseX, mouseY);
     }
 
-
     @Override
     protected void drawGuiContainerForegroundLayer(MatrixStack stack, int x0, int y0) {
         this.minecraft.fontRenderer.func_238418_a_(container.getTile().controllerModel.name, 10, -20, 176, 0xfefefe);

@@ -27,5 +27,18 @@ public class TagHelper {
         return ResourceLocation.tryCreate(controller);
     }
 
+    public static void setPortId(ItemStack stack, ResourceLocation id) {
+        setRL(stack, "Port", id);
+    }
+
+    public static void setRL(ItemStack stack, String key, ResourceLocation id) {
+        if (!stack.hasTag()) {
+            stack.getOrCreateTag();
+        }
+
+        CompoundNBT nbt = stack.getTag();
+        nbt.putString(key, id.toString());
+    }
+
 
 }

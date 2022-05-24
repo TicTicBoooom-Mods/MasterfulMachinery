@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.setup;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.block.ControllerBlock;
 import com.ticticboooom.mods.mm.block.PortBlock;
+import com.ticticboooom.mods.mm.client.container.BlueprintContainer;
 import com.ticticboooom.mods.mm.client.container.ControllerContainer;
 import com.ticticboooom.mods.mm.client.container.PortContainer;
 import net.minecraft.block.Block;
@@ -17,4 +18,5 @@ public class MMContainerTypes {
 
     public static final RegistryObject<ContainerType<ControllerContainer>> CONTROLLER = CONTAINERS.register("controller", () -> IForgeContainerType.create(ControllerContainer::new));
     public static final RegistryObject<ContainerType<PortContainer>> PORT = CONTAINERS.register("port", () -> IForgeContainerType.create(PortContainer::new));
+    public static final RegistryObject<ContainerType<BlueprintContainer>> BLUEPRINT = CONTAINERS.register("blueprint", () -> IForgeContainerType.create(BlueprintContainer::new));
 }

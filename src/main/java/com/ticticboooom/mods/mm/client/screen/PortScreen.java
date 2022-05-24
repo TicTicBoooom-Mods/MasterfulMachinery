@@ -26,7 +26,6 @@ public class PortScreen extends ContainerScreen<PortContainer> {
     protected void drawGuiContainerForegroundLayer(MatrixStack stack, int x0, int y0) {
         drawString(stack, this.minecraft.fontRenderer, container.getTile().portModel.name, 7, -15, 0xfefefe);
         drawString(stack, this.minecraft.fontRenderer, "Inventory", 7, 110, 0xfefefe);
-
     }
 
 

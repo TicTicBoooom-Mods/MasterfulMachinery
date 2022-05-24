@@ -4,17 +4,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.block.tile.PortTile;
+import com.ticticboooom.mods.mm.client.helper.AirBlockReader;
+import com.ticticboooom.mods.mm.client.helper.GuiBlockRenderBuilder;
+import com.ticticboooom.mods.mm.data.DataRegistry;
+import com.ticticboooom.mods.mm.data.model.PortModel;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
+import com.ticticboooom.mods.mm.setup.MMBlocks;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
+import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PortGroupStructureKeyType extends StructureKeyType {
 
@@ -60,7 +68,44 @@ public class PortGroupStructureKeyType extends StructureKeyType {
         return false;
     }
 
+    @Override
+    public void onBlueprintInitialRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        data.renderTicker = 0;
+        data.renderBlockList = new ArrayList<>();
+        List<String> portKeys = model.portGroupings.get(data.group);
+        for (String key : portKeys) {
+            StructureModel.RequiredPort requiredPort = model.requiredPorts.get(key);
+            if (requiredPort.tiers.isEmpty()) {
+                for (Map.Entry<ResourceLocation, PortModel> entry : DataRegistry.PORTS.entrySet()) {
+                    if (entry.getValue().type.equals(requiredPort.port)) {
+                        data.renderBlockList.add(GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id));
+                    }
+                }
+            } else {
+
+                for (ResourceLocation tier : requiredPort.tiers) {
+                    data.renderBlockList.add(GuiBlockUtils.getGuiBlockPort(pos, tier));
+                }
+            }
+        }
+    }
+
+    @Override
+    public GuiBlockRenderBuilder onBlueprintRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        GuiBlockRenderBuilder guiBlock = data.renderBlockList.get((int) data.renderTicker);
+        data.renderTicker += 0.01;
+        if (data.renderTicker >= data.renderBlockList.size()) {
+            data.renderTicker = 0;
+        }
+        return guiBlock;
+    }
+
     public static final class Value implements StructureKeyTypeValue {
         public String group;
+        // render
+        public float renderTicker;
+        public List<GuiBlockRenderBuilder> renderBlockList;
     }
 }
