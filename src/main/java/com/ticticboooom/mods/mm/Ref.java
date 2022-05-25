@@ -36,11 +36,13 @@ public class Ref {
         public static final ResourceLocation PROCESS_INGREDIENT_TYPE = res("processes/ingredient_type");
         public static final class PIT {
             public static final ResourceLocation ITEMS = res("items");
+            public static final ResourceLocation ENERGY = res("energy");
         }
 
         public static final ResourceLocation PROCESS_OUTPUT_TYPE = res("processes/output_type");
         public static final class POT {
             public static final ResourceLocation ITEMS = res("items");
+            public static final ResourceLocation ENERGY = res("energy");
         }
 
         public static final ResourceLocation PREPROCESSOR_TYPE = res("processes/preprocessor_type");
