@@ -10,6 +10,7 @@ import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -106,6 +107,21 @@ public class ModifiableStructureKeyType extends StructureKeyType {
                     return guiBlockRenderBuilder;
                 }
             }
+        }
+        return null;
+    }
+
+    @Override
+    public ItemStack onBlueprintListRender(StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        int counter = -1;
+        for (Map.Entry<String, StructureModel.Key> entry : data.modifiers.entrySet()) {
+            counter++;
+            if (counter != data.currentRenderingModifier) {
+                continue;
+            }
+            StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(entry.getValue().type);
+            return value.onBlueprintListRender(model, entry.getValue().data);
         }
         return null;
     }

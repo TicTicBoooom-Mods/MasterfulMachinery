@@ -15,6 +15,7 @@ import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -73,19 +74,25 @@ public class PortGroupStructureKeyType extends StructureKeyType {
         Value data = (Value) dataIn;
         data.renderTicker = 0;
         data.renderBlockList = new ArrayList<>();
+        data.renderItemList = new ArrayList<>();
         List<String> portKeys = model.portGroupings.get(data.group);
         for (String key : portKeys) {
             StructureModel.RequiredPort requiredPort = model.requiredPorts.get(key);
             if (requiredPort.tiers.isEmpty()) {
                 for (Map.Entry<ResourceLocation, PortModel> entry : DataRegistry.PORTS.entrySet()) {
                     if (entry.getValue().type.equals(requiredPort.port)) {
-                        data.renderBlockList.add(GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id));
+                        GuiBlockRenderBuilder guiBlockPort = GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id);
+                        data.renderBlockList.add(guiBlockPort);
+                        data.renderItemList.add(guiBlockPort.blockState.getBlock().asItem().getDefaultInstance());
+
                     }
                 }
             } else {
 
                 for (ResourceLocation tier : requiredPort.tiers) {
-                    data.renderBlockList.add(GuiBlockUtils.getGuiBlockPort(pos, tier));
+                    GuiBlockRenderBuilder guiBlockPort = GuiBlockUtils.getGuiBlockPort(pos, tier);
+                    data.renderBlockList.add(guiBlockPort);
+                    data.renderItemList.add(guiBlockPort.blockState.getBlock().asItem().getDefaultInstance());
                 }
             }
         }
@@ -102,10 +109,18 @@ public class PortGroupStructureKeyType extends StructureKeyType {
         return guiBlock;
     }
 
+    @Override
+    public ItemStack onBlueprintListRender(StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        return data.renderItemList.get((int) data.renderTicker);
+    }
+
     public static final class Value implements StructureKeyTypeValue {
         public String group;
         // render
         public float renderTicker;
         public List<GuiBlockRenderBuilder> renderBlockList;
+        public List<ItemStack> renderItemList;
+
     }
 }

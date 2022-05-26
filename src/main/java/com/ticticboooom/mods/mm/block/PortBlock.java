@@ -2,6 +2,7 @@ package com.ticticboooom.mods.mm.block;
 
 import com.ticticboooom.mods.mm.block.tile.ControllerTile;
 import com.ticticboooom.mods.mm.block.tile.PortTile;
+import com.ticticboooom.mods.mm.setup.MMItems;
 import com.ticticboooom.mods.mm.setup.MMTiles;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -9,7 +10,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -65,6 +68,13 @@ public class PortBlock extends Block {
             pickBlock.getOrCreateTag().putString("Port", cte.portModel.id.toString());
         }
         return pickBlock;
+    }
+
+
+    public Item asItem() {
+        ItemStack stack = new ItemStack(MMItems.PORT.get());
+        CompoundNBT tag = stack.getOrCreateTag();
+        tag.putString("Port", entry.getValue().id.toString());
     }
 }
 

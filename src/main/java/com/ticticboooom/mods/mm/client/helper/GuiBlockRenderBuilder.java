@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiBlockRenderBuilder {
-    private final BlockState blockState;
+    public final BlockState blockState;
     private BlockPos position;
     private Quaternion orderedRotation;
     private Minecraft mc = Minecraft.getInstance();

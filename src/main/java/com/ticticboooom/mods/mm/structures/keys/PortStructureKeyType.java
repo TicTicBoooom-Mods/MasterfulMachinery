@@ -15,6 +15,7 @@ import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -67,9 +68,12 @@ public class PortStructureKeyType extends StructureKeyType {
         Value data = (Value) dataIn;
         data.renderTicker = 0;
         data.renderBlocks = new ArrayList<>();
+        data.renderItemList = new ArrayList<>();
         for (Map.Entry<ResourceLocation, PortModel> entry : DataRegistry.PORTS.entrySet()) {
             if (entry.getValue().type.equals(data.port)) {
-                data.renderBlocks.add(GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id));
+                GuiBlockRenderBuilder guiBlockPort = GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id);
+                data.renderBlocks.add(guiBlockPort);
+                data.renderItemList.add(guiBlockPort.blockState.getBlock().asItem().getDefaultInstance());
             }
         }
     }
@@ -85,11 +89,19 @@ public class PortStructureKeyType extends StructureKeyType {
         return guiBlock;
     }
 
+    @Override
+    public ItemStack onBlueprintListRender(StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        return data.renderItemList.get((int)data.renderTicker);
+    }
+
     public static final class Value implements StructureKeyTypeValue {
         public ResourceLocation  port;
         public Optional<Boolean> input;
 
         public List<GuiBlockRenderBuilder> renderBlocks;
+        public List<ItemStack> renderItemList;
+
         public float renderTicker;
     }
 }
