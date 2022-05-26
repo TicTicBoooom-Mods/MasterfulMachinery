@@ -5,9 +5,11 @@ import com.ticticboooom.mods.mm.process.ModifierAction;
 import com.ticticboooom.mods.mm.process.PreProcessorType;
 import com.ticticboooom.mods.mm.process.ProcessIngredientType;
 import com.ticticboooom.mods.mm.process.ProcessOutputType;
+import com.ticticboooom.mods.mm.process.ingredients.EnergyIngredientType;
 import com.ticticboooom.mods.mm.process.ingredients.ItemsIngredientType;
 import com.ticticboooom.mods.mm.process.modifieractions.NothingModifierAction;
 import com.ticticboooom.mods.mm.process.modifieractions.SpeedModifierAction;
+import com.ticticboooom.mods.mm.process.outputs.EnergyOutputType;
 import com.ticticboooom.mods.mm.process.outputs.ItemsOutputType;
 import com.ticticboooom.mods.mm.process.preprocessors.ModifiablePreProcessorType;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
@@ -50,14 +52,16 @@ public class MMRegistries {
     @SubscribeEvent
     public static void registerPIT(RegistryEvent.Register<ProcessIngredientType> event) {
         event.getRegistry().registerAll(
-                new ItemsIngredientType().setRegistryName(Ref.Reg.PIT.ITEMS)
+                new ItemsIngredientType().setRegistryName(Ref.Reg.PIT.ITEMS),
+                new EnergyIngredientType().setRegistryName(Ref.Reg.PIT.ENERGY)
         );
     }
 
     @SubscribeEvent
     public static void registerPOT(RegistryEvent.Register<ProcessOutputType> event) {
         event.getRegistry().registerAll(
-                new ItemsOutputType().setRegistryName(Ref.Reg.POT.ITEMS)
+                new ItemsOutputType().setRegistryName(Ref.Reg.POT.ITEMS),
+                new EnergyOutputType().setRegistryName(Ref.Reg.POT.ENERGY)
         );
     }
 
