@@ -13,6 +13,8 @@ import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -68,6 +70,12 @@ public class PortTierStructureKeyType extends StructureKeyType {
     public GuiBlockRenderBuilder onBlueprintRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
         Value data = (Value) dataIn;
         return data.renderBlock;
+    }
+
+    @Override
+    public ItemStack onBlueprintListRender(StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        return data.renderBlock.blockState.getBlock().asItem().getDefaultInstance();
     }
 
     public static final class Value implements StructureKeyTypeValue {

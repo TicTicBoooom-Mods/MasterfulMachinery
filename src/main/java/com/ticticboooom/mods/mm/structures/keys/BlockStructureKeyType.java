@@ -12,6 +12,7 @@ import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
@@ -88,6 +89,7 @@ public class BlockStructureKeyType extends StructureKeyType {
     public void onBlueprintInitialRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
         Value data = (Value) dataIn;
         data.renderTicker = 0;
+        data.renderItemList = new ArrayList<>();
         data.renderBlockList = new ArrayList<>();
         for (String s : data.blockSelector) {
             if (s.startsWith("#")) {
@@ -97,11 +99,13 @@ public class BlockStructureKeyType extends StructureKeyType {
                 for (Block allBlock : allBlocks) {
                     BlockState defaultState = allBlock.getDefaultState();
                     data.renderBlockList.add(new GuiBlockRenderBuilder(defaultState, new AirBlockReader(defaultState)).at(pos));
+                    data.renderItemList.add(allBlock.asItem().getDefaultInstance());
                 }
             } else {
                 Block value = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryCreate(s));
                 BlockState defaultState = value.getDefaultState();
                 data.renderBlockList.add(new GuiBlockRenderBuilder(defaultState, new AirBlockReader(defaultState)).at(pos));
+                data.renderItemList.add(value.asItem().getDefaultInstance());
             }
         }
     }
@@ -117,10 +121,17 @@ public class BlockStructureKeyType extends StructureKeyType {
         return guiBlock;
     }
 
+    @Override
+    public ItemStack onBlueprintListRender(StructureModel model, StructureKeyTypeValue dataIn) {
+        Value data = (Value) dataIn;
+        return data.renderItemList.get((int)data.renderTicker);
+    }
+
     public static final class Value implements StructureKeyTypeValue {
         public List<String> blockSelector;
         public Map<String, String> properties;
         public float renderTicker;
         public List<GuiBlockRenderBuilder> renderBlockList;
+        public List<ItemStack> renderItemList;
     }
 }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.ticticboooom.mods.mm.Ref;
 import com.ticticboooom.mods.mm.client.container.BlueprintContainer;
+import com.ticticboooom.mods.mm.client.container.slot.BlueprintSlot;
 import com.ticticboooom.mods.mm.client.helper.GLScissor;
 import com.ticticboooom.mods.mm.client.helper.GuiBlockRenderBuilder;
 import com.ticticboooom.mods.mm.data.DataRegistry;
@@ -20,6 +21,8 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
@@ -71,8 +74,12 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         Minecraft.getInstance().textureManager.bindTexture(STRUCTURE_BG);
         blit(matrixStack, guiLeft + 40, guiTop - 15, 0, 0, 162, 150);
         Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(Ref.MOD_ID, "textures/gui/slot_parts.png"));
-        blit(matrixStack, guiLeft + 40, guiTop + 110, 0, 44, 18, 17);
-//        GLScissor.enable(guiLeft + 40, guiTop - 15, 162, 120);
+        for (int i = 0; i < 9; i++) {
+            blit(matrixStack, guiLeft + 40 + (i * 18), guiTop + 110, 0, 26, 18, 18);
+            blit(matrixStack, guiLeft + 40 + (i * 18), guiTop + 128, 0, 26, 18, 18);
+        }
+
+        GLScissor.enable(guiLeft + 40, guiTop - 15, 162, 120);
 
         matrixStack.push();
         matrixStack.translate(guiLeft, guiTop, 0);
@@ -92,7 +99,8 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
             renderStructure(screenContainer.structure, matrixStack, x, y, false);
         }
         matrixStack.pop();
-//        GLScissor.disable();
+        GLScissor.disable();
+        renderItems();
     }
 
     private void renderStructure(StructureModel model, MatrixStack ms, int mouseX, int mouseY, boolean isInitial) {
@@ -145,7 +153,7 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
                 }
             }
 
-            ResourceLocation cId = screenContainer.structure.controllerId.get((int)controllerIndex);
+            ResourceLocation cId = screenContainer.structure.controllerId.get((int) controllerIndex);
             controllerIndex += 0.01;
             if (controllerIndex >= screenContainer.structure.controllerId.size()) {
                 controllerIndex = 0;
@@ -163,6 +171,30 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
             // End tick
             xLastMousePosition = mouseX;
             yLastMousePosition = mouseY;
+        }
+    }
+
+    private void renderItems() {
+        List<ItemStack> items = new ArrayList<>();
+        StructureModel model = screenContainer.structure;
+        for (StructureModel.PositionedKey key : model.positionedKeys) {
+            StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(key.type);
+            ItemStack itemStack = value.onBlueprintListRender(model, key.data);
+            if (items.contains(itemStack)) {
+                ItemStack found = items.get(items.indexOf(itemStack));
+                found.setCount(found.getCount() + 1);
+            } else {
+                items.add(itemStack);
+            }
+        }
+        for (Slot inventorySlot : screenContainer.inventorySlots) {
+            BlueprintSlot slot = (BlueprintSlot) inventorySlot;
+            int num = slot.index;
+            if (num < items.size()){
+                slot.setItem(items.get(num));
+            } else {
+                break;
+            }
         }
     }
 }
