@@ -20,8 +20,7 @@ public class EnergyPortStorage extends PortStorage {
     public MMEnergyHandler handler;
     public LazyOptional<MMEnergyHandler> handlerLO = LazyOptional.of(() -> handler);
 
-    public EnergyPortStorage(int stored,int capacity) {
-        this.stored = stored;
+    public EnergyPortStorage(int capacity) {
         this.capacity = capacity;
         handler = new MMEnergyHandler(stored,capacity);
     }
