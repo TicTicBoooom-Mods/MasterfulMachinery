@@ -5,12 +5,10 @@ import com.ticticboooom.mods.mm.process.ModifierAction;
 import com.ticticboooom.mods.mm.process.PreProcessorType;
 import com.ticticboooom.mods.mm.process.ProcessIngredientType;
 import com.ticticboooom.mods.mm.process.ProcessOutputType;
-import com.ticticboooom.mods.mm.process.ingredients.EnergyIngredientType;
-import com.ticticboooom.mods.mm.process.ingredients.ItemsIngredientType;
+import com.ticticboooom.mods.mm.process.ingredients.*;
 import com.ticticboooom.mods.mm.process.modifieractions.NothingModifierAction;
 import com.ticticboooom.mods.mm.process.modifieractions.SpeedModifierAction;
-import com.ticticboooom.mods.mm.process.outputs.EnergyOutputType;
-import com.ticticboooom.mods.mm.process.outputs.ItemsOutputType;
+import com.ticticboooom.mods.mm.process.outputs.*;
 import com.ticticboooom.mods.mm.process.preprocessors.ModifiablePreProcessorType;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.keys.*;
@@ -53,7 +51,11 @@ public class MMRegistries {
     public static void registerPIT(RegistryEvent.Register<ProcessIngredientType> event) {
         event.getRegistry().registerAll(
                 new ItemsIngredientType().setRegistryName(Ref.Reg.PIT.ITEMS),
-                new EnergyIngredientType().setRegistryName(Ref.Reg.PIT.ENERGY)
+                new EnergyIngredientType().setRegistryName(Ref.Reg.PIT.ENERGY),
+                new GasIngredientType().setRegistryName(Ref.Reg.PIT.MEKANISM_GAS),
+                new SlurryIngredientType().setRegistryName(Ref.Reg.PIT.MEKANISM_INFUSE_TYPE),
+                new InfuseTypeIngredientType().setRegistryName(Ref.Reg.PIT.MEKANISM_SLURRY),
+                new PigmentIngredientType().setRegistryName(Ref.Reg.PIT.MEKANISM_PIGMENT)
         );
     }
 
@@ -61,7 +63,11 @@ public class MMRegistries {
     public static void registerPOT(RegistryEvent.Register<ProcessOutputType> event) {
         event.getRegistry().registerAll(
                 new ItemsOutputType().setRegistryName(Ref.Reg.POT.ITEMS),
-                new EnergyOutputType().setRegistryName(Ref.Reg.POT.ENERGY)
+                new EnergyOutputType().setRegistryName(Ref.Reg.POT.ENERGY),
+                new GasOutputType().setRegistryName(Ref.Reg.POT.MEKANISM_GAS),
+                new SlurryOutputType().setRegistryName(Ref.Reg.POT.MEKANISM_SLURRY),
+                new InfuseTypeOutputType().setRegistryName(Ref.Reg.POT.MEKANISM_INFUSE_TYPE),
+                new PigmentOutputType().setRegistryName(Ref.Reg.POT.MEKANISM_PIGMENT)
         );
     }
 

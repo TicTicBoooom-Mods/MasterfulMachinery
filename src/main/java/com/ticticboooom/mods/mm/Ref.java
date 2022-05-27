@@ -22,6 +22,10 @@ public class Ref {
         public static final ResourceLocation ITEM_TYPE = res("items");
         public static final ResourceLocation FLUID_TYPE = res("fluids");
         public static final ResourceLocation ENERGY_TYPE = res("energy");
+        public static final ResourceLocation MEKANISM_GAS = res("mekanism_gas");
+        public static final ResourceLocation MEKANISM_SLURRY = res("mekanism_slurry");
+        public static final ResourceLocation MEKANISM_INFUSE_TYPE = res("mekanism_infuse_type");
+        public static final ResourceLocation MEKANISM_PIGMENT = res("mekanism_pigment");
     }
 
     public static final class Reg {
@@ -37,12 +41,20 @@ public class Ref {
         public static final class PIT {
             public static final ResourceLocation ITEMS = res("items");
             public static final ResourceLocation ENERGY = res("energy");
+            public static final ResourceLocation MEKANISM_GAS = res("mekanism_gas");
+            public static final ResourceLocation MEKANISM_SLURRY = res("mekanism_slurry");
+            public static final ResourceLocation MEKANISM_INFUSE_TYPE = res("mekanism_infuse_type");
+            public static final ResourceLocation MEKANISM_PIGMENT = res("mekanism_pigment");
         }
 
         public static final ResourceLocation PROCESS_OUTPUT_TYPE = res("processes/output_type");
         public static final class POT {
             public static final ResourceLocation ITEMS = res("items");
             public static final ResourceLocation ENERGY = res("energy");
+            public static final ResourceLocation MEKANISM_GAS = res("mekanism_gas");
+            public static final ResourceLocation MEKANISM_SLURRY = res("mekanism_slurry");
+            public static final ResourceLocation MEKANISM_INFUSE_TYPE = res("mekanism_infuse_type");
+            public static final ResourceLocation MEKANISM_PIGMENT = res("mekanism_pigment");
         }
 
         public static final ResourceLocation PREPROCESSOR_TYPE = res("processes/preprocessor_type");
