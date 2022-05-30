@@ -11,9 +11,11 @@ import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
+import com.ticticboooom.mods.mm.setup.MMItems;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
+import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -73,7 +75,9 @@ public class PortStructureKeyType extends StructureKeyType {
             if (entry.getValue().type.equals(data.port)) {
                 GuiBlockRenderBuilder guiBlockPort = GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id);
                 data.renderBlocks.add(guiBlockPort);
-                data.renderItemList.add(guiBlockPort.blockState.getBlock().asItem().getDefaultInstance());
+                ItemStack itemStack = new ItemStack(MMItems.PORT.get());
+                TagHelper.setPortId(itemStack, entry.getValue().id);
+                data.renderItemList.add(itemStack);
             }
         }
     }

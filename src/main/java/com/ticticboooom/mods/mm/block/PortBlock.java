@@ -69,12 +69,5 @@ public class PortBlock extends Block {
         }
         return pickBlock;
     }
-
-
-    public Item asItem() {
-        ItemStack stack = new ItemStack(MMItems.PORT.get());
-        CompoundNBT tag = stack.getOrCreateTag();
-        tag.putString("Port", entry.getValue().id.toString());
-    }
 }
 

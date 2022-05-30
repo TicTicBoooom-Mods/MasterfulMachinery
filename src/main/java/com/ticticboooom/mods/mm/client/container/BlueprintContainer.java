@@ -19,7 +19,11 @@ public class BlueprintContainer extends Container {
         super(MMContainerTypes.BLUEPRINT.get(), windowId);
         int index = 0;
         for (int i = 0; i < 9; i++) {
-            addSlot(new BlueprintSlot(index, 40+ (i * 18), 110));
+            addSlot(new BlueprintSlot(index, 41+ (i * 18), 111));
+            index++;
+        }
+        for (int i = 0; i < 9; i++) {
+            addSlot(new BlueprintSlot(index, 41+ (i * 18), 129));
             index++;
         }
     }

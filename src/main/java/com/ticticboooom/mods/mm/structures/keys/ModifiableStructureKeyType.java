@@ -90,7 +90,7 @@ public class ModifiableStructureKeyType extends StructureKeyType {
                 return guiBlockRenderBuilder;
             } else {
                 if (data.intervalTicker >= 1) {
-                    data.intervalTicker = 0;
+                    data.intervalTicker = 0.01f;
                     if (data.initialRenderBlocks.get(entry.getKey()) == guiBlockRenderBuilder) {
                         data.currentRenderingModifier++;
                         if (data.currentRenderingModifier >= data.modifiers.size()) {

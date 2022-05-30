@@ -9,9 +9,11 @@ import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.data.util.ParserUtils;
 import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
+import com.ticticboooom.mods.mm.setup.MMItems;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
+import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -64,6 +66,9 @@ public class PortTierStructureKeyType extends StructureKeyType {
     public void onBlueprintInitialRender(BlockPos pos, StructureModel model, StructureKeyTypeValue dataIn) {
         Value data = (Value) dataIn;
         data.renderBlock = GuiBlockUtils.getGuiBlockPort(pos, data.portTier);
+        ItemStack itemStack = new ItemStack(MMItems.PORT.get());
+        TagHelper.setPortId(itemStack, data.portTier);
+        data.renderItem = itemStack;
     }
 
     @Override
@@ -75,12 +80,13 @@ public class PortTierStructureKeyType extends StructureKeyType {
     @Override
     public ItemStack onBlueprintListRender(StructureModel model, StructureKeyTypeValue dataIn) {
         Value data = (Value) dataIn;
-        return data.renderBlock.blockState.getBlock().asItem().getDefaultInstance();
+        return data.renderItem;
     }
 
     public static final class Value implements StructureKeyTypeValue {
         public ResourceLocation portTier;
         public Optional<Boolean> input;
         public GuiBlockRenderBuilder renderBlock;
+        public ItemStack renderItem;
     }
 }

@@ -58,6 +58,7 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
 
     }
 
@@ -180,8 +181,8 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         for (StructureModel.PositionedKey key : model.positionedKeys) {
             StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(key.type);
             ItemStack itemStack = value.onBlueprintListRender(model, key.data);
-            if (items.contains(itemStack)) {
-                ItemStack found = items.get(items.indexOf(itemStack));
+            ItemStack found = listContainsItem(items, itemStack);
+            if (found != null) {
                 found.setCount(found.getCount() + 1);
             } else {
                 items.add(itemStack);
@@ -196,5 +197,14 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
                 break;
             }
         }
+    }
+
+    private ItemStack listContainsItem(List<ItemStack> list, ItemStack stack) {
+        for (ItemStack st : list) {
+            if (st.equals(stack, false)) {
+                return stack;
+            }
+        }
+        return null;
     }
 }

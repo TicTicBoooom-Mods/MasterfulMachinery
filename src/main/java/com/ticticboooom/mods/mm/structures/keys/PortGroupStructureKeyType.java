@@ -11,9 +11,11 @@ import com.ticticboooom.mods.mm.data.model.PortModel;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.ports.ctx.MachineStructureContext;
 import com.ticticboooom.mods.mm.setup.MMBlocks;
+import com.ticticboooom.mods.mm.setup.MMItems;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
+import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -83,8 +85,9 @@ public class PortGroupStructureKeyType extends StructureKeyType {
                     if (entry.getValue().type.equals(requiredPort.port)) {
                         GuiBlockRenderBuilder guiBlockPort = GuiBlockUtils.getGuiBlockPort(pos, entry.getValue().id);
                         data.renderBlockList.add(guiBlockPort);
-                        data.renderItemList.add(guiBlockPort.blockState.getBlock().asItem().getDefaultInstance());
-
+                        ItemStack itemStack = new ItemStack(MMItems.PORT.get());
+                        TagHelper.setPortId(itemStack, entry.getValue().id);
+                        data.renderItemList.add(itemStack);
                     }
                 }
             } else {
@@ -92,7 +95,9 @@ public class PortGroupStructureKeyType extends StructureKeyType {
                 for (ResourceLocation tier : requiredPort.tiers) {
                     GuiBlockRenderBuilder guiBlockPort = GuiBlockUtils.getGuiBlockPort(pos, tier);
                     data.renderBlockList.add(guiBlockPort);
-                    data.renderItemList.add(guiBlockPort.blockState.getBlock().asItem().getDefaultInstance());
+                    ItemStack itemStack = new ItemStack(MMItems.PORT.get());
+                    TagHelper.setPortId(itemStack, tier);
+                    data.renderItemList.add(itemStack);
                 }
             }
         }
