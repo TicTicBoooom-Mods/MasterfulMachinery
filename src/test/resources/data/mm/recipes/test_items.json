@@ -2,14 +2,15 @@
     "type": "masterfulmachinery:machine_process",
     "structureId": "test_items",
     "controllerId": "basic",
-    "ticks": 200,
+    "ticks": 40,
     "inputs": [
         {
             "type": "masterfulmachinery:items",
             "data": {
                 "item": "minecraft:oak_log",
                 "count": 2
-            }
+            },
+            "perTick": true
         }
     ],
     "outputs":[

@@ -110,7 +110,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
                 if (recipe.matches(inputPorts, structure.getStructureId(), processData)) {
                     // TODO Make sure the recipe doesn't stop progress when some inputs aren't present
                     if (!recipe.equals(processData.getRecipe())) {
-                        if (processData.getRecipe() != null){
+                        if (processData.getRecipe() != null) {
                             processData.getRecipe().onInterrupted(inputPorts, outputPorts);
                         }
                         processData.setTicksTaken(0);

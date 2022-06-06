@@ -38,7 +38,7 @@ public class RotationPortState extends PortState {
     @Override
     public boolean validateRequirement(List<PortStorage> storage) {
         for (PortStorage portStorage : storage) {
-            if (portStorage instanceof RotationPortStorage){
+            if (portStorage instanceof RotationPortStorage) {
                 RotationPortStorage rot = (RotationPortStorage) portStorage;
                 if (!rot.isOverStressed() && rot.getSpeed() >= speed) {
                     return true;
@@ -51,7 +51,7 @@ public class RotationPortState extends PortState {
     @Override
     public void processResult(List<PortStorage> storage) {
         for (PortStorage portStorage : storage) {
-            if (portStorage instanceof RotationPortStorage){
+            if (portStorage instanceof RotationPortStorage) {
                 RotationPortStorage rot = (RotationPortStorage) portStorage;
                 rot.setSpeed(speed);
             }
@@ -81,7 +81,7 @@ public class RotationPortState extends PortState {
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
         IGuiIngredientGroup<RotationStack> group = layout.getIngredientsGroup(MMJeiPlugin.ROT_TYPE);
-        group.init(typeIndex, input, x+ 1, y +1);
+        group.init(typeIndex, input, x + 1, y + 1);
         group.set(typeIndex, new RotationStack(speed));
     }
 

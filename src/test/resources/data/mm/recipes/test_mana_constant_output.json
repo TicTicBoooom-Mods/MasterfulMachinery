@@ -1,0 +1,40 @@
+{
+    "type": "masterfulmachinery:machine_process",
+    "structureId": "test_constant_mana",
+    "controllerId": "basic",
+    "ticks": 100,
+    "inputs": [
+        {
+            "type": "masterfulmachinery:items",
+            "consumeInstantly": false,
+            "data": {
+                "item": "minecraft:stone",
+                "count": 1
+            }
+        },
+        {
+            "type": "masterfulmachinery:botania_mana",
+            "perTick": true,
+            "consumeInstantly": true,
+            "data": {
+                "amount": 25
+            }
+        },
+        {
+            "type": "masterfulmachinery:create_rotation",
+            "perTick": true,
+            "data": {
+                "speed": 16
+            }
+        }
+    ],
+    "outputs": [
+        {
+            "type": "masterfulmachinery:items",
+            "data": {
+                "item": "minecraft:cobblestone",
+                "count": 9
+            }
+        }
+    ]
+}

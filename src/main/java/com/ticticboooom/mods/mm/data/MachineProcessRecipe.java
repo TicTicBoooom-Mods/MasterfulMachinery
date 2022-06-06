@@ -63,11 +63,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             if (takenIndices.contains(i)) {
                 continue;
             }
-            if (!input.isConsumePerTick()) {
+            //if (!input.isConsumePerTick()) {
                 if (!input.validateRequirement(inputPorts)) {
                     return false;
                 }
-            }
+            //}
         }
         return true;
     }
