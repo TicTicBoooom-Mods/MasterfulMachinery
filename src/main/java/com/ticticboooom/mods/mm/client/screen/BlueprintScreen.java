@@ -50,6 +50,9 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
     private float controllerIndex = 0;
     private float scaleFactor = 1F;
 
+    private int prevMouseState = 0;
+
+
     public BlueprintScreen(BlueprintContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         this.screenContainer = screenContainer;
@@ -102,6 +105,8 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         matrixStack.pop();
         GLScissor.disable();
         renderItems();
+        renderActStructureButtons(x, y, matrixStack);
+        prevMouseState = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
     }
 
     private void renderStructure(StructureModel model, MatrixStack ms, int mouseX, int mouseY, boolean isInitial) {
@@ -110,7 +115,7 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         if (isInitial) {
             for (StructureModel.PositionedKey key : model.positionedKeys) {
                 StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(key.type);
-                value.onBlueprintInitialRender(key.pos, model, key.data);
+
             }
         } else {
             RenderSystem.enableBlend();
@@ -143,6 +148,7 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
             }
             for (StructureModel.PositionedKey key : model.positionedKeys) {
                 StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(key.type);
+                value.onBlueprintInitialRender(key.pos, model, key.data);
                 blocks.add(value.onBlueprintRender(key.pos, model, key.data));
 
                 for (GuiBlockRenderBuilder block : blocks) {
@@ -191,7 +197,7 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         for (Slot inventorySlot : screenContainer.inventorySlots) {
             BlueprintSlot slot = (BlueprintSlot) inventorySlot;
             int num = slot.index;
-            if (num < items.size()){
+            if (num < items.size()) {
                 slot.setItem(items.get(num));
             } else {
                 break;
@@ -199,10 +205,25 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         }
     }
 
+    private void renderActStructureButtons(int x, int y, MatrixStack ms) {
+        Minecraft mc = Minecraft.getInstance();
+        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(Ref.MOD_ID, "textures/gui/slot_parts.png"));
+        blit(ms, guiLeft + 40, guiTop + 160, 0, 26, 18, 18);
+        blit(ms, guiLeft + 184, guiTop + 160, 0, 26, 18, 18);
+        int mouseState = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        if (mouseState == 1 & prevMouseState == 0) {
+            if (y >= guiTop + 160 && y <= guiTop + 160 + 18 && x >= guiLeft + 40 && x <= guiLeft + 40 + 18) {
+                screenContainer.rotateDisplayedStructureBackward();
+            } else if (y >= guiTop + 160 && y <= guiTop + 160 + 18 && x >= guiLeft + 184 && x <= guiLeft + 184 + 18) {
+                screenContainer.rotateDisplayedStructureForward();
+            }
+        }
+    }
+
     private ItemStack listContainsItem(List<ItemStack> list, ItemStack stack) {
         for (ItemStack st : list) {
             if (st.equals(stack, false)) {
-                return stack;
+                return stack.copy();
             }
         }
         return null;
