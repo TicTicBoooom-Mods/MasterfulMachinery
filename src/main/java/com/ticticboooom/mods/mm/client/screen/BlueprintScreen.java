@@ -182,6 +182,10 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
     }
 
     private void renderItems() {
+        for (Slot inventorySlot : screenContainer.inventorySlots) {
+            BlueprintSlot slot = (BlueprintSlot) inventorySlot;
+            slot.setItem(ItemStack.EMPTY);
+        }
         List<ItemStack> items = new ArrayList<>();
         StructureModel model = screenContainer.structure;
         for (StructureModel.PositionedKey key : model.positionedKeys) {
