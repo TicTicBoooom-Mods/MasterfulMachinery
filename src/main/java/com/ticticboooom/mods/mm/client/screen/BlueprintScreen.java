@@ -15,6 +15,7 @@ import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -78,9 +79,11 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         Minecraft.getInstance().textureManager.bindTexture(STRUCTURE_BG);
         blit(matrixStack, guiLeft + 40, guiTop - 15, 0, 0, 162, 150);
         Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(Ref.MOD_ID, "textures/gui/slot_parts.png"));
-        for (int i = 0; i < 9; i++) {
-            blit(matrixStack, guiLeft + 40 + (i * 18), guiTop + 110, 0, 26, 18, 18);
-            blit(matrixStack, guiLeft + 40 + (i * 18), guiTop + 128, 0, 26, 18, 18);
+        for (int i = 0; i < 11; i++) {
+            blit(matrixStack, guiLeft -35, guiTop -15 + (i * 18), 0, 26, 18, 18);
+            blit(matrixStack, guiLeft -35 + 18, guiTop -15 + (i * 18), 0, 26, 18, 18);
+            blit(matrixStack, guiLeft -35 + (2*18), guiTop -15 + (i * 18), 0, 26, 18, 18);
+            blit(matrixStack, guiLeft -35 + (3*18), guiTop -15 + (i * 18), 0, 26, 18, 18);
         }
 
         GLScissor.enable(guiLeft + 40, guiTop - 15, 162, 120);
@@ -106,6 +109,8 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         GLScissor.disable();
         renderItems();
         renderActStructureButtons(x, y, matrixStack);
+        FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+        fontRenderer.drawString(matrixStack, screenContainer.structure.name.getString(),guiLeft + 40, guiTop + 110, 0x444444);
         prevMouseState = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
     }
 
@@ -212,13 +217,13 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
     private void renderActStructureButtons(int x, int y, MatrixStack ms) {
         Minecraft mc = Minecraft.getInstance();
         Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(Ref.MOD_ID, "textures/gui/slot_parts.png"));
-        blit(ms, guiLeft + 40, guiTop + 160, 0, 26, 18, 18);
-        blit(ms, guiLeft + 184, guiTop + 160, 0, 26, 18, 18);
+        blit(ms, guiLeft + 40, guiTop + 165, 0, 26, 18, 18);
+        blit(ms, guiLeft + 184, guiTop + 165, 0, 26, 18, 18);
         int mouseState = GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
         if (mouseState == 1 & prevMouseState == 0) {
-            if (y >= guiTop + 160 && y <= guiTop + 160 + 18 && x >= guiLeft + 40 && x <= guiLeft + 40 + 18) {
+            if (y >= guiTop + 165 && y <= guiTop + 165 + 18 && x >= guiLeft + 40 && x <= guiLeft + 40 + 18) {
                 screenContainer.rotateDisplayedStructureBackward();
-            } else if (y >= guiTop + 160 && y <= guiTop + 160 + 18 && x >= guiLeft + 184 && x <= guiLeft + 184 + 18) {
+            } else if (y >= guiTop + 165 && y <= guiTop + 165 + 18 && x >= guiLeft + 184 && x <= guiLeft + 184 + 18) {
                 screenContainer.rotateDisplayedStructureForward();
             }
         }

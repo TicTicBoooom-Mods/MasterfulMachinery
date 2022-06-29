@@ -23,12 +23,14 @@ public class BlueprintContainer extends Container {
     public BlueprintContainer(int windowId, PlayerInventory inv, PacketBuffer data) {
         super(MMContainerTypes.BLUEPRINT.get(), windowId);
         int index = 0;
-        for (int i = 0; i < 9; i++) {
-            addSlot(new BlueprintSlot(index, 41+ (i * 18), 111));
+        for (int i = 0; i < 11; i++) {
+            addSlot(new BlueprintSlot(index, -35 + 1, -15 + (i * 18)+ 1));
             index++;
-        }
-        for (int i = 0; i < 9; i++) {
-            addSlot(new BlueprintSlot(index, 41+ (i * 18), 129));
+            addSlot(new BlueprintSlot(index, -35 + 18+ 1, -15 + (i * 18)+ 1));
+            index++;
+            addSlot(new BlueprintSlot(index, -35 + (2 * 18)+ 1, -15 + (i * 18)+ 1));
+            index++;
+            addSlot(new BlueprintSlot(index, -35 + (3 * 18)+ 1, -15 + (i * 18)+ 1));
             index++;
         }
     }
@@ -50,7 +52,6 @@ public class BlueprintContainer extends Container {
         }
         this.structure = DataRegistry.STRUCTURES.values().toArray(new StructureModel[0])[indexHolder.get()];
     }
-
 
 
     @Override

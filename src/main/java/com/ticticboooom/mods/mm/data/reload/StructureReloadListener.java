@@ -20,6 +20,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.swing.text.html.parser.Parser;
 import java.util.*;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -46,7 +47,7 @@ public class StructureReloadListener extends JsonReloadListener {
     private StructureModel parse(ResourceLocation key, JsonObject json) {
         StructureModel result = new StructureModel();
         result.id = key;
-
+        result.name = ParserUtils.parseTextComponent(json.get("name"));
         result.portGroupings = ParserUtils.parseOrDefault(json, "portGroupings", x -> {
             JsonObject obj = x.getAsJsonObject();
             Map<String, List<String>> res = new HashMap<>();

@@ -3,6 +3,7 @@
     "test:main",
     "test:second"
   ],
+  "name": "bobs aunt",
   "controllerSettings": {
     "facing": "west"
   },

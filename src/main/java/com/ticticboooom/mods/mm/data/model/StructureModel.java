@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.data.model;
 import com.ticticboooom.mods.mm.structures.StructureKeyTypeValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class StructureModel {
     public Map<String, RequiredPort> requiredPorts;
     public Map<String, List<String>> portGroupings;
     public List<PositionedKey> positionedKeys;
+    public ITextComponent name;
 
     public static class Key {
         public Key(ResourceLocation type, StructureKeyTypeValue data){
