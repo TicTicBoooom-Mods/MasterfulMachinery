@@ -73,8 +73,21 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         this.models.add(rotated);
         this.models.add(rotated1);
         this.models.add(rotated2);
+        this.models.add(mirror(models));
+        this.models.add(mirror(rotated));
+        this.models.add(mirror(rotated1));
+        this.models.add(mirror(rotated2));
         this.controllerId = controllerId;
         this.id = id;
+    }
+
+    private List<MachineStructureRecipeKeyModel> mirror(List<MachineStructureRecipeKeyModel> models) {
+        List<MachineStructureRecipeKeyModel> mirrored = new ArrayList<>();
+        for (MachineStructureRecipeKeyModel model : models) {
+            BlockPos mirroredPos = new BlockPos(-model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
+            mirrored.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(mirroredPos.getX(), mirroredPos.getY(), mirroredPos.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
+        }
+        return mirrored;
     }
 
     @Override
