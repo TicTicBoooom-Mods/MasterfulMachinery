@@ -75,7 +75,7 @@ public class RotationPortStorage extends PortStorage {
     public void tick(IMachinePortTile tile) {
         KineticTileEntity kinetic = tile.getTile();
         this.isOverStressed = kinetic.isOverStressed();
-        this.speed = Math.abs(kinetic.getSpeed());
+        //this.speed = Math.abs(kinetic.getSpeed());
     }
 
     @Override

@@ -53,6 +53,9 @@ public class RotationMachinePortBlockEntity extends KineticTileEntity implements
     public void tick() {
         super.tick();
         this.storage.tick(this);
+        if (this.storage instanceof RotationPortStorage) {
+            ((RotationPortStorage) this.storage).setSpeed(Math.abs(this.getSpeed()));
+        }
 
         if (!world.isRemote()) {
             PacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), new TileClientUpdatePacket.Data(pos, write(new CompoundNBT())));
