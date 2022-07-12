@@ -105,14 +105,14 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         return false;
     }
 
-    public int matches(BlockPos controllerPos, World world, String controllerId) {
+    public int matchesAnyTransform(BlockPos controllerPos, World world, String controllerId) {
         if (!this.controllerId.contains(controllerId)) {
             return -1;
         }
 
         int index = 0;
         for (List<MachineStructureRecipeKeyModel> model : models) {
-            if (matchesWithRotation(controllerPos, world, model)) {
+            if (matchesExactModel(controllerPos, world, model)) {
                 return index;
             }
             index++;
@@ -120,13 +120,17 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         return -1;
     }
 
-    public boolean matchesWithRotation(BlockPos controllerPos, World world, List<MachineStructureRecipeKeyModel> items) {
+    public boolean matchesExactModel(BlockPos controllerPos, World world, List<MachineStructureRecipeKeyModel> items) {
         for (MachineStructureRecipeKeyModel model : items) {
             if (!innerBlockMatch(controllerPos, world, model)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean matchesSpecificTransform(BlockPos controllerPos, World world, int index) {
+        return matchesExactModel(controllerPos, world, models.get(index));
     }
 
 

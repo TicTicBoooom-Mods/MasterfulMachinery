@@ -1,0 +1,22 @@
+{
+  "type": "masterfulmachinery:machine_process",
+  "structureId": "machine_share",
+  "controllerId": "basic",
+  "ticks": 1,
+  "inputs": [
+    {
+      "type": "masterfulmachinery:botania_mana",
+      "data":{
+        "amount": 1
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "type": "masterfulmachinery:create_rotation",
+      "data":{
+        "speed": 16
+      }
+    }
+  ]
+}

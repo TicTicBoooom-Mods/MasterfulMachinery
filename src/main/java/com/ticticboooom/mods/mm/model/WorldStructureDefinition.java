@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Getter
 public class WorldStructureDefinition {
+    private int transformIndex;
     private MachineStructureRecipe structure;
     private List<PortStorage> inputPorts;
     private List<PortStorage> outputPorts;

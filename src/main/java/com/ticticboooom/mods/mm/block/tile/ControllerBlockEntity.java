@@ -50,17 +50,34 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         List<MachineStructureRecipe> structures = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         // TODO Maybe check if our structure is still matching before finding a new structure?
         boolean foundStructure = false;
-        for (MachineStructureRecipe structure : structures) {
-            int index = structure.matches(this.pos, world, controllerId);
-            if (index != -1) {
-                if (!structure.equals(processData.getStructureDefinition().getStructure())) {
-                    processData.setTicksTaken(0);
-                }
-                processData.getStructureDefinition().setStructure(structure);
+
+        if (processData.getStructureDefinition().getStructure() != null) {
+            MachineStructureRecipe structure = processData.getStructureDefinition().getStructure();
+            int transformIndex = processData.getStructureDefinition().getTransformIndex();
+            if (structure.matchesSpecificTransform(this.pos, world, transformIndex)) {
                 processData.setMsg("Found structure");
-                onStructureFound(structure, index);
+                onStructureFound(structure, transformIndex);
                 foundStructure = true;
-                break;
+
+            } else {
+                invalidateRecipe();
+            }
+        }
+
+        if (!foundStructure) {
+            for (MachineStructureRecipe structure : structures) {
+                int index = structure.matchesAnyTransform(this.pos, world, controllerId);
+                if (index != -1) {
+                    if (!structure.equals(processData.getStructureDefinition().getStructure())) {
+                        processData.setTicksTaken(0);
+                    }
+                    processData.getStructureDefinition().setStructure(structure);
+                    processData.getStructureDefinition().setTransformIndex(index);
+                    processData.setMsg("Found structure");
+                    onStructureFound(structure, index);
+                    foundStructure = true;
+                    break;
+                }
             }
         }
         update();

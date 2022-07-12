@@ -1,0 +1,43 @@
+{
+  "type": "masterfulmachinery:machine_structure",
+  "id": "machine_share",
+  "controllerId": "basic",
+  "name": "Machine Share Rotational Generator",
+  "layout": [
+    [
+      "   ",
+      ")))",
+      "   "
+    ],
+    [
+      ")2)",
+      "* ,",
+      ")C)"
+    ],
+    [
+      "   ",
+      ")1)",
+      "   "
+    ]
+  ],
+  "legend": {
+    ")": {
+      "block": "minecraft:oak_planks"
+    },
+    "*": {
+      "block": "masterfulmachinery:basic_simple_port_botania_mana_input"
+    },
+    ",": {
+      "block": "masterfulmachinery:basic_simple_port_create_rotation_output"
+    },
+	"1": {
+      "tag": "forge:glass"
+    },
+    "2": {
+      "block": "minecraft:redstone_lamp",
+      "props":{
+        "lit": "true"
+      }
+    }
+  }
+}
