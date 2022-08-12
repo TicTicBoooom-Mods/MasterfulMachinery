@@ -61,16 +61,21 @@ public class MMLoader {
             String controllerId = obj.get("controllerId").getAsString();
             String controllerName = obj.get("name").getAsString();
             String texOverride = null;
+            boolean lockUV = false;
             if (obj.has("textureOverride")) {
                 texOverride = obj.get("textureOverride").getAsString();
             }
+            if (obj.has("lockUV")) {
+                lockUV = obj.get("lockUV").getAsBoolean();
+            }
             final String textureOverrideFinal = texOverride;
+            final boolean lockUVFinal = lockUV;
             {
                 Registerable<RegistryObject<TileEntityType<?>>> controllerTile = new Registerable<>();
                 Registerable<RegistryObject<ControllerBlock>> controllerBlock = new Registerable<>();
                 Registerable<RegistryObject<ContainerType<ControllerBlockContainer>>> cont = new Registerable<>();
                 cont.set(MMSetup.CONTAINER_REG.register(controllerId + "_controller", () -> IForgeContainerType.create((i, o, u) -> new ControllerBlockContainer(cont.get().get(), i, o, u))));
-                controllerBlock.set(MMSetup.BLOCKS_REG.register(controllerId + "_controller", () -> new ControllerBlock(controllerTile.get(), controllerName, controllerId, textureOverrideFinal)));
+                controllerBlock.set(MMSetup.BLOCKS_REG.register(controllerId + "_controller", () -> new ControllerBlock(controllerTile.get(), controllerName, controllerId, textureOverrideFinal, lockUVFinal)));
                 controllerTile.set(MMSetup.TILES_REG.register(controllerId + "_controller", () -> TileEntityType.Builder.create(() -> new ControllerBlockEntity(controllerTile.get(), cont.get(), controllerId), controllerBlock.get().get()).build(null)));
                 MMSetup.ITEMS_REG.register(controllerId + "_controller", () -> new BlockItem(controllerBlock.get().get(), new Item.Properties().group(MASTERFUL_ITEM_GROUP)));
                 BLOCKS.add(controllerBlock.get());

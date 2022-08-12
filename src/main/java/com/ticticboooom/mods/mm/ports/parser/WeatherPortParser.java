@@ -65,7 +65,6 @@ public class WeatherPortParser extends PortFactory {
         return new ResourceLocation(MM.ID, "block/compat_ports/astral_starlight_output_cutout");
     }
 
-
     @Override
     public RegistryObject<MachinePortBlock> registerBlock(String id, DeferredRegister<Block> reg, Registerable<RegistryObject<TileEntityType<?>>> type, String name, String controllerId, String textureOverride, ResourceLocation overlay, ResourceLocation portTypeId) {
         return super.registerBlock(id, reg, type, name, controllerId, textureOverride, overlay, portTypeId);

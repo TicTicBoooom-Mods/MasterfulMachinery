@@ -48,9 +48,7 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
         processData.setMsg("Failed to construct \nthe machine");
         List<MachineStructureRecipe> structures = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
-        // TODO Maybe check if our structure is still matching before finding a new structure?
         boolean foundStructure = false;
-
         if (processData.getStructureDefinition().getStructure() != null) {
             MachineStructureRecipe structure = processData.getStructureDefinition().getStructure();
             int transformIndex = processData.getStructureDefinition().getTransformIndex();
@@ -58,7 +56,6 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
                 processData.setMsg("Found structure");
                 onStructureFound(structure, transformIndex);
                 foundStructure = true;
-
             } else {
                 invalidateRecipe();
             }

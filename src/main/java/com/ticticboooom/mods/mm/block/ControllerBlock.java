@@ -31,14 +31,17 @@ public class ControllerBlock extends HorizontalBlock {
     private final String controllerId;
     @Getter
     private final String texOverride;
+    @Getter
+    private final boolean lockUV;
 
-    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride) {
+    public ControllerBlock(RegistryObject<TileEntityType<?>> type, String name, String id, String texOverride, boolean lockUV) {
         super(AbstractBlock.Properties.create(Material.IRON).setRequiresTool().hardnessAndResistance(5.0F, 6.0F).sound(SoundType.METAL).harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE));
         this.type = type;
         this.controllerName = name;
         this.controllerId = id;
         this.texOverride = texOverride;
+        this.lockUV = lockUV;
         this.setDefaultState(this.getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
     }
 
