@@ -1,0 +1,44 @@
+{
+    "type": "masterfulmachinery:machine_structure",
+    "id": "test_multi_tags",
+    "controllerId": "basic",
+    "name": "Test Multi Tags",
+    "layout": [
+        [
+            "12C34"
+        ]
+    ],
+    "legend": {
+        "1": {
+            "block": "minecraft:stone"
+        },
+        "2": {
+            "tag": "minecraft:wool"
+        },
+        "3": [
+            {
+                "tag": "minecraft:logs"
+            },
+            {
+                "tag": "minecraft:planks"
+            },
+            {
+                "block": "minecraft:redstone_lamp",
+                "props": {
+                    "lit": "true"
+                }
+            }
+        ],
+        "4": [
+            {
+                "block": "minecraft:glowstone"
+            },
+            {
+                "block": "minecraft:piston",
+                "props": {
+                    "extended": "true"
+                }
+            }
+        ]
+    }
+}

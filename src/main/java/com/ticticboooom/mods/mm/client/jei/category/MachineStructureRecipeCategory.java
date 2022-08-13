@@ -1,5 +1,7 @@
 package com.ticticboooom.mods.mm.client.jei.category;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.ticticboooom.mods.mm.MM;
@@ -64,7 +66,8 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
     private float scaleFactor = 1F;
 
     private int tickTimer = 0;
-    private Map<MachineStructureBlockPos, Integer> variantIndices = new HashMap<>();
+    private Table<Integer, MachineStructureBlockPos, Integer> variantIndices = HashBasedTable.create();
+    private Map<MachineStructureBlockPos, Integer> partIndices = new HashMap<>();
 
     public MachineStructureRecipeCategory(IJeiHelpers helpers, ControllerBlock controller) {
         this.helpers = helpers;
@@ -122,6 +125,7 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         this.slicingActive = false;
 
         this.variantIndices.clear();
+        this.partIndices.clear();
         this.tickTimer = 0;
         float tx = 6.75f, ty = -5, tz = 10;
         prePos = new Vector3f(tx, ty, tz);
@@ -180,12 +184,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             parts = parts.stream().filter(x -> x.getPos().getY() == sliceY).collect(Collectors.toList());
         }
 
-        //float tx = 6.5f, ty = -5, tz = 10;
-
-        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) != 0 && GLFW.glfwGetKey(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) != 0){
+        if (GLFW.glfwGetMouseButton(mc.getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT) != 0 && GLFW.glfwGetKey(mc.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) != 0) {
             double relMoveX = mouseX - xLastMousePosition;
             double relMoveY = mouseY - yLastMousePosition;
-            prePos.add((float)relMoveX * 0.08f, (float)-relMoveY * 0.08f, 0);
+            prePos.add((float) relMoveX * 0.08f, (float) -relMoveY * 0.08f, 0);
         }
 
         Vector3f offset = new Vector3f(minX, -minY, minZ); // Align bottom back left corner block to be at the center
@@ -194,16 +196,27 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
 
         Vector4f zero = new Vector4f(0, 0, 0, 1);
         zero.transform(matrixStack.getLast().getMatrix().copy());
-        GLScissor.enable((int)zero.getX(), (int)zero.getY(), 160, 120);
+        GLScissor.enable((int) zero.getX(), (int) zero.getY(), 160, 120);
         // Render the block parts
         for (MachineStructureRecipeKeyModel model : parts) {
-            MachineStructureRecipeData part = model.getData().get(0);
+            this.partIndices.putIfAbsent(model.getPos(), 0);
+            Integer partIndex = this.partIndices.get(model.getPos());
+            MachineStructureRecipeData part = model.getData().get(partIndex);
+            if (this.tickTimer == 0) {
+                this.partIndices.put(model.getPos(), (partIndex + 1) % model.getData().size());
+            }
 
-            this.variantIndices.putIfAbsent(model.getPos(), 0);
+            if (!this.variantIndices.contains(partIndex, model.getPos())) {
+                this.variantIndices.put(partIndex, model.getPos(), 0);
+            }
+
+            int displayIndex = this.variantIndices.get(partIndex, model.getPos());
+
             if (part.getBlock().isEmpty() && part.getTag().isEmpty() && part.getPort() == null) {
                 continue;
             }
 
+            boolean nextPart = false;
             BlockPos bp = new BlockPos(-model.getPos().getX(), model.getPos().getY(), -model.getPos().getZ());
 
             if (!part.getBlock().equals("")) {
@@ -217,11 +230,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             } else if (!part.getTag().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getTag());
                 ITag<Block> tag = BlockTags.getCollection().getTagByID(resourceLocation);
-                Integer index = this.variantIndices.get(model.getPos());
 
-                Block block = tag.getAllElements().get(index);
+                Block block = tag.getAllElements().get(displayIndex);
                 if (this.tickTimer == 0) {
-                    this.variantIndices.put(model.getPos(), (index + 1) % tag.getAllElements().size());
+                    this.variantIndices.put(partIndex, model.getPos(), (displayIndex + 1) % tag.getAllElements().size());
                 }
 
                 if (block != null) {
@@ -232,10 +244,9 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             } else if (part.getPort() != null) {
                 MachineStructurePort port = part.getPort();
                 ArrayList<RegistryObject<MachinePortBlock>> ports = port.isInput() ? MMLoader.IPORT_BLOCKS : MMLoader.OPORT_BLOCKS;
-                Integer index = this.variantIndices.get(model.getPos());
-                String controllerId = port.getControllerId().get(index);
+                String controllerId = port.getControllerId().get(displayIndex);
                 if (this.tickTimer == 0) {
-                    this.variantIndices.put(model.getPos(), (index + 1) % port.getControllerId().size());
+                    this.variantIndices.put(partIndex, model.getPos(), (displayIndex + 1) % port.getControllerId().size());
                 }
                 String type = port.getType();
                 MachinePortBlock block = null;
@@ -258,11 +269,13 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         if (sliceY == 0) {
             ControllerBlock block = null;
             MachineStructureBlockPos controllerPos = new MachineStructureBlockPos(0, 0, 0);
-            this.variantIndices.putIfAbsent(controllerPos, 0);
-            Integer index = this.variantIndices.get(controllerPos);
+            if (!this.variantIndices.contains(0, controllerPos)) {
+                this.variantIndices.put(0, controllerPos, 0);
+            }
+            Integer index = this.variantIndices.get(0, controllerPos);
             String controller = recipe.getControllerId().get(index);
             if (this.tickTimer == 0) {
-                this.variantIndices.put(controllerPos, (index + 1) % recipe.getControllerId().size());
+                this.variantIndices.put(0, controllerPos, (index + 1) % recipe.getControllerId().size());
             }
             for (RegistryObject<ControllerBlock> reg : MMLoader.BLOCKS) {
                 if (reg.get().getControllerId().equals(controller)) {
