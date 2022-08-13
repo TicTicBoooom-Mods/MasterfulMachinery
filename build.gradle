@@ -21,7 +21,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.16.5-0.1.65-B' + getVersionNumber()
+version = '1.16.5-0.1.66-B' + getVersionNumber()
 group = 'com.ticticboooom.mods.mm' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'MasterfulMachinery'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.

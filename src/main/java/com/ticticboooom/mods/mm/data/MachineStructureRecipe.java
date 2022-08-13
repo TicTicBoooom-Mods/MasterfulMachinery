@@ -63,9 +63,9 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             BlockPos rotatedPos1 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.CLOCKWISE_180);
             BlockPos rotatedPos2 = new BlockPos(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ()).rotate(Rotation.COUNTERCLOCKWISE_90);
 
-            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
-            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
-            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
+            rotated.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos.getX(), rotatedPos.getY(), rotatedPos.getZ()), model.getData()));
+            rotated1.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos1.getX(), rotatedPos1.getY(), rotatedPos1.getZ()), model.getData()));
+            rotated2.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(rotatedPos2.getX(), rotatedPos2.getY(), rotatedPos2.getZ()), model.getData()));
         }
 
         this.models = new ArrayList<>();
@@ -85,7 +85,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         List<MachineStructureRecipeKeyModel> mirrored = new ArrayList<>();
         for (MachineStructureRecipeKeyModel model : models) {
             BlockPos mirroredPos = new BlockPos(-model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
-            mirrored.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(mirroredPos.getX(), mirroredPos.getY(), mirroredPos.getZ()), model.getTag(), model.getBlock(), model.getProperties(), model.getPort()));
+            mirrored.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(mirroredPos.getX(), mirroredPos.getY(), mirroredPos.getZ()), model.getData()));
         }
         return mirrored;
     }
@@ -135,51 +135,56 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
 
     public boolean innerBlockMatch(BlockPos controllerPos, World world, MachineStructureRecipeKeyModel model) {
-        BlockPos pos = controllerPos.add(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
-        BlockState blockState = world.getBlockState(pos);
-        boolean valid = false;
-        if (!model.getTag().equals("")) {
-            String[] split = model.getTag().split(":");
-            if (split.length != 2) {
-                MM.LOG.fatal("too many : (colons) in structure tag: {}", model.getTag());
-                return false;
-            }
-            ITag<Block> tag = BlockTags.getCollection().get(new ResourceLocation(split[0], split[1]));
-            if (tag == null) {
-                MM.LOG.fatal("no existing block tag for structure tag: {}", model.getTag());
-                return false;
-            }
-            valid = tag.contains(blockState.getBlock());
-        } else if (!model.getBlock().equals("")) {
-            valid = blockState.getBlock().getRegistryName().toString().equals(model.getBlock());
-        } else if (model.getPort() != null) {
-            MachineStructurePort structurePort = model.getPort();
-            TileEntity portBlockEntity = world.getTileEntity(pos);
-            if (portBlockEntity instanceof IMachinePortTile && blockState.getBlock() instanceof MachinePortBlock) {
-                IMachinePortTile portTile = (IMachinePortTile) portBlockEntity;
-                MachinePortBlock portBlock = ((MachinePortBlock) blockState.getBlock());
-                if (portTile.isInput() == structurePort.isInput() &&
-                    portBlock.getPortTypeId().equals(RLUtils.toRL(structurePort.getType()))) {
-                    List<String> controllerIds = structurePort.getControllerId() != null ? structurePort.getControllerId() : this.controllerId;
-                    valid = controllerIds.contains(portBlock.getControllerId());
+        //List<MachineStructureRecipeKeyModel> toMatch = matcher.getData() == null ? Collections.singletonList(matcher) : matcher.getData();
+
+        for (MachineStructureRecipeData data : model.getData()) {
+            BlockPos pos = controllerPos.add(model.getPos().getX(), model.getPos().getY(), model.getPos().getZ());
+            BlockState blockState = world.getBlockState(pos);
+            boolean valid = false;
+            if (!data.getTag().equals("")) {
+                String[] split = data.getTag().split(":");
+                if (split.length != 2) {
+                    MM.LOG.fatal("too many : (colons) in structure tag: {}", data.getTag());
+                    continue;
+                }
+                ITag<Block> tag = BlockTags.getCollection().get(new ResourceLocation(split[0], split[1]));
+                if (tag == null) {
+                    MM.LOG.fatal("no existing block tag for structure tag: {}", data.getTag());
+                    continue;
+                }
+                valid = tag.contains(blockState.getBlock());
+            } else if (!data.getBlock().equals("")) {
+                valid = blockState.getBlock().getRegistryName().toString().equals(data.getBlock());
+            } else if (data.getPort() != null) {
+                MachineStructurePort structurePort = data.getPort();
+                TileEntity portBlockEntity = world.getTileEntity(pos);
+                if (portBlockEntity instanceof IMachinePortTile && blockState.getBlock() instanceof MachinePortBlock) {
+                    IMachinePortTile portTile = (IMachinePortTile) portBlockEntity;
+                    MachinePortBlock portBlock = ((MachinePortBlock) blockState.getBlock());
+                    if (portTile.isInput() == structurePort.isInput() &&
+                        portBlock.getPortTypeId().equals(RLUtils.toRL(structurePort.getType()))) {
+                        List<String> controllerIds = structurePort.getControllerId() != null ? structurePort.getControllerId() : this.controllerId;
+                        valid = controllerIds.contains(portBlock.getControllerId());
+                    }
                 }
             }
-        }
 
-        if (!valid) {
-            return false;
-        }
+            if (!valid) {
+                continue;
+            }
 
-        if (model.getProperties() == null) {
-            return true;
-        }
+            if (data.getProperties() == null) {
+                return true;
+            }
 
-
-        for (Map.Entry<String, String> stringStringEntry : model.getProperties().entrySet()) {
-            for (Map.Entry<Property<?>, Comparable<?>> propertyEntry : blockState.getValues().entrySet()) {
-                if (propertyEntry.getKey().getName().equals(stringStringEntry.getKey())) {
-                    Optional<?> o = propertyEntry.getKey().parseValue(stringStringEntry.getValue());
-                    return propertyEntry.getValue().equals(o.get());
+            for (Map.Entry<String, String> stringStringEntry : data.getProperties().entrySet()) {
+                for (Map.Entry<Property<?>, Comparable<?>> propertyEntry : blockState.getValues().entrySet()) {
+                    if (propertyEntry.getKey().getName().equals(stringStringEntry.getKey())) {
+                        Optional<?> o = propertyEntry.getKey().parseValue(stringStringEntry.getValue());
+                        if (propertyEntry.getValue().equals(o.get())) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -262,9 +267,11 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
         private List<MachineStructureRecipeKeyModel> getResult(JsonObject legend, List<List<String>> layout) throws InvalidStructureDefinitionException {
             HashMap<Character, MachineStructureRecipeLegendModel> model = new HashMap<>();
             for (Map.Entry<String, JsonElement> entry : legend.entrySet()) {
+
                 DataResult<Pair<MachineStructureRecipeLegendModel, JsonElement>> apply = JsonOps.INSTANCE.withDecoder(MachineStructureRecipeLegendModel.CODEC).apply(entry.getValue());
-                MachineStructureRecipeLegendModel first = apply.result().get().getFirst();
-                model.put(entry.getKey().charAt(0), first);
+                MachineStructureRecipeLegendModel legendModel = apply.result().get().getFirst();
+
+                model.put(entry.getKey().charAt(0), legendModel);
             }
             ArrayList<MachineStructureRecipeKeyModel> result = new ArrayList<>();
             Vector3i controllerPos = getControllerPos(layout);
@@ -283,7 +290,12 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                         }
                         MachineStructureRecipeLegendModel machineStructureRecipeLegendModel = model.get(c);
                         BlockPos pos = new BlockPos(x, y, z).subtract(new BlockPos(controllerPos));
-                        result.add(new MachineStructureRecipeKeyModel(new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()), machineStructureRecipeLegendModel.getTag(), machineStructureRecipeLegendModel.getBlock(), machineStructureRecipeLegendModel.getProperties(), machineStructureRecipeLegendModel.getPort()));
+
+                        result.add(new MachineStructureRecipeKeyModel(
+                            new MachineStructureBlockPos(pos.getX(), pos.getY(), pos.getZ()),
+                            machineStructureRecipeLegendModel.getData()
+                        ));
+
                     }
                     z++;
                 }
@@ -341,6 +353,7 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
             buf.writeString(recipe.id);
             buf.writeString(recipe.name);
             try {
+                List<MachineStructureRecipeKeyModel> model = recipe.getModels().get(0);
                 buf.func_240629_a_(MachineStructureObject.CODEC, new MachineStructureObject(recipe.getModels().get(0)));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -364,26 +377,8 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
 
         private void validateStructure(List<MachineStructureRecipeKeyModel> models, List<String> controllerId, String id, ResourceLocation rl) throws InvalidStructureDefinitionException {
             for (MachineStructureRecipeKeyModel model : models) {
-                if (!model.getBlock().equals("")) {
-                    if (RLUtils.isRL(model.getBlock())) {
-                        if (!ForgeRegistries.BLOCKS.containsKey(RLUtils.toRL(model.getBlock()))) {
-                            throw new InvalidStructureDefinitionException("Block: " + model.getBlock() + " is not an existing block in the game");
-                        }
-                    } else {
-                        throw new InvalidStructureDefinitionException("Block: " + model.getBlock() + " is defined but not a valid block id (ResourceLocation)");
-                    }
-                } else if (!model.getTag().equals("")) {
-                    if (!RLUtils.isRL(model.getTag())) {
-                        throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() + " is defined but not a valid block tag id (ResourceLocation)");
-                    }
-                } else if (model.getPort() != null) {
-                    if (!MMPorts.PORTS.containsKey(RLUtils.toRL(model.getPort().getType()))) {
-                        throw new InvalidStructureDefinitionException("Port: " + model.getPort() + " is defined but not a valid port type id (ResourceLocation)");
-                    } else if (!controllerId.containsAll(model.getPort().getControllerId())) {
-                        throw new InvalidStructureDefinitionException("Port: " + model.getPort() + " is defined but not a valid port controller id specified (ResourceLocation)");
-                    }
-                } else {
-                    throw new InvalidStructureDefinitionException("You must define at least 1 'block' or 'tag' per port within the 'data' object");
+                for (MachineStructureRecipeData data : model.getData()) {
+                    validateModelData(data, controllerId);
                 }
             }
 
@@ -395,6 +390,30 @@ public class MachineStructureRecipe implements IRecipe<IInventory> {
                 if (!controllerIdFound) {
                     throw new InvalidStructureDefinitionException("controllerId: " + s + " does not exist");
                 }
+            }
+        }
+
+        private void validateModelData(MachineStructureRecipeData model, List<String> controllerId) throws InvalidStructureDefinitionException {
+            if (!model.getBlock().equals("")) {
+                if (RLUtils.isRL(model.getBlock())) {
+                    if (!ForgeRegistries.BLOCKS.containsKey(RLUtils.toRL(model.getBlock()))) {
+                        throw new InvalidStructureDefinitionException("Block: " + model.getBlock() + " is not an existing block in the game");
+                    }
+                } else {
+                    throw new InvalidStructureDefinitionException("Block: " + model.getBlock() + " is defined but not a valid block id (ResourceLocation)");
+                }
+            } else if (!model.getTag().equals("")) {
+                if (!RLUtils.isRL(model.getTag())) {
+                    throw new InvalidStructureDefinitionException("Block Tag: " + model.getBlock() + " is defined but not a valid block tag id (ResourceLocation)");
+                }
+            } else if (model.getPort() != null) {
+                if (!MMPorts.PORTS.containsKey(RLUtils.toRL(model.getPort().getType()))) {
+                    throw new InvalidStructureDefinitionException("Port: " + model.getPort() + " is defined but not a valid port type id (ResourceLocation)");
+                } else if (!controllerId.containsAll(model.getPort().getControllerId())) {
+                    throw new InvalidStructureDefinitionException("Port: " + model.getPort() + " is defined but not a valid port controller id specified (ResourceLocation)");
+                }
+            } else {
+                throw new InvalidStructureDefinitionException("You must define at least 1 'block' or 'tag' per port within the 'data' object");
             }
         }
     }

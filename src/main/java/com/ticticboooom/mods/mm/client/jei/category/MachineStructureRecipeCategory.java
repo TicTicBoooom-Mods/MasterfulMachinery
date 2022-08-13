@@ -9,6 +9,7 @@ import com.ticticboooom.mods.mm.client.util.GuiBlockRenderBuilder;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureBlockPos;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructurePort;
+import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeData;
 import com.ticticboooom.mods.mm.data.model.structure.MachineStructureRecipeKeyModel;
 import com.ticticboooom.mods.mm.helper.GLScissor;
 import com.ticticboooom.mods.mm.helper.RLUtils;
@@ -195,13 +196,15 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
         zero.transform(matrixStack.getLast().getMatrix().copy());
         GLScissor.enable((int)zero.getX(), (int)zero.getY(), 160, 120);
         // Render the block parts
-        for (MachineStructureRecipeKeyModel part : parts) {
-            this.variantIndices.putIfAbsent(part.getPos(), 0);
+        for (MachineStructureRecipeKeyModel model : parts) {
+            MachineStructureRecipeData part = model.getData().get(0);
+
+            this.variantIndices.putIfAbsent(model.getPos(), 0);
             if (part.getBlock().isEmpty() && part.getTag().isEmpty() && part.getPort() == null) {
                 continue;
             }
 
-            BlockPos bp = new BlockPos(-part.getPos().getX(), part.getPos().getY(), -part.getPos().getZ());
+            BlockPos bp = new BlockPos(-model.getPos().getX(), model.getPos().getY(), -model.getPos().getZ());
 
             if (!part.getBlock().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getBlock());
@@ -214,11 +217,11 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             } else if (!part.getTag().equals("")) {
                 ResourceLocation resourceLocation = new ResourceLocation(part.getTag());
                 ITag<Block> tag = BlockTags.getCollection().getTagByID(resourceLocation);
-                Integer index = this.variantIndices.get(part.getPos());
+                Integer index = this.variantIndices.get(model.getPos());
 
                 Block block = tag.getAllElements().get(index);
                 if (this.tickTimer == 0) {
-                    this.variantIndices.put(part.getPos(), (index + 1) % tag.getAllElements().size());
+                    this.variantIndices.put(model.getPos(), (index + 1) % tag.getAllElements().size());
                 }
 
                 if (block != null) {
@@ -229,10 +232,10 @@ public class MachineStructureRecipeCategory implements IRecipeCategory<MachineSt
             } else if (part.getPort() != null) {
                 MachineStructurePort port = part.getPort();
                 ArrayList<RegistryObject<MachinePortBlock>> ports = port.isInput() ? MMLoader.IPORT_BLOCKS : MMLoader.OPORT_BLOCKS;
-                Integer index = this.variantIndices.get(part.getPos());
+                Integer index = this.variantIndices.get(model.getPos());
                 String controllerId = port.getControllerId().get(index);
                 if (this.tickTimer == 0) {
-                    this.variantIndices.put(part.getPos(), (index + 1) % port.getControllerId().size());
+                    this.variantIndices.put(model.getPos(), (index + 1) % port.getControllerId().size());
                 }
                 String type = port.getType();
                 MachinePortBlock block = null;

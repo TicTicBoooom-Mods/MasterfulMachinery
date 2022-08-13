@@ -1,0 +1,38 @@
+{
+    "type": "masterfulmachinery:machine_structure",
+    "id": "test_multi_legend",
+    "controllerId": "basic",
+    "name": "Test Multi Legend",
+    "layout": [
+        [
+            "12C34"
+        ]
+    ],
+    "legend": {
+        "1": {
+            "block": "masterfulmachinery:basic_simple_port_items_input"
+        },
+        "2": {
+            "block": "masterfulmachinery:basic_simple_port_create_rotation_input"
+        },
+        "3": [
+            {
+                "block": "minecraft:stone"
+            },
+            {
+                "tag": "minecraft:planks"
+            }
+        ],
+        "4": [
+            {
+                "block": "minecraft:glowstone"
+            },
+            {
+                "block": "minecraft:piston",
+                "props": {
+                    "extended": "true"
+                }
+            }
+        ]
+    }
+}
