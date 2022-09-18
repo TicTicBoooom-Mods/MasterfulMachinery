@@ -3,7 +3,6 @@ package com.ticticboooom.mods.mm.block.item;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.data.model.PortModel;
-import com.ticticboooom.mods.mm.data.model.StructureModel;
 import com.ticticboooom.mods.mm.setup.MMItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -12,8 +11,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
-import javax.sound.sampled.Port;
-import java.util.ArrayList;
 import java.util.Map;
 
 public class MMItemGroup extends ItemGroup {
@@ -32,7 +29,6 @@ public class MMItemGroup extends ItemGroup {
     @Override
     public void fill(NonNullList<ItemStack> items) {
         super.fill(items);
-        items.clear();
         items.addAll(getControllers());
     }
 

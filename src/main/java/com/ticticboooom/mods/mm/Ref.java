@@ -1,10 +1,8 @@
 package com.ticticboooom.mods.mm;
 
-import com.electronwill.nightconfig.core.AbstractConfig;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.system.CallbackI;
 
 public class Ref {
 

@@ -1,6 +1,5 @@
 package com.ticticboooom.mods.mm.client.container;
 
-import com.ticticboooom.mods.mm.block.tile.ControllerTile;
 import com.ticticboooom.mods.mm.block.tile.PortTile;
 import com.ticticboooom.mods.mm.setup.MMContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,7 +8,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 

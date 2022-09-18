@@ -2,7 +2,6 @@ package com.ticticboooom.mods.mm.item;
 
 import com.ticticboooom.mods.mm.block.item.MMItemGroup;
 import com.ticticboooom.mods.mm.client.container.BlueprintContainerProvider;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;

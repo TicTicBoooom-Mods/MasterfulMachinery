@@ -1,10 +1,14 @@
 package com.ticticboooom.mods.mm;
 
+import com.ticticboooom.mods.mm.block.ter.ProjectorTileEntityRenderer;
 import com.ticticboooom.mods.mm.block.ter.model.controller.ControllerBlockModel;
 import com.ticticboooom.mods.mm.block.ter.model.port.PortBlockModel;
+import com.ticticboooom.mods.mm.cap.BlueprintData;
+import com.ticticboooom.mods.mm.cap.IBlueprintData;
 import com.ticticboooom.mods.mm.client.screen.BlueprintScreen;
 import com.ticticboooom.mods.mm.client.screen.ControllerScreen;
 import com.ticticboooom.mods.mm.client.screen.PortScreen;
+import com.ticticboooom.mods.mm.client.screen.ProjectorScreen;
 import com.ticticboooom.mods.mm.net.MMNetworkManager;
 import com.ticticboooom.mods.mm.ports.PortTypeRegistry;
 import com.ticticboooom.mods.mm.ports.base.PortType;
@@ -22,8 +26,9 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,7 +48,6 @@ public class ModRoot {
         MMItems.ITEMS.register(bus);
         MMContainerTypes.CONTAINERS.register(bus);
         bus.addListener(ModRoot::commonSetup);
-
         if (EffectiveSide.get().isClient()) {
             bus.addListener(ModRoot::modelRegistry);
             bus.addListener(ModRoot::bake);
@@ -54,6 +58,9 @@ public class ModRoot {
 
     private static void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(MMNetworkManager::init);
+        event.enqueueWork(() -> {
+            CapabilityManager.INSTANCE.register(IBlueprintData.class, new BlueprintData.Storage(), BlueprintData::new);
+        });
     }
 
     public static void bake(ModelBakeEvent event) {
@@ -89,6 +96,8 @@ public class ModRoot {
             ScreenManager.registerFactory(MMContainerTypes.CONTROLLER.get(), ControllerScreen::new);
             ScreenManager.registerFactory(MMContainerTypes.PORT.get(), PortScreen::new);
             ScreenManager.registerFactory(MMContainerTypes.BLUEPRINT.get(), BlueprintScreen::new);
+            ScreenManager.registerFactory(MMContainerTypes.PROJECTOR.get(), ProjectorScreen::new);
+            ClientRegistry.bindTileEntityRenderer(MMTiles.PROJECTOR.get(), ProjectorTileEntityRenderer::new);
         });
     }
 }

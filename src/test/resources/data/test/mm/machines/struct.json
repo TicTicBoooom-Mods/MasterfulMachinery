@@ -19,7 +19,7 @@
         "#minecraft:logs"
       ]
     },
-    "B": "minecraft:glass"
+    "B": "mekanism:induction_port"
   },
   "requiredPorts": {
   },

@@ -11,9 +11,11 @@ import com.ticticboooom.mods.mm.client.helper.GuiBlockRenderBuilder;
 import com.ticticboooom.mods.mm.data.DataRegistry;
 import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.data.model.StructureModel;
+import com.ticticboooom.mods.mm.setup.MMItems;
 import com.ticticboooom.mods.mm.setup.MMRegistries;
 import com.ticticboooom.mods.mm.structures.StructureKeyType;
 import com.ticticboooom.mods.mm.util.GuiBlockUtils;
+import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -23,6 +25,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -57,13 +60,19 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
     public BlueprintScreen(BlueprintContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         this.screenContainer = screenContainer;
+        float tx = 9.75f, ty = -3, tz = 10;
+        prePos = new Vector3f(tx, ty, tz);
+        this.xRotation = -225;
+        this.yRotation = 15;
+        this.yLastMousePosition = 0;
+        this.xLastMousePosition = 0;
+        scaleFactor = 1;
     }
 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
-
     }
 
     @Override
@@ -93,14 +102,6 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         if (screenContainer.structure == null) {
             Optional<Map.Entry<ResourceLocation, StructureModel>> first = DataRegistry.STRUCTURES.entrySet().stream().findFirst();
             screenContainer.structure = first.get().getValue();
-            renderStructure(screenContainer.structure, matrixStack, x, y, true);
-            float tx = 9.75f, ty = -3, tz = 10;
-            prePos = new Vector3f(tx, ty, tz);
-            this.xRotation = -225;
-            this.yRotation = 15;
-            this.yLastMousePosition = 0;
-            this.xLastMousePosition = 0;
-            scaleFactor = 1;
         }
         if (screenContainer.structure != null) {
             renderStructure(screenContainer.structure, matrixStack, x, y, false);
@@ -111,18 +112,15 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
         renderActStructureButtons(x, y, matrixStack);
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
         fontRenderer.drawString(matrixStack, screenContainer.structure.name.getString(),guiLeft + 40, guiTop + 110, 0x444444);
+        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(Ref.MOD_ID, "textures/gui/slot_parts.png"));
+        blit(matrixStack, guiLeft + 184, guiTop + 115, 0, 26, 18, 18);
         prevMouseState = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+
     }
 
     private void renderStructure(StructureModel model, MatrixStack ms, int mouseX, int mouseY, boolean isInitial) {
         Quaternion rotation = new Quaternion(new Vector3f(1, 0, 0), yRotation, true);
         rotation.multiply(new Quaternion(new Vector3f(0, -1, 0), -xRotation, true));
-        if (isInitial) {
-            for (StructureModel.PositionedKey key : model.positionedKeys) {
-                StructureKeyType value = MMRegistries.STRUCTURE_KEY_TYPES.getValue(key.type);
-
-            }
-        } else {
             RenderSystem.enableBlend();
             RenderSystem.enableRescaleNormal();
             RenderSystem.enableAlphaTest();
@@ -183,7 +181,6 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
             // End tick
             xLastMousePosition = mouseX;
             yLastMousePosition = mouseY;
-        }
     }
 
     private void renderItems() {
@@ -212,6 +209,11 @@ public class BlueprintScreen extends ContainerScreen<BlueprintContainer> {
                 break;
             }
         }
+        ItemStack itemStack = new ItemStack(MMItems.CONTROLLER.get());
+        TagHelper.setRL(itemStack, "Controller", screenContainer.structure.controllerId.get((int) controllerIndex));
+        screenContainer.controllerSlot.setItem(itemStack);
+
+
     }
 
     private void renderActStructureButtons(int x, int y, MatrixStack ms) {

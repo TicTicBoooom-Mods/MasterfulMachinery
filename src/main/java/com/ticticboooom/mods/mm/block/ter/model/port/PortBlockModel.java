@@ -1,9 +1,6 @@
 package com.ticticboooom.mods.mm.block.ter.model.port;
 
 import com.google.common.collect.Lists;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import com.ticticboooom.mods.mm.Ref;
-import com.ticticboooom.mods.mm.data.model.ControllerModel;
 import com.ticticboooom.mods.mm.data.model.PortModel;
 import com.ticticboooom.mods.mm.ports.PortTypeRegistry;
 import com.ticticboooom.mods.mm.ports.base.PortType;

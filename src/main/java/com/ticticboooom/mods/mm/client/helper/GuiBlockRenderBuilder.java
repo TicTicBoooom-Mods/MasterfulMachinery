@@ -29,7 +29,7 @@ public class GuiBlockRenderBuilder {
     private Vector3f prePosition = new Vector3f();
     private Vector3f positionOffset = new Vector3f();
     private TileEntityRenderer<TileEntity> ter = null;
-    private TileEntity tile;
+    public TileEntity tile;
 
     public GuiBlockRenderBuilder(BlockState blockState, AirBlockReader reader) {
         this(blockState, blockState.createTileEntity(reader), reader);

@@ -16,7 +16,6 @@ import com.ticticboooom.mods.mm.util.GuiBlockUtils;
 import com.ticticboooom.mods.mm.util.TagHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
