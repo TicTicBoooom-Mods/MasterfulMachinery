@@ -1,6 +1,6 @@
 ---
 name: RC - Testing
-about: A Temporary template used for RC-Testing
+about: Only select this template if you are using the alpha version of 1.18
 title: "[RC-TEST]"
 labels: RC-TESTING
 assignees: MasterSloth1, ticticboooom
