@@ -1,0 +1,26 @@
+{
+    "type": "masterfulmachinery:machine_process",
+    "structureId": "test_all",
+    "controllerId": "basic",
+    "name": "Test Name",
+    "ticks": 100,
+    "inputs": [
+        {
+            "type": "masterfulmachinery:pncr_pressure",
+            "consumeInstantly": true,
+            "perTick": true,
+            "data": {
+                "air": 14000
+            }
+        }
+    ],
+    "outputs":[
+        {
+            "type": "masterfulmachinery:items",
+            "data": {
+                "item": "minecraft:nether_star",
+                "count": 1
+            }
+        }
+    ]
+}

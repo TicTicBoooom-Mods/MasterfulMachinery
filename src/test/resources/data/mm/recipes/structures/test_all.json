@@ -5,7 +5,8 @@
   "name": "Testing All The Ports",
   "layout": [
     [
-      ")C*",
+      "vCv",
+      ") *",
       "+ ,",
       "- .",
       "/ 0",
@@ -18,6 +19,9 @@
     ]
   ],
   "legend": {
+    "v": {
+      "block": "minecraft:stone"
+    },
     ")": {
       "block": "masterfulmachinery:basic_simple_port_items_output"
     },

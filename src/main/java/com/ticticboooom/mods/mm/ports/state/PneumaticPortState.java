@@ -17,16 +17,20 @@ import mezz.jei.api.ingredients.IIngredientType;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PneumaticPortState extends PortState {
 
     public static final Codec<PneumaticPortState> CODEC = RecordCodecBuilder.create(x -> x.group(
+            Codec.FLOAT.optionalFieldOf("minAir").forGetter(z -> Optional.of(z.minPressure)),
             Codec.FLOAT.fieldOf("air").forGetter(z -> z.pressure)
-    ).apply(x, PneumaticPortState::new));
+    ).apply(x, (min, pressure) -> new PneumaticPortState(min.orElse(pressure), pressure)));
 
+    private float minPressure;
     private float pressure;
 
-    public PneumaticPortState(float pressure) {
+    public PneumaticPortState(float minPressure, float pressure) {
+        this.minPressure = minPressure;
         this.pressure = pressure;
     }
 
@@ -44,7 +48,7 @@ public class PneumaticPortState extends PortState {
     public boolean validateRequirement(List<PortStorage> storage) {
         for (PortStorage portStorage : storage) {
             if (portStorage instanceof PneumaticPortStorage){
-                if (((PneumaticPortStorage) portStorage).getInv().getAir() >= this.pressure){
+                if (((PneumaticPortStorage) portStorage).getInv().getAir() >= this.minPressure){
                     return true;
                 }
             }

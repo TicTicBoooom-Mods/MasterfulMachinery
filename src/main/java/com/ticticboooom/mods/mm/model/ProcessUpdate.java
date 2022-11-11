@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class ProcessUpdate {
     private int ticksTaken;
+    private String status = "";
     private String msg = "";
     private MachineProcessRecipe recipe;
     private WorldStructureDefinition structureDefinition = new WorldStructureDefinition();

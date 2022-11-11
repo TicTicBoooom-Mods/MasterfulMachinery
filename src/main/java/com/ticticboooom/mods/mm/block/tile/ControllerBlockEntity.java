@@ -3,6 +3,7 @@ package com.ticticboooom.mods.mm.block.tile;
 import com.ticticboooom.mods.mm.block.container.ControllerBlockContainer;
 import com.ticticboooom.mods.mm.data.MachineProcessRecipe;
 import com.ticticboooom.mods.mm.data.MachineStructureRecipe;
+import com.ticticboooom.mods.mm.model.ControllerDisplayData;
 import com.ticticboooom.mods.mm.model.ProcessUpdate;
 import com.ticticboooom.mods.mm.ports.storage.PortStorage;
 import com.ticticboooom.mods.mm.registration.RecipeTypes;
@@ -34,6 +35,9 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
     @Getter
     private ProcessUpdate processData = new ProcessUpdate();
 
+    @Getter
+    private ControllerDisplayData displayData = new ControllerDisplayData();
+
     public ControllerBlockEntity(RegistryObject<TileEntityType<?>> type, RegistryObject<ContainerType<ControllerBlockContainer>> container, String controllerId) {
         super(type.get());
         this.container = container;
@@ -45,45 +49,49 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         if (world.isRemote()) {
             return;
         }
-
-        processData.setMsg("Failed to construct \nthe machine");
-        List<MachineStructureRecipe> structures = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
+        processData.setMsg("");
         boolean foundStructure = false;
+
+        // Check if the controller has a structure attached to itself
         if (processData.getStructureDefinition().getStructure() != null) {
             MachineStructureRecipe structure = processData.getStructureDefinition().getStructure();
             int transformIndex = processData.getStructureDefinition().getTransformIndex();
+            // Check if the structure is still matched in the world
             if (structure.matchesSpecificTransform(this.pos, world, transformIndex)) {
-                processData.setMsg("Found structure");
+                processData.setStatus("Working");
                 onStructureFound(structure, transformIndex);
                 foundStructure = true;
             } else {
+                // If the structure is no longer matched, invalidate the current recipe
                 invalidateRecipe();
             }
         }
 
+        // If the structure does not exist, attempt to find one that does
+        List<MachineStructureRecipe> structures = world.getRecipeManager().getRecipesForType(RecipeTypes.MACHINE_STRUCTURE);
         if (!foundStructure) {
             for (MachineStructureRecipe structure : structures) {
                 int index = structure.matchesAnyTransform(this.pos, world, controllerId);
                 if (index != -1) {
-                    if (!structure.equals(processData.getStructureDefinition().getStructure())) {
-                        processData.setTicksTaken(0);
-                    }
                     processData.getStructureDefinition().setStructure(structure);
                     processData.getStructureDefinition().setTransformIndex(index);
-                    processData.setMsg("Found structure");
+                    processData.setStatus("Working");
                     onStructureFound(structure, index);
                     foundStructure = true;
                     break;
                 }
             }
         }
-        update();
 
+        // If no structure was found at all, invalidate the recipe.
         if (!foundStructure) {
             invalidateRecipe();
+            processData.setStatus("Invalid Machine");
+            processData.setTicksTaken(0);
             processData.getStructureDefinition().setStructure(null);
             processData.setRecipe(null);
         }
+        update();
     }
 
     private void onStructureFound(MachineStructureRecipe structure, int index) {
@@ -114,36 +122,34 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         // Maybe instead of checking all recipe again first check if our current recipe is still valid?
         if (processData.getRecipe() != null && processData.getRecipe().matches(inputPorts, structure.getStructureId(), processData)) {
             processData.getRecipe().process(inputPorts, outputPorts, processData);
-            processed = true;
+            return;
         }
 
-        if (!processed) {
-            // If we havent processed the previous recipe that means it needs to be invalidated
-            invalidateRecipe();
-            for (MachineProcessRecipe recipe : processRecipes) {
-                if (recipe.matches(inputPorts, structure.getStructureId(), processData)) {
-                    // TODO Make sure the recipe doesn't stop progress when some inputs aren't present
-                    if (!recipe.equals(processData.getRecipe())) {
-                        if (processData.getRecipe() != null) {
-                            processData.getRecipe().onInterrupted(inputPorts, outputPorts);
-                        }
-                        processData.setTicksTaken(0);
+        // If we haven't processed the previous recipe that means it needs to be invalidated
+        for (MachineProcessRecipe recipe : processRecipes) {
+            if (recipe.matches(inputPorts, structure.getStructureId(), processData)) {
+                // TODO Make sure the recipe doesn't stop progress when some inputs aren't present
+                if (!recipe.equals(processData.getRecipe())) {
+                    if (processData.getRecipe() != null) {
+                        processData.getRecipe().onInterrupted(inputPorts, outputPorts);
                     }
-                    processData.setRecipe(recipe);
-                    recipe.process(inputPorts, outputPorts, processData);
-                    processed = true;
-                    break;
+                    //processData.setTicksTaken(0);
                 }
+                processData.setRecipe(recipe);
+                recipe.process(inputPorts, outputPorts, processData);
+                processed = true;
+                break;
             }
+
         }
 
         if (!processed) {
-            this.processData.setRecipe(null);
-            this.processData.setTicksTaken(0);
+            invalidateRecipe();
         }
     }
 
     public void invalidateRecipe() {
+        processData.setStatus("Idle");
         if (processData.getStructureDefinition().getStructure() != null && processData.getRecipe() != null) {
             processData.getRecipe().onInterrupted(processData.getStructureDefinition().getInputPorts(), processData.getStructureDefinition().getOutputPorts());
         }
@@ -162,8 +168,10 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
 
     @Override
     public CompoundNBT write(CompoundNBT nbt) {
+        this.displayData.fromProcess(this.processData);
         nbt.putInt("ticks", processData.getTicksTaken());
         nbt.putString("msg", processData.getMsg());
+        nbt.put("DisplayData", this.displayData.serialize());
         return super.write(nbt);
     }
 
@@ -172,5 +180,6 @@ public class ControllerBlockEntity extends UpdatableTile implements ITickableTil
         super.read(p_230337_1_, nbt);
         processData.setTicksTaken(nbt.getInt("ticks"));
         processData.setMsg(nbt.getString("msg"));
+        this.displayData.deserialize(nbt.getCompound("DisplayData"));
     }
 }

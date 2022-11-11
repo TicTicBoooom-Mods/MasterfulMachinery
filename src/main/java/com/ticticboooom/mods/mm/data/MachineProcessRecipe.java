@@ -21,6 +21,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -39,17 +40,24 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
     @Getter
     private final String structureId;
     private final ResourceLocation rl;
+    @Getter
+    private final String name;
 
     private final List<Double> inputRolls = new ArrayList<>();
     private final List<Double> outputRolls = new ArrayList<>();
     private final Random rand = new Random();
 
-    public MachineProcessRecipe(List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
+    public MachineProcessRecipe(String name, List<PortState> inputs, List<PortState> outputs, int ticks, String structureId, ResourceLocation rl) {
+        this.name = name;
         this.inputs = inputs;
         this.outputs = outputs;
         this.ticks = ticks;
         this.structureId = structureId;
         this.rl = rl;
+    }
+
+    public boolean hasName() {
+        return !StringUtils.isNullOrEmpty(this.name);
     }
 
     public boolean matches(List<PortStorage> inputPorts, String structureId, ProcessUpdate update) {
@@ -195,8 +203,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
             }
             update.setTicksTaken(update.getTicksTaken() + 1);
         }
-        update.setMsg((int) (((float) update.getTicksTaken() / (float) ticks) * 100) + "%");
-        return;
+        //update.setMsg((int) (((float) update.getTicksTaken() / (float) ticks) * 100) + "%");
     }
 
     @Override
@@ -249,6 +256,10 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         @Override
         public MachineProcessRecipe read(ResourceLocation rl, JsonObject obj) {
             try {
+                String name = null;
+                if (obj.has("name")) {
+                    name = obj.get("name").getAsString();
+                }
                 int ticks = obj.get("ticks").getAsInt();
                 String structureId = obj.get("structureId").getAsString();
                 JsonArray inputs = obj.get("inputs").getAsJsonArray();
@@ -258,7 +269,7 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
                 List<PortState> outputStates = getStates(outputs);
                 validateProcess(inputStates, outputStates, ticks, structureId, rl);
                 MM.LOG.debug("Added process '{}' for structure '{}'", rl, structureId);
-                return new MachineProcessRecipe(inputStates, outputStates, ticks, structureId, rl);
+                return new MachineProcessRecipe(name, inputStates, outputStates, ticks, structureId, rl);
             } catch (InvalidProcessDefinitionException e) {
                 MM.LOG.error("InvalidProcessDefinition: " + e.getMessage());
             }
@@ -307,13 +318,17 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
         @Nullable
         @Override
         public MachineProcessRecipe read(ResourceLocation rl, PacketBuffer buf) {
+            String name = null;
+            if (buf.readBoolean()) {
+                name = buf.readString();
+            }
             int inputCount = buf.readInt();
             int outputCount = buf.readInt();
             int ticks = buf.readInt();
             String structureId = buf.readString();
             List<PortState> inputs = getStates(buf, inputCount);
             List<PortState> outputs = getStates(buf, outputCount);
-            return new MachineProcessRecipe(inputs, outputs, ticks, structureId, rl);
+            return new MachineProcessRecipe(name, inputs, outputs, ticks, structureId, rl);
         }
 
         private List<PortState> getStates(PacketBuffer buf, int count) {
@@ -333,6 +348,11 @@ public class MachineProcessRecipe implements IRecipe<IInventory> {
 
         @Override
         public void write(PacketBuffer buf, MachineProcessRecipe recipe) {
+            boolean hasName = recipe.hasName();
+            buf.writeBoolean(hasName);
+            if (hasName) {
+                buf.writeString(recipe.name);
+            }
             buf.writeInt(recipe.inputs.size());
             buf.writeInt(recipe.outputs.size());
             buf.writeInt(recipe.ticks);
