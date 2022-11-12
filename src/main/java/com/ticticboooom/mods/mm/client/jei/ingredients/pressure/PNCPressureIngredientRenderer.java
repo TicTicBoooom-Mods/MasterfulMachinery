@@ -32,7 +32,8 @@ public class PNCPressureIngredientRenderer implements IIngredientRenderer<Pressu
     public List<ITextComponent> getTooltip(PressureStack ingredient, ITooltipFlag tooltipFlag) {
         return Lists.newArrayList(
             new StringTextComponent("PNC Pressure"),
-                new StringTextComponent(ingredient.getAmount() + " Units")
+            new StringTextComponent("Required: " + ingredient.getRequired() + " Units"),
+            new StringTextComponent("Consumed: " + ingredient.getConsumed() + " Units")
         );
     }
 }

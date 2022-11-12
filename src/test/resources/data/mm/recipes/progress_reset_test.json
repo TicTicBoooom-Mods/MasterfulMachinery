@@ -10,7 +10,8 @@
             "consumeInstantly": true,
             "perTick": true,
             "data": {
-                "air": 14000
+                "minAir": 14000,
+                "air": 200
             }
         }
     ],

@@ -88,14 +88,14 @@ public class PneumaticPortState extends PortState {
 
     @Override
     public <T> List<T> getIngredient(boolean input) {
-        return (List<T>) Lists.newArrayList(new PressureStack(pressure));
+        return (List<T>) Lists.newArrayList(new PressureStack(this.minPressure, this.pressure));
     }
 
     @Override
     public void setupRecipe(IRecipeLayout layout, Integer typeIndex, int x, int y, boolean input) {
         IGuiIngredientGroup<PressureStack> group = layout.getIngredientsGroup(MMJeiPlugin.PRESSURE_TYPE);
         group.init(typeIndex, input, x+ 1, y +1);
-        group.set(typeIndex, new PressureStack(pressure));
+        group.set(typeIndex, new PressureStack(this.minPressure, this.pressure));
     }
 
     @Override

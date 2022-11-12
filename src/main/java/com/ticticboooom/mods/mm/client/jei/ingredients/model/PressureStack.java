@@ -6,10 +6,14 @@ import lombok.Setter;
 public class PressureStack {
     @Getter
     @Setter
-    private float amount;
+    private float required;
 
-    public PressureStack(float amount){
+    @Getter
+    @Setter
+    private float consumed;
 
-        this.amount = amount;
+    public PressureStack(float required, float consumed){
+        this.required = required;
+        this.consumed = consumed;
     }
 }

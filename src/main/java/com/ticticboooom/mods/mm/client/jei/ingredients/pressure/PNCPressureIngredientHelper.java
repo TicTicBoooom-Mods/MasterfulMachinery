@@ -20,7 +20,7 @@ public class PNCPressureIngredientHelper implements IIngredientHelper<PressureSt
 
     @Override
     public String getUniqueId(PressureStack ingredient) {
-        return ingredient.getAmount() + "";
+        return ingredient.getRequired() + "-" + ingredient.getConsumed();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PNCPressureIngredientHelper implements IIngredientHelper<PressureSt
 
     @Override
     public PressureStack copyIngredient(PressureStack ingredient) {
-        return new PressureStack(ingredient.getAmount());
+        return new PressureStack(ingredient.getRequired(), ingredient.getConsumed());
     }
 
     @Override

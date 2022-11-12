@@ -87,8 +87,8 @@ public class PneumaticPortStorage extends PortStorage {
         float pct = inv.getPressure() / inv.getCriticalPressure();
         GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
 
-        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, NumberFormat.getInstance().format(inv.getPressure()) + "P", left + 50, top + 80, 0xfefefe);
-        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getAir() + " Air", left + 50, top + 60, 0xfefefe);
+        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, NumberFormat.getInstance().format(inv.getPressure()) + " bar", left + 50, top + 80, 0xfefefe);
+        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getAir() + " mL", left + 50, top + 60, 0xfefefe);
 
     }
 
