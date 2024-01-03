@@ -48,7 +48,8 @@ public class GuiBlockRenderBuilder {
 
     public GuiBlockRenderBuilder at(BlockPos position) {
         if (tile != null) {
-            tile.setWorldAndPos(Minecraft.getInstance().world, Minecraft.getInstance().player.getPosition());
+            Minecraft instance = Minecraft.getInstance();
+            tile.setWorldAndPos(instance.world, instance.player.getPosition());
         }
         this.position = position;
         return this;

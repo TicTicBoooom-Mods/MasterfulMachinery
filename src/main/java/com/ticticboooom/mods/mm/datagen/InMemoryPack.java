@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class InMemoryPack implements IResourcePack {
     private final Path path;
@@ -60,8 +59,7 @@ public class InMemoryPack implements IResourcePack {
             if (!Files.exists(current) || !Files.isDirectory(current)){
                 return;
             }
-            Stream<Path> list = Files.list(current);
-            for (Path child : list.collect(Collectors.toList())) {
+            for (Path child : Files.list(current).collect(Collectors.toList())) {
                 if (!Files.isDirectory(child)) {
                     result.add(new ResourceLocation(currentRLNS, currentRLPath + "/" + child.getFileName()));
                     continue;
@@ -84,11 +82,9 @@ public class InMemoryPack implements IResourcePack {
     public Set<String> getResourceNamespaces(ResourcePackType type) {
         Set<String> result = new HashSet<>();
         try {
-            Stream<Path> list = Files.list(path.resolve(type.getDirectoryName()));
-            for (Path resultingPath : list.collect(Collectors.toList())) {
-                result.add(resultingPath.getFileName().toString());
-            }
-
+            Files.list(path.resolve(type.getDirectoryName()))
+                .map(path -> path.getFileName().toString())
+                .forEach(result::add);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,12 +99,11 @@ public class InMemoryPack implements IResourcePack {
         jsonobject.add("pack", packObject);
         if (!jsonobject.has(deserializer.getSectionName())) {
             return null;
-        } else {
-            try {
-                return deserializer.deserialize(JSONUtils.getJsonObject(jsonobject, deserializer.getSectionName()));
-            } catch (JsonParseException jsonparseexception) {
-                return null;
-            }
+        } 
+        try {
+            return deserializer.deserialize(JSONUtils.getJsonObject(jsonobject, deserializer.getSectionName()));
+        } catch (JsonParseException jsonparseexception) {
+            return null;
         }
     }
 

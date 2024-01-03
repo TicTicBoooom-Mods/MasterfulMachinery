@@ -55,7 +55,8 @@ public class EnergyPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft instance = Minecraft.getInstance();
+        instance.textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0,  175, 256);
         int barX = left + 175 - 30;
         int barY = top + 20;
@@ -67,7 +68,7 @@ public class EnergyPortStorage extends PortStorage {
             pct = (float)inv.getEnergyStored() / inv.getMaxEnergyStored();
         }
         GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
-        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer,String.format("%.2f",Math.round((float)10000 * pct) / 100.f) + "%", left + 30, top + 60, 0xfefefe);
-        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
+        AbstractGui.drawString(stack, instance.fontRenderer,String.format("%.2f",Math.round((float)10000 * pct) / 100.f) + "%", left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawString(stack, instance.fontRenderer, inv.getEnergyStored() + "FE", left + 30, top + 80, 0xfefefe);
     }
 }

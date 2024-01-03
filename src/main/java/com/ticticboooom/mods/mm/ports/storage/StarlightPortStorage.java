@@ -49,8 +49,9 @@ public class StarlightPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft instance = Minecraft.getInstance();
+        instance.textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0, 175, 256);
-        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getStarlightStored() + " Starlight", left + 60, top + 30, 0xfefefe);
+        AbstractGui.drawCenteredString(stack, instance.fontRenderer, inv.getStarlightStored() + " Starlight", left + 60, top + 30, 0xfefefe);
     }
 }

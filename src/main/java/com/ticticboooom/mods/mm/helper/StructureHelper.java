@@ -99,7 +99,8 @@ public class StructureHelper {
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .create().toJson(jsonObject);
-        Minecraft.getInstance().keyboardListener.setClipboardString(s);
+        Minecraft instance = Minecraft.getInstance();
+        instance.keyboardListener.setClipboardString(s);
     }
 
     private static JsonObject toJson(Map<Character, ResourceLocation> legend, List<List<String>> layout) {

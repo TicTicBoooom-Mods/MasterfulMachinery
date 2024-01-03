@@ -62,7 +62,8 @@ public class FluidPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft instance = Minecraft.getInstance();
+        instance.textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0, 175, 256);
         int x = 78;
         int y = 40;
@@ -71,7 +72,7 @@ public class FluidPortStorage extends PortStorage {
         if (!fluid.isEmpty()){
             FluidRenderer.INSTANCE.render(stack, left + x + 1, top + y + 1, inv.getFluidInTank(0), 16);
 
-            AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getFluidInTank(0).getAmount() + " " + inv.getFluidInTank(0).getDisplayName().getString(), left + x + 9 + 1, top + y + 30, 0xfefefe);
+            AbstractGui.drawCenteredString(stack, instance.fontRenderer, inv.getFluidInTank(0).getAmount() + " " + inv.getFluidInTank(0).getDisplayName().getString(), left + x + 9 + 1, top + y + 30, 0xfefefe);
         }
     }
 

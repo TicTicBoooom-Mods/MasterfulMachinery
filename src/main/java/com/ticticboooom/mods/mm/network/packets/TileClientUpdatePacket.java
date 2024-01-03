@@ -32,7 +32,8 @@ public class TileClientUpdatePacket {
 
     public static void handle(Data data, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ClientWorld level = Minecraft.getInstance().world;
+            Minecraft instance = Minecraft.getInstance();
+            ClientWorld level = instance.world;
             TileEntity blockEntity = level.getTileEntity(data.getPos());
             BlockState state = level.getBlockState(data.getPos());
             if (blockEntity != null) {
