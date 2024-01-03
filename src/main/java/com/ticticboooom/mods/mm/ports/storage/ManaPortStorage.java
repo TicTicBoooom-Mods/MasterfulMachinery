@@ -54,7 +54,8 @@ public class ManaPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/mana_gui.png"));
+        Minecraft instance = Minecraft.getInstance();
+        instance.textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/mana_gui.png"));
         screen.blit(stack, left, top, 0, 0,  175, 256);
         int barOffsetX = 175 - 30;
         int barOffsetY = 20;
@@ -68,6 +69,6 @@ public class ManaPortStorage extends PortStorage {
             pct = (float)inv.getManaStored() / inv.getMaxManaStored();
         }
         GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
-        AbstractGui.drawString(stack, Minecraft.getInstance().fontRenderer, inv.getManaStored() + " Mana", left + 30, top + 60, 0xfefefe);
+        AbstractGui.drawString(stack, instance.fontRenderer, inv.getManaStored() + " Mana", left + 30, top + 60, 0xfefefe);
     }
 }

@@ -76,7 +76,8 @@ public class PneumaticPortStorage extends PortStorage {
 
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, int left, int top, Screen screen) {
-        Minecraft.getInstance().textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
+        Minecraft instance = Minecraft.getInstance();
+        instance.textureManager.bindTexture(new ResourceLocation(MM.ID, "textures/gui/port_gui.png"));
         screen.blit(stack, left, top, 0, 0, 175, 256);
         int barX = left + 175 - 30;
         int barY = top + 20;
@@ -87,8 +88,8 @@ public class PneumaticPortStorage extends PortStorage {
         float pct = inv.getPressure() / inv.getCriticalPressure();
         GuiHelper.renderVerticallyFilledBar(stack, screen, barX, barY, 193, 18, barWidth, barHeight, pct);
 
-        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, NumberFormat.getInstance().format(inv.getPressure()) + " bar", left + 50, top + 80, 0xfefefe);
-        AbstractGui.drawCenteredString(stack, Minecraft.getInstance().fontRenderer, inv.getAir() + " mL", left + 50, top + 60, 0xfefefe);
+        AbstractGui.drawCenteredString(stack, instance.fontRenderer, NumberFormat.getInstance().format(inv.getPressure()) + " bar", left + 50, top + 80, 0xfefefe);
+        AbstractGui.drawCenteredString(stack, instance.fontRenderer, inv.getAir() + " mL", left + 50, top + 60, 0xfefefe);
 
     }
 
