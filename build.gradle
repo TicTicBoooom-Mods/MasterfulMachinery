@@ -184,14 +184,14 @@ dependencies {
     implementation fg.deobf("curse.maven:observerlib-316833:3162044")
     // runtime deps
     runtimeOnly fg.deobf("curse.maven:curios-309927:3231111")
-    compileOnly fg.deobf("vazkii.botania:Botania:1.16.5-416:api")
-    runtimeOnly fg.deobf("vazkii.botania:Botania:1.16.5-416")
+    compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}:api")
+    runtimeOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
 
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.16.4-51")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
-    implementation "dev.latvian.mods:rhino:1605.1.0-build.4"
-    implementation fg.deobf("me.shedaniel:architectury-forge:v1.15.13")
-    implementation fg.deobf("dev.latvian.mods:kubejs-forge:1605.3.10-build.8")
+    implementation "dev.latvian.mods:rhino:${rhino_version}"
+    implementation fg.deobf("me.shedaniel:architectury-forge:${architectury_version}")
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
